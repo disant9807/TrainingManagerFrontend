@@ -1,0 +1,44 @@
+.filterBlock {
+  display: flex;
+  flex-wrap: wrap;
+  padding-right: 8px;
+}
+.fieldset {
+  border-radius: 8px;
+  border: solid 1px #ababab;
+  padding-left: 12px;
+  margin: 0 10px;
+  margin-bottom: 10px;
+  background-color: #e8e8e8;
+  color: #00000094;
+  position: relative;
+}
+.legend {
+  text-align: -webkit-center;
+}
+.filterClose {
+  position: absolute;
+  top: 0;
+  right: -10px;
+}
+.kwds {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.chipGroupContent {
+  & .v-slide-group__content {
+    flex-direction: column;
+  }
+}
+.accr-filters {
+  span.v-chip {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+  }
+}
+
+.treeOverflow {
+  max-height: 500px;
+  overflow: auto;
+}

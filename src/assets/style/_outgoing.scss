@@ -1,0 +1,49 @@
+
+.right-main-container {
+  margin-left: 475px;
+  min-width: 720px;
+
+  .maininfo {
+    .row {
+      padding: 0 12px;
+    }
+  }
+
+  .response-container {
+    padding: 12px;
+    padding-bottom: 24px;
+
+    .response-container__block {
+      &.titled:nth-child(1) {
+        margin-top: 12px;
+      }
+      .sub-title {
+        font-size: 18px;
+        font-weight: 700;
+        margin-bottom: 20px;
+        padding: 0 12px;
+      }
+
+      & > .col {
+        padding: 0 !important;
+      }
+
+      & > .col > .container {
+        padding: 0 12px !important;
+      }
+
+      .response-item, .doc-item {
+        padding: 0 12px !important;
+      }
+
+      .doc-item .row {
+        padding: 0 24px !important;
+      }
+    }
+
+    .divider {
+      margin-top: 12px;
+      margin-bottom: 24px;
+    }
+  }
+}
