@@ -151,13 +151,13 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Ref } from 'vue-property-decorator'
-import { mixins } from 'vue-class-component'
-import Helper from '@/mixins/Helper'
-import DateTimeFilter from '@/components/filters/DateTimeFilter.vue'
-import FilterItem from './FilterItem.vue'
-import { Mutation, State } from 'vuex-class'
-import { TExerciseFilterViewModel } from '@/controllers/Exercise'
+import { Component, Prop, Ref } from 'vue-property-decorator';
+import { mixins } from 'vue-class-component';
+import Helper from '@/mixins/Helper';
+import DateTimeFilter from '@/components/filters/DateTimeFilter.vue';
+import FilterItem from './FilterItem.vue';
+import { Mutation, State } from 'vuex-class';
+import { TExerciseFilterViewModel } from '@/controllers/ExerciseController';
 
 type TFilterType = 'period' | 'typeCodes' | 'source' | 'applicant' | 'reqNum' | 'statuses' | 'kwds';
 
@@ -165,10 +165,10 @@ export type TIncomingRouteName = 'New' | 'Handled' | 'Saved';
 
 @Component({
   components: {
-    FilterItem,
-    DateTimeFilter
+  FilterItem,
+  DateTimeFilter
   }
-})
+  })
 export default class Filters extends mixins(Helper) {
   @State readonly filters!: any;
   @Mutation('setFilters') setFilters!: (options: any) => void;
@@ -177,35 +177,35 @@ export default class Filters extends mixins(Helper) {
   @Ref() readonly dateTimeRef!: DateTimeFilter;
   routeName = 'New';
 
-  get filterModel (): TExerciseFilterViewModel {
-    return this.filters.incoming[this.routeName]
+  get filterModel(): TExerciseFilterViewModel {
+    return this.filters.incoming[this.routeName];
   }
 
-  set filterModel (value: TExerciseFilterViewModel) {
-    this.setFilters({ name: 'incoming', status: this.routeName, value })
-    this.$emit('change')
+  set filterModel(value: TExerciseFilterViewModel) {
+    this.setFilters({ name: 'incoming', status: this.routeName, value });
+    this.$emit('change');
   }
 
-  get loadingModel () {
-    return this.loading.incoming
+  get loadingModel() {
+    return this.loading.incoming;
   }
 
-  get isListLoading () {
-    return this.loadingModel.list
+  get isListLoading() {
+    return this.loadingModel.list;
   }
 
-  set isListLoading (value: boolean) {
-    this.setLoading({ category: 'incoming', name: 'list', value })
+  set isListLoading(value: boolean) {
+    this.setLoading({ category: 'incoming', name: 'list', value });
   }
 
-  created (): void {
-    [this.fromDateTime, this.toDateTime] = this.filterModel.period || []
-    this.source = this.filterModel.source || ''
-    this.typeCodes = this.filterModel.typeCodes || []
-    this.kwds = this.filterModel.kwds || ''
-    this.applicant = this.filterModel.applicant || ''
-    this.reqNum = this.filterModel.reqNum || ''
-    this.statuses = this.filterModel.statuses || []
+  created(): void {
+    [this.fromDateTime, this.toDateTime] = this.filterModel.period || [];
+    this.source = this.filterModel.source || '';
+    this.typeCodes = this.filterModel.typeCodes || [];
+    this.kwds = this.filterModel.kwds || '';
+    this.applicant = this.filterModel.applicant || '';
+    this.reqNum = this.filterModel.reqNum || '';
+    this.statuses = this.filterModel.statuses || [];
   }
 
   fromDateTime = '';
@@ -232,10 +232,10 @@ export default class Filters extends mixins(Helper) {
   isStatus = false;
   statuses: string[] = [];
 
-  get requestTypes (): any {
-    if (this.source === 'Epgu') return this.epguRequests
-    else if (this.source === 'InterAuthority') return this.iaRequests
-    else return { ...this.epguRequests, ...this.iaRequests }
+  get requestTypes(): any {
+    if (this.source === 'Epgu') return this.epguRequests;
+    else if (this.source === 'InterAuthority') return this.iaRequests;
+    else return { ...this.epguRequests, ...this.iaRequests };
   }
 
   epguRequests = {
@@ -265,23 +265,23 @@ export default class Filters extends mixins(Helper) {
     REQUEST_NEED_CORRECTION: 'Требуется корректировка заявления'
   };
 
-  get typeCodesCount (): number {
-    return this.filterModel?.typeCodes?.length ?? 0
+  get typeCodesCount(): number {
+    return this.filterModel?.typeCodes?.length ?? 0;
   }
 
-  get statusesCount () {
-    return this.filterModel.statuses?.length ?? 0
+  get statusesCount() {
+    return this.filterModel.statuses?.length ?? 0;
   }
 
-  clearFilters (): void {
-    this.typeCodes = []
-    this.period = []
-    this.kwds = ''
-    this.source = ''
-    this.applicant = ''
-    this.reqNum = ''
-    this.statuses = []
-    this.fromDateTime = this.toDateTime = ''
+  clearFilters(): void {
+    this.typeCodes = [];
+    this.period = [];
+    this.kwds = '';
+    this.source = '';
+    this.applicant = '';
+    this.reqNum = '';
+    this.statuses = [];
+    this.fromDateTime = this.toDateTime = '';
 
     this.filterModel = {
       state: '',
@@ -292,133 +292,133 @@ export default class Filters extends mixins(Helper) {
       applicant: '',
       reqNum: '',
       statuses: []
-    }
+    };
 
-    this.$emit('change')
+    this.$emit('change');
   }
 
-  apply (filter: TFilterType): void {
-    this.isListLoading = true
+  apply(filter: TFilterType): void {
+    this.isListLoading = true;
     switch (filter) {
       case 'typeCodes':
-        this.filterModel = { ...this.filterModel }
-        break
+        this.filterModel = { ...this.filterModel };
+        break;
 
       case 'period':
-        this.filterModel = { ...this.filterModel, period: [this.fromDateTime, this.toDateTime] }
-        break
+        this.filterModel = { ...this.filterModel, period: [this.fromDateTime, this.toDateTime] };
+        break;
 
       case 'kwds':
-        this.filterModel = { ...this.filterModel, kwds: this.kwds }
-        break
+        this.filterModel = { ...this.filterModel, kwds: this.kwds };
+        break;
 
       case 'source':
-        this.filterModel = { ...this.filterModel }
-        break
+        this.filterModel = { ...this.filterModel };
+        break;
 
       case 'applicant':
-        this.filterModel = { ...this.filterModel, applicant: this.applicant }
-        break
+        this.filterModel = { ...this.filterModel, applicant: this.applicant };
+        break;
 
       case 'reqNum':
-        this.filterModel = { ...this.filterModel, reqNum: this.reqNum }
-        break
+        this.filterModel = { ...this.filterModel, reqNum: this.reqNum };
+        break;
 
       case 'statuses':
-        this.filterModel = { ...this.filterModel, statuses: this.statuses }
-        break
+        this.filterModel = { ...this.filterModel, statuses: this.statuses };
+        break;
 
       default:
-        break
+        break;
     }
 
-    this.$emit('change')
+    this.$emit('change');
   }
 
-  cancel (filter: TFilterType): void {
-    this.isListLoading = true
+  cancel(filter: TFilterType): void {
+    this.isListLoading = true;
     switch (filter) {
       case 'typeCodes':
-        this.typeCodes = this.filterModel.typeCodes || []
-        break
+        this.typeCodes = this.filterModel.typeCodes || [];
+        break;
 
       case 'period':
-        [this.fromDateTime, this.toDateTime] = this.filterModel.period || []
-        break
+        [this.fromDateTime, this.toDateTime] = this.filterModel.period || [];
+        break;
 
       case 'kwds':
-        this.kwds = this.filterModel.kwds || ''
-        break
+        this.kwds = this.filterModel.kwds || '';
+        break;
 
       case 'source':
-        this.source = this.filterModel.source || ''
-        break
+        this.source = this.filterModel.source || '';
+        break;
 
       case 'applicant':
-        this.applicant = this.filterModel.applicant || ''
-        break
+        this.applicant = this.filterModel.applicant || '';
+        break;
 
       case 'reqNum':
-        this.reqNum = this.filterModel.reqNum || ''
-        break
+        this.reqNum = this.filterModel.reqNum || '';
+        break;
 
       case 'statuses':
-        this.statuses = this.filterModel.statuses || []
-        break
+        this.statuses = this.filterModel.statuses || [];
+        break;
 
       default:
-        break
+        break;
     }
   }
 
-  clear (filter: TFilterType): void {
-    this.isListLoading = true
+  clear(filter: TFilterType): void {
+    this.isListLoading = true;
     switch (filter) {
       case 'typeCodes':
-        this.typeCodes = []
-        this.filterModel = { ...this.filterModel }
-        break
+        this.typeCodes = [];
+        this.filterModel = { ...this.filterModel };
+        break;
 
       case 'period':
-        [this.fromDateTime, this.toDateTime] = ['', '']
-        this.filterModel = { ...this.filterModel, period: [] }
-        break
+        [this.fromDateTime, this.toDateTime] = ['', ''];
+        this.filterModel = { ...this.filterModel, period: [] };
+        break;
 
       case 'kwds':
-        this.kwds = ''
-        this.filterModel = { ...this.filterModel, kwds: '' }
-        break
+        this.kwds = '';
+        this.filterModel = { ...this.filterModel, kwds: '' };
+        break;
 
       case 'source':
-        this.source = ''
-        this.filterModel = { ...this.filterModel, source: '' }
-        break
+        this.source = '';
+        this.filterModel = { ...this.filterModel, source: '' };
+        break;
 
       case 'applicant':
-        this.applicant = ''
-        this.filterModel = { ...this.filterModel, applicant: '' }
-        break
+        this.applicant = '';
+        this.filterModel = { ...this.filterModel, applicant: '' };
+        break;
 
       case 'reqNum':
-        this.reqNum = ''
-        this.filterModel = { ...this.filterModel, reqNum: '' }
-        break
+        this.reqNum = '';
+        this.filterModel = { ...this.filterModel, reqNum: '' };
+        break;
 
       case 'statuses':
-        this.statuses = []
-        this.filterModel = { ...this.filterModel, statuses: [] }
-        break
+        this.statuses = [];
+        this.filterModel = { ...this.filterModel, statuses: [] };
+        break;
 
       default:
-        break
+        break;
     }
 
-    this.$emit('change')
+    this.$emit('change');
   }
 
-  onKeydown (e: KeyboardEvent): void {
+  onKeydown(e: KeyboardEvent): void {
     if (e.key === 'Enter') {
-      this.apply('kwds')
+      this.apply('kwds');
     }
   }
 }

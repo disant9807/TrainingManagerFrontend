@@ -64,7 +64,7 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Watch } from 'vue-property-decorator'
+import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 
 type TMenuItem = {
   id: number;
@@ -74,7 +74,7 @@ type TMenuItem = {
   pathName: string;
 }
 
-const COUNTERS_UPDATE_COOLDOWN = 60 // секунд
+const COUNTERS_UPDATE_COOLDOWN = 60; // секунд
 
 @Component
 export default class NavigationLinks extends Vue {
@@ -113,8 +113,8 @@ export default class NavigationLinks extends Vue {
 
   interval: any;
 
-  get itemsMini (): TMenuItem[] {
-    return this.items.filter((value: TMenuItem) => value.isHuge)
+  get itemsMini(): TMenuItem[] {
+    return this.items.filter((value: TMenuItem) => value.isHuge);
   }
 
   /*
@@ -136,36 +136,36 @@ export default class NavigationLinks extends Vue {
   }
   */
 
-  async setCount (object:any, propName: string, callback: () => Promise<any>): Promise<void> {
-    const response = await callback()
+  async setCount(object:any, propName: string, callback: () => Promise<any>): Promise<void> {
+    const response = await callback();
     if (Array.isArray(response)) {
       const sum = response
         .filter(r => r.success)
-        .reduce((acc, cur) => acc + cur.data, 0)
-      this.$set(object, propName, sum)
+        .reduce((acc, cur) => acc + cur.data, 0);
+      this.$set(object, propName, sum);
     } else {
       if (response.success) {
-        this.$set(object, propName, response.data)
+        this.$set(object, propName, response.data);
       } else {
-        this.$set(object, propName, 0)
+        this.$set(object, propName, 0);
       }
     }
   }
 
   @Watch('$route')
-  async onRouteChanged (): Promise<void> {
+  async onRouteChanged(): Promise<void> {
     // await this.updateCounters();
   }
 
-  async created (): Promise<void> {
+  async created(): Promise<void> {
     // await this.updateCounters();
     this.interval = setInterval(async () => {
       // await this.updateCounters();
-    }, COUNTERS_UPDATE_COOLDOWN * 1000)
+    }, COUNTERS_UPDATE_COOLDOWN * 1000);
   }
 
-  async destroy (): Promise<void> {
-    clearInterval(this.interval)
+  async destroy(): Promise<void> {
+    clearInterval(this.interval);
   }
 }
 </script>

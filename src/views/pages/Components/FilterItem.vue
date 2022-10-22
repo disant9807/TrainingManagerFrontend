@@ -74,9 +74,9 @@
 </template>
 
 <script lang="ts">
-import { Component, Prop, Watch } from 'vue-property-decorator'
-import { mixins } from 'vue-class-component'
-import Helper from '@/mixins/Helper'
+import { Component, Prop, Watch } from 'vue-property-decorator';
+import { mixins } from 'vue-class-component';
+import Helper from '@/mixins/Helper';
 
 @Component
 export default class FilterItem extends mixins(Helper) {
@@ -103,26 +103,26 @@ export default class FilterItem extends mixins(Helper) {
   isMenu = false;
 
   @Watch('menuModel', { immediate: true })
-  onModelChanged (value: boolean): void {
-    this.isMenu = value
+  onModelChanged(value: boolean): void {
+    this.isMenu = value;
   }
 
-  get localCount (): number {
-    return this.count
+  get localCount(): number {
+    return this.count;
   }
 
-  apply (): void {
-    this.isMenu = false
-    this.$emit('apply')
+  apply(): void {
+    this.isMenu = false;
+    this.$emit('apply');
   }
 
-  cancel (): void {
-    this.isMenu = false
-    this.$emit('cancel')
+  cancel(): void {
+    this.isMenu = false;
+    this.$emit('cancel');
   }
 
-  clear (): void {
-    this.$emit('clear')
+  clear(): void {
+    this.$emit('clear');
   }
 }
 </script>

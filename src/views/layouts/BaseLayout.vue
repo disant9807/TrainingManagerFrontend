@@ -1,8 +1,15 @@
 <template>
   <v-app>
-    <v-app-bar app dark clipped-left color="#005987" flat style="z-index: 999999">
+    <v-app-bar
+      app
+      dark
+      clipped-left
+      color="#005987"
+      flat
+      style="z-index: 999999"
+    >
       <v-app-bar-title>Менеджер тренировок</v-app-bar-title>
-      <v-spacer></v-spacer>
+      <v-spacer />
     </v-app-bar>
 
     <v-navigation-drawer
@@ -41,25 +48,25 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component } from 'vue-property-decorator'
-import { Mutation, State } from 'vuex-class'
-import NavigationLinks from './_NavigationLinks.vue'
+import { Vue, Component } from 'vue-property-decorator';
+import { Mutation, State } from 'vuex-class';
+import NavigationLinks from './_NavigationLinks.vue';
 
 @Component({
   components: { NavigationLinks }
-})
+  })
 export default class BaseLayout extends Vue {
   @State readonly isDrawerMini!: boolean;
   @Mutation('setDrawerstate') setDrawerstate!: (newState: boolean) => void;
 
   currYear = new Date().getFullYear();
 
-  get isMini (): boolean {
-    return this.isDrawerMini
+  get isMini(): boolean {
+    return this.isDrawerMini;
   }
 
-  set isMini (value: boolean) {
-    this.setDrawerstate(value)
+  set isMini(value: boolean) {
+    this.setDrawerstate(value);
   }
 }
 </script>

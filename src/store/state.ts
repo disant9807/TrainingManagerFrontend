@@ -1,5 +1,5 @@
 
-import { TUser, Group } from '@/controllers/models/User'
+import { TUser, Group } from '@/controllers/models/User';
 export default class State {
   user: TUser = {
     id: '',

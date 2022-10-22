@@ -21,8 +21,8 @@
 </template>
 
 <script lang="ts">
-import { TRuleFunction } from '@/mixins/Validation'
-import { Component, Vue, Prop, PropSync } from 'vue-property-decorator'
+import { TRuleFunction } from '@/mixins/Validation';
+import { Component, Vue, Prop, PropSync } from 'vue-property-decorator';
 
 @Component
 export default class InlineAutocompleteField extends Vue {

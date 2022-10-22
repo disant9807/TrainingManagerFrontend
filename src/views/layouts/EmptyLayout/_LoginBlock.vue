@@ -49,7 +49,6 @@
         color="blue darken-1"
         outlined
         large
-        @click="doLogin"
       >
         Войти
       </v-btn>
@@ -58,13 +57,12 @@
 </template>
 
 <script lang="ts">
-import { Component } from 'vue-property-decorator'
-import Global from '@/mixins/GlobalMixin'
-import AuthController from '@/controllers/Auth'
-import { mixins } from 'vue-class-component'
-import { TUser } from '@/controllers/models/User'
-import UserController from '@/controllers/UserController'
-import { Mutation, State } from 'vuex-class'
+import { Component } from 'vue-property-decorator';
+import Global from '@/mixins/GlobalMixin';
+import { mixins } from 'vue-class-component';
+import { TUser } from '@/controllers/models/User';
+import UserController from '@/controllers/UserController';
+import { Mutation, State } from 'vuex-class';
 
 @Component
 export default class Login extends mixins(Global) {
@@ -74,27 +72,6 @@ export default class Login extends mixins(Global) {
   password = '';
   errorMessage:string|null = null;
   // certs:Certificate[] = [];
-
-  async doLogin () {
-    const response = await AuthController.login(this.username, this.password)
-    if (response.error) {
-      // this.errorMessage = this.$localize('errorMessage', 'auth');
-      setTimeout(() => this.errorMessage = null, 2000)
-      return
-    }
-    const currentUser = await UserController.getUserById(this.username)
-    if (this.isAny(currentUser.roles)) {
-      this.setUser(currentUser)
-      this.$emit('logged')
-      return
-    }
-    // this.errorMessage = this.$localize('rightsError', 'messages');
-    setTimeout(() => this.errorMessage = null, 3000)
-  }
-
-  onKeyDown (e: KeyboardEvent) {
-    if (e.code === 'Enter') this.doLogin()
-  }
 }
 </script>
 

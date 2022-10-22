@@ -1,9 +1,9 @@
 
-export function isINN (value: string): boolean {
+export function isINN(value: string): boolean {
   if (!(/^\d{10}$/.test(value)) && !(/^\d{12}$/.test(value))) {
-    return false
+    return false;
   }
-  const valueArr = value.split('') as unknown as number[]
+  const valueArr = value.split('') as unknown as number[];
   // для ИНН в 10 знаков
   if (
     (valueArr.length === 10) &&
@@ -14,7 +14,7 @@ export function isINN (value: string): boolean {
       ) % 11
     ) % 10
     )) {
-    return true
+    return true;
   }
   // для ИНН в 12 знаков
   return (valueArr.length === 12) && (
@@ -28,105 +28,106 @@ export function isINN (value: string): boolean {
         3 * valueArr[0] + 7 * valueArr[1] + 2 * valueArr[2] + 4 * valueArr[3] + 10 * valueArr[4] + 3 * valueArr[5] +
         5 * valueArr[6] + 9 * valueArr[7] + 4 * valueArr[8] + 6 * valueArr[9] + 8 * valueArr[10]
       ) % 11) % 10)
-  )
+  );
 }
 
-export function isOGRN (value: string): boolean {
+export function isOGRN(value: string): boolean {
   if (!(/^\d{13}$/.test(value))) {
-    return false
+    return false;
   }
-  return parseInt((value.slice(0, -1) as unknown as number % 11).toString().slice(-1)) === +value[12]
+  return parseInt((value.slice(0, -1) as unknown as number % 11).toString().slice(-1)) === +value[12];
 }
 
-export function isOGRNIP (value: string): boolean {
+export function isOGRNIP(value: string): boolean {
   if (!(/^\d{15}$/.test(value))) {
-    return false
+    return false;
   }
-  return parseInt((value.slice(0, -1) as unknown as number % 13).toString().slice(-1)) === +value[14]
+  return parseInt((value.slice(0, -1) as unknown as number % 13).toString().slice(-1)) === +value[14];
 }
 
-export function capitalize (value: string): string {
-  const cleanValue = value?.trim()
+export function capitalize(value: string): string {
+  const cleanValue = value?.trim();
 
-  return cleanValue && cleanValue.charAt(0).toUpperCase() + cleanValue.slice(1)
+  return cleanValue && cleanValue.charAt(0).toUpperCase() + cleanValue.slice(1);
 }
 
-export function uuid (): string {
+export function uuid(): string {
   return (~~(Math.random() * 1e8)).toString(16) + '-' +
     (~~(Math.random() * 1e8)).toString(16) + '-' +
-    (~~(Math.random() * 1e8)).toString(16)
+    (~~(Math.random() * 1e8)).toString(16);
 }
 
-export function checkObjNil (obj: any): any {
+export function checkObjNil(obj: any): any {
   if (obj) {
     return !obj?.nil
-      ? obj : null
+      ? obj
+      : null;
   }
-  return null
+  return null;
 }
 
-export function checkArrkeysObj (obj: any, keys: Array<string>, index = 0): any {
-  if (obj === null || obj === undefined) { return null }
+export function checkArrkeysObj(obj: any, keys: Array<string>, index = 0): any {
+  if (obj === null || obj === undefined) { return null; }
 
   if (keys.length > index + 1 && checkObjNil(obj[keys[index]]) !== null) {
-    return checkArrkeysObj(obj[keys[index]], keys, index + 1)
+    return checkArrkeysObj(obj[keys[index]], keys, index + 1);
   } else {
-    return checkObjNil(obj[keys[index]])
+    return checkObjNil(obj[keys[index]]);
   }
 }
 
-export function checkArrObjkeys (obj: Array<any>): boolean {
+export function checkArrObjkeys(obj: Array<any>): boolean {
   return obj.some(item => {
-    const itemChecked = checkObjNil(item) || {}
-    return Object.keys(itemChecked).length > 0
-  })
+    const itemChecked = checkObjNil(item) || {};
+    return Object.keys(itemChecked).length > 0;
+  });
 }
 
-export function isPassword (
+export function isPassword(
   password: string,
   minLength = 10,
   requiresLower = true,
   requiresUpper = false,
   requiresNumbers = true,
   requiresSymbols = false): { success: boolean, msgs: string[] } {
-  const msgs = []
-  password = password ?? ''
-  const passwordArray = [...password]
+  const msgs = [];
+  password = password ?? '';
+  const passwordArray = [...password];
   if (password.length < minLength) {
-    msgs.push(`Пароль должен содержать не менее ${minLength} символов.`)
+    msgs.push(`Пароль должен содержать не менее ${minLength} символов.`);
   }
 
   if (requiresLower && !hasLower(password)) {
-    msgs.push('Пароль должен содержать строчные символы.')
+    msgs.push('Пароль должен содержать строчные символы.');
   }
 
   if (requiresUpper && !hasUpper(password)) {
-    msgs.push('Пароль должен содержать заглавные символы.')
+    msgs.push('Пароль должен содержать заглавные символы.');
   }
 
   if (requiresNumbers && !/[0-9]/.test(password)) {
-    msgs.push('Пароль должен содержать цифры.')
+    msgs.push('Пароль должен содержать цифры.');
   }
 
   if (requiresSymbols && !passwordArray.some(c => c.toLowerCase() === c.toUpperCase())) {
-    msgs.push('Пароль должен содержать буквенные символы.')
+    msgs.push('Пароль должен содержать буквенные символы.');
   }
 
-  return { success: msgs.length === 0, msgs }
+  return { success: msgs.length === 0, msgs };
 }
 
-function hasLower (s: string) {
-  const sArray = [...s]
+function hasLower(s: string) {
+  const sArray = [...s];
   // смотрим буквы
   return sArray
     .filter(c => c.toLowerCase() !== c.toUpperCase())
-    .some(c => c.toLowerCase() === c)
+    .some(c => c.toLowerCase() === c);
 }
 
-function hasUpper (s: string) {
-  const sArray = [...s]
+function hasUpper(s: string) {
+  const sArray = [...s];
   // смотрим буквы
   return sArray
     .filter(c => c.toLowerCase() !== c.toUpperCase())
-    .some(c => c.toUpperCase() === c)
+    .some(c => c.toUpperCase() === c);
 }

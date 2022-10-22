@@ -19,9 +19,9 @@
 </template>
 
 <script lang="ts">
-import { TRuleFunction } from '@/mixins/Validation'
-import { TVuetifyOptionsList } from '@/types/globals'
-import { Component, Vue, Prop, PropSync } from 'vue-property-decorator'
+import { TRuleFunction } from '@/mixins/Validation';
+import { TVuetifyOptionsList } from '@/types/globals';
+import { Component, Vue, Prop, PropSync } from 'vue-property-decorator';
 @Component
 export default class InlineRadioButtonsField extends Vue {
   @Prop({ type: String, required: false, default: '' }) label!:string;

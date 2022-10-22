@@ -1,0 +1,53 @@
+{
+  "root": true,
+  "env": {
+    "node": true
+  },
+  "extends": [
+    "plugin:vue/essential",
+    "plugin:vue/strongly-recommended",
+    "plugin:vue/recommended",
+    "@vue/standard",
+    "@vue/typescript/recommended"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 2020
+  },
+  "globals": {
+    "cadesplugin": "readonly"
+  },
+  "plugins": [
+    "only-warn"
+  ],
+  "rules": {
+    "no-debugger": "off",
+    "max-len": "off",
+    "semi": ["warn", "always"],
+    "eqeqeq": ["error", "always", {"null": "ignore"}],
+    "no-unneeded-ternary": "off",
+    "comma-dangle": ["warn", {
+      "arrays": "only-multiline",
+      "objects": "only-multiline",
+      "imports": "only-multiline",
+      "exports": "only-multiline",
+      "functions": "only-multiline"
+    }],
+    "no-return-assign": "off",
+    "func-call-spacing": ["warn", "never"],
+    "space-before-function-paren": ["warn", {"anonymous": "always", "named": "never", "asyncArrow": "always"}],
+    "no-trailing-spaces": "off",
+    "vue/max-attributes-per-line": ["warn", {"singleline": 5}],
+    "vue/html-self-closing": ["warn", {"html": {"normal": "never"}}],
+    "vue/singleline-html-element-content-newline": "off",
+    "vue/require-default-prop": "off",
+    "vue/no-template-shadow": "off",
+    "vue/no-v-html": "off",
+    "vue/valid-v-slot": "off",
+    "prefer-promise-reject-errors": "off",
+    "@typescript-eslint/no-empty-interface": "off",
+    "@typescript-eslint/no-explicit-any": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/explicit-module-boundary-types": "off",
+    "@typescript-eslint/ban-ts-comment": "off"
+  }
+}

@@ -21,17 +21,17 @@ export class TReview {
 
     Images: string[];
 
-    constructor () {
-      this.id = ''
-      this.Rating = ''
-      this.Created = ''
-      this.Update = null
-      this.Archive = ''
-      this.IsArchive = null
-      this.Description = ''
-      this.ReplyToId = null
-      this.UserId = ''
-      this.TrainingProgramId = ''
-      this.Images = []
+    constructor() {
+      this.id = '';
+      this.Rating = '';
+      this.Created = '';
+      this.Update = null;
+      this.Archive = '';
+      this.IsArchive = null;
+      this.Description = '';
+      this.ReplyToId = null;
+      this.UserId = '';
+      this.TrainingProgramId = '';
+      this.Images = [];
     }
 }

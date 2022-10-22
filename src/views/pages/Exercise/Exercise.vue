@@ -16,7 +16,10 @@
         <v-btn
           color="white"
           outlined
-        >Добавить</v-btn>
+          @click="goToExerciseAdd"
+        >
+          Добавить
+        </v-btn>
       </v-card-title>
       <filters
         :route-name="reqState"
@@ -31,28 +34,28 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
-import { mixins } from 'vue-class-component'
-import Helper from '@/mixins/Helper'
-import Global from '@/mixins/GlobalMixin'
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import { mixins } from 'vue-class-component';
+import Helper from '@/mixins/Helper';
+import Global from '@/mixins/GlobalMixin';
 
-import Filters from '../Components/Filters.vue'
-import Sorter from '../Components/Sorter.vue'
+import Filters from '../Components/Filters.vue';
+import Sorter from '../Components/Sorter.vue';
 
-import { TOrder } from '@/types/globals'
+import { TOrder } from '@/types/globals';
 
 export type TExerciseRouteName = 'New' | 'Handled' | 'Saved';
 
 @Component({
   components: {
-    Filters,
-    Sorter
+  Filters,
+  Sorter
   }
-})
+  })
 export default class Exercise extends mixins(Helper, Global) {
   order: TOrder = 'Desc';
 
-  async filtersChange (): Promise<void> {
+  async filtersChange(): Promise<void> {
     /*
     this.isListLoading = true;
     const response = await IncomingController.getRequests(this.filtersModel, this.order);
@@ -67,8 +70,12 @@ export default class Exercise extends mixins(Helper, Global) {
     */
   }
 
-  get reqState ():TExerciseRouteName {
-    return this.$route.name as string as TExerciseRouteName
+  get reqState():TExerciseRouteName {
+    return this.$route.name as string as TExerciseRouteName;
+  }
+
+  goToExerciseAdd() {
+    this.$router.push({ name: 'ExerciseAdd' });
   }
 }
 </script>

@@ -1,22 +1,20 @@
 <template>
   <div class="pa-0">
-    <v-container class="main-container">
-
-    </v-container>
+    <v-container class="main-container" />
   </div>
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop } from 'vue-property-decorator'
-import weightLossMng from '@/views/pages/Components/weightLossMng.vue'
-import connectDialog from '@/views/pages/Components/connectDialog.vue'
+import { Vue, Component, Prop } from 'vue-property-decorator';
+import weightLossMng from '@/views/pages/Components/weightLossMng.vue';
+import connectDialog from '@/views/pages/Components/connectDialog.vue';
 
 @Component({
   components: {
-    weightLossMng,
-    connectDialog
+  weightLossMng,
+  connectDialog
   }
-})
+  })
 export default class mainPage extends Vue {
 
 }

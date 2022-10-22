@@ -1,5 +1,5 @@
-import { TReview } from './Review'
-import { TQuestion } from './Question'
+import { TReview } from './Review';
+import { TQuestion } from './Question';
 
 export class TTrainingProgramm {
     id: string;
@@ -42,26 +42,26 @@ export class TTrainingProgramm {
 
     MainImage: string | null;
 
-    constructor () {
-      this.id = ''
-      this.Created = ''
-      this.DatePublish = ''
-      this.Description = ''
-      this.Name = ''
-      this.ForWhom = ''
-      this.HowLong = ''
-      this.WhatResults = ''
-      this.Archive = ''
-      this.IsArchive = false
-      this.UserId = ''
-      this.CategoryCode = ''
-      this.IsMain = null
-      this.MainSort = null
-      this.Sex = 0
-      this.Age = 0
-      this.Complexity = 0
-      this.Reviews = []
-      this.Questions = []
-      this.MainImage = null
+    constructor() {
+      this.id = '';
+      this.Created = '';
+      this.DatePublish = '';
+      this.Description = '';
+      this.Name = '';
+      this.ForWhom = '';
+      this.HowLong = '';
+      this.WhatResults = '';
+      this.Archive = '';
+      this.IsArchive = false;
+      this.UserId = '';
+      this.CategoryCode = '';
+      this.IsMain = null;
+      this.MainSort = null;
+      this.Sex = 0;
+      this.Age = 0;
+      this.Complexity = 0;
+      this.Reviews = [];
+      this.Questions = [];
+      this.MainImage = null;
     }
 }

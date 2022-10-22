@@ -39,9 +39,9 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, PropSync, Watch } from 'vue-property-decorator'
-import { mixins } from 'vue-class-component'
-import Validation from '@/mixins/Validation'
+import { Vue, Component, Prop, PropSync, Watch } from 'vue-property-decorator';
+import { mixins } from 'vue-class-component';
+import Validation from '@/mixins/Validation';
 
 @Component
 export default class NumberEditor extends mixins(Vue, Validation) {
@@ -51,39 +51,39 @@ export default class NumberEditor extends mixins(Vue, Validation) {
   isEdit = false;
   localNumber = '';
 
-  mounted (): void {
-    this.updateStart(this.numberValue ?? '')
+  mounted(): void {
+    this.updateStart(this.numberValue ?? '');
   }
 
   @Watch('numberValue')
-  updateStart (value:string) {
-    this.localNumber = value || ''
+  updateStart(value:string) {
+    this.localNumber = value || '';
   }
 
   @Watch('localNumber')
-  updateOutput (value:string) {
-    this.numberValue = value
+  updateOutput(value:string) {
+    this.numberValue = value;
   }
 
-  get labelValue (): string {
-    return this.label
+  get labelValue(): string {
+    return this.label;
   }
 
-  onClickClose () {
-    this.closeEdit()
-    this.clear()
+  onClickClose() {
+    this.closeEdit();
+    this.clear();
   }
 
-  openEdit () {
-    this.isEdit = true
+  openEdit() {
+    this.isEdit = true;
   }
 
-  closeEdit () {
-    this.isEdit = false
+  closeEdit() {
+    this.isEdit = false;
   }
 
-  clear () {
-    this.updateStart(this.defaultNumber || '')
+  clear() {
+    this.updateStart(this.defaultNumber || '');
   }
 }
 </script>

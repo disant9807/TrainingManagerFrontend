@@ -21,17 +21,17 @@ export class TUser {
 
     lastPasswordChangeDatetime: string;
 
-    constructor () {
-      this.id = ''
-      this.surname = ''
-      this.firstName = ''
-      this.middleName = ''
-      this.roles = []
-      this.email = ''
-      this.phoneNumber = ''
-      this.createdDatetime = ''
-      this.lastLoginDatetime = ''
-      this.lastUpdateDatetime = ''
-      this.lastPasswordChangeDatetime = ''
+    constructor() {
+      this.id = '';
+      this.surname = '';
+      this.firstName = '';
+      this.middleName = '';
+      this.roles = [];
+      this.email = '';
+      this.phoneNumber = '';
+      this.createdDatetime = '';
+      this.lastLoginDatetime = '';
+      this.lastUpdateDatetime = '';
+      this.lastPasswordChangeDatetime = '';
     }
 }

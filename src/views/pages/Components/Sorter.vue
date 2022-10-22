@@ -12,8 +12,8 @@
 </template>
 
 <script lang="ts">
-import { TOrder } from '@/types/globals'
-import { Vue, Component, Watch, PropSync } from 'vue-property-decorator'
+import { TOrder } from '@/types/globals';
+import { Vue, Component, Watch, PropSync } from 'vue-property-decorator';
 
 @Component
 export default class ComponentName extends Vue {
@@ -21,16 +21,16 @@ export default class ComponentName extends Vue {
 
   isAscending = false;
 
-  get orderLabels (): string {
+  get orderLabels(): string {
     return this.isAscending
       ? 'По возрастанию'
-      : 'По убыванию'
+      : 'По убыванию';
   }
 
   @Watch('isAscending')
-  onChange (newValue: boolean): void {
-    this.localOrder = newValue ? 'Asc' : 'Desc'
-    this.$emit('change')
+  onChange(newValue: boolean): void {
+    this.localOrder = newValue ? 'Asc' : 'Desc';
+    this.$emit('change');
   }
 }
 </script>

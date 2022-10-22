@@ -27,18 +27,18 @@
 </template>
 
 <script lang='ts'>
-import FilterItem from '@/views/pages/Components/FilterItem.vue'
-import { Vue, Component, Prop, PropSync, Ref } from 'vue-property-decorator'
-import DateTimePicker from '@/components/DateTime/DateTimePicker.vue'
-import { EBusEvents } from '@/plugins/eventbus'
-import Global from '@/mixins/GlobalMixin'
-import { mixins } from 'vue-class-component'
+import FilterItem from '@/views/pages/Components/FilterItem.vue';
+import { Vue, Component, Prop, PropSync, Ref } from 'vue-property-decorator';
+import DateTimePicker from '@/components/DateTime/DateTimePicker.vue';
+import { EBusEvents } from '@/plugins/eventbus';
+import Global from '@/mixins/GlobalMixin';
+import { mixins } from 'vue-class-component';
 @Component({
   components: {
-    FilterItem,
-    DateTimePicker
+  FilterItem,
+  DateTimePicker
   }
-})
+  })
 export default class DateTimeFilter extends mixins(Global) {
   @Prop({ type: String, default: '' }) readonly chipText!: string;
   @Prop({ type: String, default: '' }) readonly menuHeaderText!: string;
@@ -52,49 +52,49 @@ export default class DateTimeFilter extends mixins(Global) {
 
   lastPeriod:string[]=[]
 
-  created () {
-    this.$eventbus.$on(this.clearEventName, this.cancel)
+  created() {
+    this.$eventbus.$on(this.clearEventName, this.cancel);
   }
 
-  apply () {
+  apply() {
     if (this.from.validate() && this.to.validate()) {
-      this.$emit('change', [this.lstartDateTime, this.lendDateTime])
+      this.$emit('change', [this.lstartDateTime, this.lendDateTime]);
     } else {
-      this.showError(this.$localize('failed', 'validation'))
+      this.showError(this.$localize('failed', 'validation'));
     }
   }
 
-  cancel () {
-    this.from ? this.from.clear() : this.lstartDateTime = ''
-    this.to ? this.to.clear() : this.lendDateTime = ''
-    this.$emit('change', ['', ''])
+  cancel() {
+    this.from ? this.from.clear() : this.lstartDateTime = '';
+    this.to ? this.to.clear() : this.lendDateTime = '';
+    this.$emit('change', ['', '']);
   }
 
-  get number () {
-    const startSelected = this.lstartDateTime ? 1 : 0
-    const endSelected = this.lendDateTime ? 1 : 0
-    return startSelected + endSelected
+  get number() {
+    const startSelected = this.lstartDateTime ? 1 : 0;
+    const endSelected = this.lendDateTime ? 1 : 0;
+    return startSelected + endSelected;
   }
 
-  setAll () {
-    [this.from.date, this.to.date] = ['', '']
+  setAll() {
+    [this.from.date, this.to.date] = ['', ''];
   }
 
-  setToday () {
-    const currentDate = new Date()
+  setToday() {
+    const currentDate = new Date();
     const currentDateString = this.formatDate(currentDate);
-    [this.from.date, this.to.date] = [currentDateString, currentDateString]
+    [this.from.date, this.to.date] = [currentDateString, currentDateString];
   }
 
-  setMonth () {
-    const currentDate = new Date()
-    const firstDayInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1)
+  setMonth() {
+    const currentDate = new Date();
+    const firstDayInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     const lastDayInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-    [this.from.date, this.to.date] = [this.formatDate(firstDayInMonth), this.formatDate(lastDayInMonth)]
+    [this.from.date, this.to.date] = [this.formatDate(firstDayInMonth), this.formatDate(lastDayInMonth)];
   }
 
-  formatDate (date:Date):string {
-    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`
+  formatDate(date:Date):string {
+    return `${date.getFullYear()}-${date.getMonth() + 1}-${date.getDate()}`;
   }
 }
 </script>

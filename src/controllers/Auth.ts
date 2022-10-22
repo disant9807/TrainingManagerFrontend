@@ -1,8 +1,8 @@
-import Api from '@/api'
-import { stopAccessTokenRefresher } from '@/api/accessTokenRefresher'
-import { recordStorageItem, getStorageItem, removeStorageItem } from '@/utils/storageUtil'
+import { stopAccessTokenRefresher } from '@/api/accessTokenRefresher';
+import { recordStorageItem, getStorageItem, removeStorageItem } from '@/utils/storageUtil';
+import Api from '@/api';
 
-const api = Api.getAuthApi()
+const authApi = Api.getAuthApi();
 
 export type TLoginParams = {
   username: string,
@@ -10,12 +10,12 @@ export type TLoginParams = {
   provider: number
 }
 
-export type TRefreshParams = {
+export type TRefreshparams = {
   'accessToken': string,
   'refreshToken': string,
 }
 
-export type TLogoutParams = {
+export type TLogoutparams = {
   'accessToken': string
 }
 
@@ -41,61 +41,61 @@ export enum AuthTarget {
 }
 
 export const getAuthStorageKey = (target: AuthTarget) => {
-  return 'smev.auth.' + target
-}
+  return 'smev.auth.' + target;
+};
 
 class AuthModel {
-  async login (username: string, password: string): Promise<any> {
+  async login(username: string, password: string): Promise<any> {
     try {
-      const response = (await api.login({ username, password, provider: 1 } as TLoginParams)).data as TLoginResponse
-      this.setStorageTokens(response.accessToken, response.refreshToken)
-      recordStorageItem('username', username)
-      return response
+      const response = (await authApi.login({ username, password, provider: 1 } as TLoginParams)).data as TLoginResponse;
+      this.setStorageTokens(response.accessToken, response.refreshToken);
+      return response;
     } catch (error) {
-      console.error({ error })
-      this.removeStorageTokens()
-      return { error }
+      console.error({ error });
+      this.removeStorageTokens();
+      return { error };
     }
   }
 
-  async refresh () {
+  async refresh() {
     try {
-      const refreshToken = getStorageItem(getAuthStorageKey(AuthTarget.refreshToken))
-      const accessToken = getStorageItem(getAuthStorageKey(AuthTarget.accessToken))
-      const response = (await api.refreshToken(
+      const refreshToken = getStorageItem(getAuthStorageKey(AuthTarget.refreshToken));
+      const accessToken = getStorageItem(getAuthStorageKey(AuthTarget.accessToken));
+
+      const response = (await authApi.refreshToken(
         {
           accessToken,
           refreshToken
-        } as TRefreshParams)).data as TRefreshTokenResponse
-      this.setStorageTokens(response.accessToken, response.refreshToken)
+        } as TRefreshparams)).data as TRefreshTokenResponse;
+      this.setStorageTokens(response.accessToken, response.refreshToken);
     } catch (error) {
-      this.removeStorageTokens()
+      this.removeStorageTokens();
     }
   }
 
-  setStorageTokens (accessToken: string, refreshToken: string) {
-    recordStorageItem(getAuthStorageKey(AuthTarget.accessToken), accessToken)
-    recordStorageItem(getAuthStorageKey(AuthTarget.refreshToken), refreshToken)
+  setStorageTokens(accessToken: string, refreshToken: string) {
+    recordStorageItem(getAuthStorageKey(AuthTarget.accessToken), accessToken);
+    recordStorageItem(getAuthStorageKey(AuthTarget.refreshToken), refreshToken);
   }
 
-  removeStorageTokens () {
-    removeStorageItem(getAuthStorageKey(AuthTarget.accessToken))
-    removeStorageItem(getAuthStorageKey(AuthTarget.refreshToken))
+  removeStorageTokens() {
+    removeStorageItem(getAuthStorageKey(AuthTarget.accessToken));
+    removeStorageItem(getAuthStorageKey(AuthTarget.refreshToken));
   }
 
-  async logout () {
+  async logout() {
     try {
-      const accessToken = getStorageItem(getAuthStorageKey(AuthTarget.accessToken))
-      await api.logout({ accessToken } as TLogoutParams)
-      this.removeStorageTokens()
-      stopAccessTokenRefresher()
-      removeStorageItem('username')
+      const accessToken = getStorageItem(getAuthStorageKey(AuthTarget.accessToken));
+      await authApi.logout({ accessToken } as TLogoutparams);
+      this.removeStorageTokens();
+      stopAccessTokenRefresher();
+      removeStorageItem('username');
     } catch (error) {
-      console.error({ error })
+      console.error({ error });
     }
   }
 }
 
-const AuthController = new AuthModel()
+const AuthController = new AuthModel();
 
-export default AuthController
+export default AuthController;

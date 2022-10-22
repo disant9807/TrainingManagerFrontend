@@ -32,16 +32,16 @@
 </template>
 
 <script lang="ts">
-import FilterItem from '@/components/FilterItem.vue'
-import Global from '@/mixins/GlobalMixin'
-import { TVuetifyOptionsList } from '@/types/globals'
-import { Component, Prop, PropSync } from 'vue-property-decorator'
+import FilterItem from '@/components/FilterItem.vue';
+import Global from '@/mixins/GlobalMixin';
+import { TVuetifyOptionsList } from '@/types/globals';
+import { Component, Prop, PropSync } from 'vue-property-decorator';
 
 @Component({
   components: {
-    FilterItem
+  FilterItem
   }
-})
+  })
 export default class CheckboxListFilter extends Global {
 @Prop({ type: Boolean, required: false, default: false }) readonly isMenuOpen!:boolean;
 @Prop({ type: String, required: false, default: '' }) readonly chipText!:string;

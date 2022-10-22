@@ -1,4 +1,4 @@
-import store from '@/store'
+import store from '@/store';
 
 export interface Messages {
   success?: string;
@@ -30,33 +30,33 @@ class SnackBarModel {
     info: 'Внимание!'
   }
 
-  showInfo (msg = this.defaultMessages.info, timeout = this.defaultTimeout, isHtml = false) {
-    store.commit('setSnackbarStatus', 'info')
-    store.commit('setSnackbarMessage', msg)
-    store.commit('setSnackbarTimeout', timeout)
-    store.commit('setSnackbarHtml', isHtml)
-    store.commit('setSnackbarShow', true)
+  showInfo(msg = this.defaultMessages.info, timeout = this.defaultTimeout, isHtml = false) {
+    store.commit('setSnackbarStatus', 'info');
+    store.commit('setSnackbarMessage', msg);
+    store.commit('setSnackbarTimeout', timeout);
+    store.commit('setSnackbarHtml', isHtml);
+    store.commit('setSnackbarShow', true);
   }
 
-  showSuccess (msg = this.defaultMessages.success, timeout = this.defaultTimeout, isHtml = false) {
-    store.commit('setSnackbarStatus', 'success')
-    store.commit('setSnackbarMessage', msg)
-    store.commit('setSnackbarTimeout', timeout)
-    store.commit('setSnackbarHtml', isHtml)
-    store.commit('setSnackbarShow', true)
+  showSuccess(msg = this.defaultMessages.success, timeout = this.defaultTimeout, isHtml = false) {
+    store.commit('setSnackbarStatus', 'success');
+    store.commit('setSnackbarMessage', msg);
+    store.commit('setSnackbarTimeout', timeout);
+    store.commit('setSnackbarHtml', isHtml);
+    store.commit('setSnackbarShow', true);
   }
 
-  showError (msg = this.defaultMessages.error, timeout = this.defaultTimeout, isHtml = false) {
-    store.commit('setSnackbarStatus', 'error')
-    store.commit('setSnackbarMessage', msg)
-    store.commit('setSnackbarTimeout', timeout)
-    store.commit('setSnackbarHtml', isHtml)
-    store.commit('setSnackbarShow', true)
+  showError(msg = this.defaultMessages.error, timeout = this.defaultTimeout, isHtml = false) {
+    store.commit('setSnackbarStatus', 'error');
+    store.commit('setSnackbarMessage', msg);
+    store.commit('setSnackbarTimeout', timeout);
+    store.commit('setSnackbarHtml', isHtml);
+    store.commit('setSnackbarShow', true);
   }
 }
 
-const SnackBarController = new SnackBarModel()
+const SnackBarController = new SnackBarModel();
 
 export type TSnackbarIcons = typeof SnackBarController.icons[keyof typeof SnackBarController.icons]
 
-export default SnackBarController
+export default SnackBarController;

@@ -1,9 +1,9 @@
 /* eslint-disable import/no-duplicates */
 
-import Vue from 'vue'
-import _Vue from 'vue'
+import Vue from 'vue';
+import _Vue from 'vue';
 
-const $eventbus = new Vue()
+const $eventbus = new Vue();
 
 export enum EBusEvents {
   ACCRED_CLEAR_FILTERS = 'accred_clear_filters',
@@ -12,6 +12,6 @@ export enum EBusEvents {
   CLEAR_FILTERS = 'clear_filters',
 }
 
-export default function eventBusPlugin (Vue: typeof _Vue.prototype): void {
-  Vue.prototype.$eventbus = $eventbus
+export default function eventBusPlugin(Vue: typeof _Vue.prototype): void {
+  Vue.prototype.$eventbus = $eventbus;
 }
