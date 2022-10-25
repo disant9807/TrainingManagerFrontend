@@ -6,7 +6,6 @@
       clipped-left
       color="#005987"
       flat
-      style="z-index: 999999"
     >
       <v-app-bar-title>Менеджер тренировок</v-app-bar-title>
       <v-spacer />
@@ -41,6 +40,7 @@
 
     <v-main>
       <v-container fluid class="px-12 pt-5 pb-12">
+        <Snackbar />
         <slot></slot>
       </v-container>
     </v-main>
@@ -51,9 +51,10 @@
 import { Vue, Component } from 'vue-property-decorator';
 import { Mutation, State } from 'vuex-class';
 import NavigationLinks from './_NavigationLinks.vue';
+import Snackbar from '@/components/snackbar/SnackBar.vue';
 
 @Component({
-  components: { NavigationLinks }
+  components: { NavigationLinks, Snackbar }
   })
 export default class BaseLayout extends Vue {
   @State readonly isDrawerMini!: boolean;
@@ -72,10 +73,6 @@ export default class BaseLayout extends Vue {
 </script>
 
 <style lang="scss">
-html {
-  scroll-behavior: smooth;
-}
-
 .navmenu {
   width: 200px;
   padding-top: 30px;
@@ -119,5 +116,4 @@ footer * {
   font-weight: 400;
   color: var(--v-menuAccent-base);
 }
-
 </style>

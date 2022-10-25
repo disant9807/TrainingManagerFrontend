@@ -1,9 +1,9 @@
 <template>
   <div class="text-center pa-1">
     <v-text-field
-      v-model="kwds"
+      v-model="name"
       name="searchfield"
-      label="Введите любое слово"
+      label="Введите название"
       outlined
       clearable
       class="ma-3 search-field"
@@ -18,7 +18,7 @@
           small
           style="align-self: center"
           class="ml-3"
-          @click="apply('kwds')"
+          @click="apply('name')"
         >
           <v-icon>mdi-magnify</v-icon>
         </v-btn>
@@ -28,97 +28,77 @@
     <fieldset class="fieldset" aria-hidden="true">
       <legend style="width: 86.25px;text-align: -webkit-center;"><span>фильтры</span></legend>
       <div class="filterBlock pa-1 pb-4">
-        <DateTimeFilter
-          ref="dateTime"
-          chip-text="ПЕРИОД"
-          menu-header-text="Выбор периода"
-          :start-date-time.sync="fromDateTime"
-          :end-date-time.sync="toDateTime"
-          :count="filterModel.period.filter(d => d).length"
-          @change="apply('period')"
-        />
-
         <filter-item
-          :menu-model="isSource"
-          :count="+!!filterModel.source"
-          chip-text="ЕПГУ/МЕЖВЕД"
-          menu-header-text="Источник запроса (ЕПГУ/Межвед)"
-          @apply="apply('source')"
-          @cancel="cancel('source')"
-          @clear="clear('source')"
+          :menu-model="isCreatedFrom"
+          :count="+!!filterModel.createdFrom"
+          chip-text="Добавлено от"
+          menu-header-text="Дата добавления"
+          @apply="apply('createdFrom')"
+          @cancel="cancel('createdFrom')"
+          @clear="clear('createdFrom')"
+        >
+          <DateTimePicker
+            :selected-date-time.sync="createdFrom"
+          />
+        </filter-item>
+        <filter-item
+          :menu-model="isCreatedTo"
+          :count="+!!filterModel.createdTo"
+          chip-text="Добавлено до"
+          menu-header-text="Дата добавления"
+          @apply="apply('createdTo')"
+          @cancel="cancel('createdTo')"
+          @clear="clear('createdTo')"
+        >
+          <DateTimePicker
+            :selected-date-time.sync="createdTo"
+          />
+        </filter-item>
+        <filter-item
+          :menu-model="isSelectBased"
+          :count="+!!filterModel.isBased"
+          chip-text="Базовое/Изолирующее"
+          menu-header-text="Категория упражнения"
+          @apply="apply('isBased')"
+          @cancel="cancel('isBased')"
+          @clear="clear('isBased')"
         >
           <v-radio-group
-            v-model="source"
+            v-model="isBased"
             column
           >
             <v-radio
-              label="ЕПГУ"
-              value="Epgu"
+              label="Базовое"
+              :value="true"
             />
             <v-radio
-              label="Межведомственное взаимодействие"
-              value="InterAuthority"
+              label="Изолирующее"
+              :value="false"
+            />
+            <v-radio
+              label="Не важно"
+              :value="undefined"
             />
           </v-radio-group>
         </filter-item>
 
         <filter-item
-          :menu-model="isTypeCodes"
-          :count="typeCodesCount"
-          chip-text="ВИД ЗАПРОСА"
-          menu-header-text="Вид запроса"
-          @apply="apply('typeCodes')"
-          @cancel="cancel('typeCodes')"
-          @clear="clear('typeCodes')"
-        >
-          <div>
-            <h2 class="title mb-2">
-              Вид запроса
-            </h2>
-            <v-list dense height="350px" class="list">
-              <v-list-item-group
-                v-model="typeCodes"
-                multiple
-                active-class=""
-              >
-                <v-list-item
-                  v-for="(item, i) in Object.entries(requestTypes)"
-                  :key="`list-item-${i}`"
-                  :value="item[0]"
-                >
-                  <template v-slot:default="{ active }">
-                    <v-list-item-action>
-                      <v-checkbox
-                        :key="`checkbox_${i}`"
-                        color="primary"
-                        :input-value="active"
-                      />
-                    </v-list-item-action>
-                    <v-list-item-title class="secondary--text" v-text="item[1]" />
-                  </template>
-                </v-list-item>
-              </v-list-item-group>
-            </v-list>
-          </div>
-        </filter-item>
-
-        <filter-item
-          :menu-model="isStatus"
-          :count="statusesCount"
-          chip-text="СТАТУС"
-          menu-header-text="Статус"
-          @apply="apply('statuses')"
-          @cancel="cancel('statuses')"
-          @clear="clear('statuses')"
+          :menu-model="isHardSkills"
+          :count="hardSkillsCount"
+          chip-text="Сложность"
+          menu-header-text="сложность"
+          @apply="apply('hardSkills')"
+          @cancel="cancel('hardSkills')"
+          @clear="clear('hardSkills')"
         >
           <v-list dense height="350px" class="list">
             <v-list-item-group
-              v-model="statuses"
+              v-model="hardSkills"
               multiple
               active-class=""
             >
               <v-list-item
-                v-for="(item, i) in Object.entries(requestStatuses)"
+                v-for="(item, i) in Object.entries(exerciseHardSkills)"
                 :key="`list-item-${i}`"
                 :value="item[0]"
               >
@@ -154,19 +134,19 @@
 import { Component, Prop, Ref } from 'vue-property-decorator';
 import { mixins } from 'vue-class-component';
 import Helper from '@/mixins/Helper';
-import DateTimeFilter from '@/components/filters/DateTimeFilter.vue';
+import DateTimePicker from '@/components/DateTime/DateTimePicker.vue';
 import FilterItem from './FilterItem.vue';
 import { Mutation, State } from 'vuex-class';
 import { TExerciseFilterViewModel } from '@/controllers/ExerciseController';
 
-type TFilterType = 'period' | 'typeCodes' | 'source' | 'applicant' | 'reqNum' | 'statuses' | 'kwds';
+type TFilterType = 'name' | 'createdFrom' | 'createdTo' | 'isBased' | 'hardSkills' | 'categoryOfBodies';
 
 export type TIncomingRouteName = 'New' | 'Handled' | 'Saved';
 
 @Component({
   components: {
   FilterItem,
-  DateTimeFilter
+  DateTimePicker
   }
   })
 export default class Filters extends mixins(Helper) {
@@ -174,20 +154,18 @@ export default class Filters extends mixins(Helper) {
   @Mutation('setFilters') setFilters!: (options: any) => void;
   @State readonly loading!: any;
   @Mutation('setLoading') setLoading!: (options: any) => void;
-  @Ref() readonly dateTimeRef!: DateTimeFilter;
-  routeName = 'New';
 
   get filterModel(): TExerciseFilterViewModel {
-    return this.filters.incoming[this.routeName];
+    return this.filters.exercise;
   }
 
   set filterModel(value: TExerciseFilterViewModel) {
-    this.setFilters({ name: 'incoming', status: this.routeName, value });
+    this.setFilters({ name: 'exercise', value });
     this.$emit('change');
   }
 
   get loadingModel() {
-    return this.loading.incoming;
+    return this.loading.exercise;
   }
 
   get isListLoading() {
@@ -195,103 +173,58 @@ export default class Filters extends mixins(Helper) {
   }
 
   set isListLoading(value: boolean) {
-    this.setLoading({ category: 'incoming', name: 'list', value });
+    this.setLoading({ category: 'exercise', name: 'list', value });
   }
 
   created(): void {
-    [this.fromDateTime, this.toDateTime] = this.filterModel.period || [];
-    this.source = this.filterModel.source || '';
-    this.typeCodes = this.filterModel.typeCodes || [];
-    this.kwds = this.filterModel.kwds || '';
-    this.applicant = this.filterModel.applicant || '';
-    this.reqNum = this.filterModel.reqNum || '';
-    this.statuses = this.filterModel.statuses || [];
+    this.name = this.filterModel.name || '';
+    this.createdFrom = this.filterModel.createdFrom || '';
+    this.createdTo = this.filterModel.createdTo || '';
+    this.isBased = this.filterModel.isBased || undefined;
+    this.hardSkills = this.filterModel.hardSkills || [];
+    this.categoryOfBodies = this.filterModel.categoryOfBodies || [];
   }
 
-  fromDateTime = '';
-  toDateTime = '';
+  name = '';
 
-  isPeriod = false;
-  period: string[] = [];
-  datePickerTabs = '';
+  isCreatedFrom = false;
+  createdFrom = '';
 
-  isTypeCodes = false;
-  typeCodes = [];
+  isCreatedTo = false;
+  createdTo = '';
 
-  kwds = '';
+  isSelectBased = false;
+  isBased: boolean | undefined = undefined;
 
-  isSource = false;
-  source = '';
+  isHardSkills = false;
+  hardSkills: any[] = [];
+  categoryOfBodies: any[] = [];
 
-  isApplicant = false;
-  applicant = '';
-
-  isReqNum = false;
-  reqNum = '';
-
-  isStatus = false;
-  statuses: string[] = [];
-
-  get requestTypes(): any {
-    if (this.source === 'Epgu') return this.epguRequests;
-    else if (this.source === 'InterAuthority') return this.iaRequests;
-    else return { ...this.epguRequests, ...this.iaRequests };
-  }
-
-  epguRequests = {
-    EpguAppToGetLicenseInitial: 'Предоставление лицензии',
-    EpguAppToGetLicenseAnnulment: 'Прекращение лицензии',
-    EpguAppToChangeLicense: 'Внесение изменений в реестр лицензий',
-    EpguLicensingInfo: 'Выдача выписки из реестра'
+  exerciseHardSkills = {
+    easy: 'Легко',
+    normal: 'Нормально',
+    hard: 'Сложно',
   };
 
-  iaRequests = {
-    LicenseCoordination: 'Согласование проекта НДС',
-    EpguLicensingInfo: 'Предоставление сведений из реестра лицензий'
-  };
-
-  requestStatuses = {
-    GOT_FROM_DECLARANT: 'Принято от заявителя',
-    SENT_TO_SEDD: 'Отправлено в ведомство',
-    ERROR_PROCESSING_RESULT: 'Ошибка обработки результата',
-    COMPLETED: 'Услуга оказана',
-    REJECTED: 'Отказано в предоставлении услуги',
-    ACCEPTED_BY_USER_IN_SEDD: 'Заявление принято к рассмотрению',
-    INTERMIDIATE_RESULT: 'Промежуточные результаты от ведомства',
-    CANCEL_IN_PROGRESS: 'Заявление отменяется',
-    CANCELED: 'Заявление отменено',
-    UNPROVED_CANCEL: 'Не удалось отменить заявление',
-    WAITING_ADDITIONAL_INFO: 'Ожидание дополнительной информации от пользователя',
-    REQUEST_NEED_CORRECTION: 'Требуется корректировка заявления'
-  };
-
-  get typeCodesCount(): number {
-    return this.filterModel?.typeCodes?.length ?? 0;
-  }
-
-  get statusesCount() {
-    return this.filterModel.statuses?.length ?? 0;
+  get hardSkillsCount() {
+    return this.filterModel.hardSkills?.length ?? 0;
   }
 
   clearFilters(): void {
-    this.typeCodes = [];
-    this.period = [];
-    this.kwds = '';
-    this.source = '';
-    this.applicant = '';
-    this.reqNum = '';
-    this.statuses = [];
-    this.fromDateTime = this.toDateTime = '';
+    this.name = '';
+    this.createdFrom = '';
+    this.createdTo = '';
+    this.isBased = undefined;
+    this.hardSkills = [];
+    this.categoryOfBodies = [];
 
     this.filterModel = {
-      state: '',
-      typeCodes: '',
-      period: [],
-      kwds: '',
-      source: '',
-      applicant: '',
-      reqNum: '',
-      statuses: []
+      name: '',
+      createdFrom: '',
+      createdTo: '',
+      isBased: undefined,
+      hardSkills: [],
+      categoryOfBodies: []
     };
 
     this.$emit('change');
@@ -300,32 +233,28 @@ export default class Filters extends mixins(Helper) {
   apply(filter: TFilterType): void {
     this.isListLoading = true;
     switch (filter) {
-      case 'typeCodes':
-        this.filterModel = { ...this.filterModel };
+      case 'name':
+        this.filterModel = { ...this.filterModel, name: this.name };
         break;
 
-      case 'period':
-        this.filterModel = { ...this.filterModel, period: [this.fromDateTime, this.toDateTime] };
+      case 'createdFrom':
+        this.filterModel = { ...this.filterModel, createdFrom: this.createdFrom };
         break;
 
-      case 'kwds':
-        this.filterModel = { ...this.filterModel, kwds: this.kwds };
+      case 'createdTo':
+        this.filterModel = { ...this.filterModel, createdTo: this.createdTo };
         break;
 
-      case 'source':
-        this.filterModel = { ...this.filterModel };
+      case 'isBased':
+        this.filterModel = { ...this.filterModel, isBased: this.isBased };
         break;
 
-      case 'applicant':
-        this.filterModel = { ...this.filterModel, applicant: this.applicant };
+      case 'hardSkills':
+        this.filterModel = { ...this.filterModel, hardSkills: this.hardSkills };
         break;
 
-      case 'reqNum':
-        this.filterModel = { ...this.filterModel, reqNum: this.reqNum };
-        break;
-
-      case 'statuses':
-        this.filterModel = { ...this.filterModel, statuses: this.statuses };
+      case 'categoryOfBodies':
+        this.filterModel = { ...this.filterModel, categoryOfBodies: this.categoryOfBodies };
         break;
 
       default:
@@ -338,32 +267,28 @@ export default class Filters extends mixins(Helper) {
   cancel(filter: TFilterType): void {
     this.isListLoading = true;
     switch (filter) {
-      case 'typeCodes':
-        this.typeCodes = this.filterModel.typeCodes || [];
+      case 'name':
+        this.name = this.filterModel.name || '';
         break;
 
-      case 'period':
-        [this.fromDateTime, this.toDateTime] = this.filterModel.period || [];
+      case 'createdFrom':
+        this.createdFrom = this.filterModel.createdFrom || '';
         break;
 
-      case 'kwds':
-        this.kwds = this.filterModel.kwds || '';
+      case 'createdTo':
+        this.createdTo = this.filterModel.createdTo || '';
         break;
 
-      case 'source':
-        this.source = this.filterModel.source || '';
+      case 'isBased':
+        this.isBased = this.filterModel.isBased || undefined;
         break;
 
-      case 'applicant':
-        this.applicant = this.filterModel.applicant || '';
+      case 'hardSkills':
+        this.hardSkills = this.filterModel.hardSkills || [];
         break;
 
-      case 'reqNum':
-        this.reqNum = this.filterModel.reqNum || '';
-        break;
-
-      case 'statuses':
-        this.statuses = this.filterModel.statuses || [];
+      case 'categoryOfBodies':
+        this.categoryOfBodies = this.filterModel.categoryOfBodies || [];
         break;
 
       default:
@@ -374,39 +299,34 @@ export default class Filters extends mixins(Helper) {
   clear(filter: TFilterType): void {
     this.isListLoading = true;
     switch (filter) {
-      case 'typeCodes':
-        this.typeCodes = [];
-        this.filterModel = { ...this.filterModel };
+      case 'name':
+        this.name = '';
+        this.filterModel = { ...this.filterModel, name: '' };
         break;
 
-      case 'period':
-        [this.fromDateTime, this.toDateTime] = ['', ''];
-        this.filterModel = { ...this.filterModel, period: [] };
+      case 'createdFrom':
+        this.createdFrom = '';
+        this.filterModel = { ...this.filterModel, createdFrom: '' };
         break;
 
-      case 'kwds':
-        this.kwds = '';
-        this.filterModel = { ...this.filterModel, kwds: '' };
+      case 'createdTo':
+        this.createdTo = '';
+        this.filterModel = { ...this.filterModel, createdTo: '' };
         break;
 
-      case 'source':
-        this.source = '';
-        this.filterModel = { ...this.filterModel, source: '' };
+      case 'isBased':
+        this.isBased = undefined;
+        this.filterModel = { ...this.filterModel, isBased: undefined };
         break;
 
-      case 'applicant':
-        this.applicant = '';
-        this.filterModel = { ...this.filterModel, applicant: '' };
+      case 'hardSkills':
+        this.hardSkills = [];
+        this.filterModel = { ...this.filterModel, hardSkills: [] };
         break;
 
-      case 'reqNum':
-        this.reqNum = '';
-        this.filterModel = { ...this.filterModel, reqNum: '' };
-        break;
-
-      case 'statuses':
-        this.statuses = [];
-        this.filterModel = { ...this.filterModel, statuses: [] };
+      case 'categoryOfBodies':
+        this.categoryOfBodies = [];
+        this.filterModel = { ...this.filterModel, categoryOfBodies: [] };
         break;
 
       default:
@@ -418,7 +338,7 @@ export default class Filters extends mixins(Helper) {
 
   onKeydown(e: KeyboardEvent): void {
     if (e.key === 'Enter') {
-      this.apply('kwds');
+      this.apply('name');
     }
   }
 }

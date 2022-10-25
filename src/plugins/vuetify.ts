@@ -1,8 +1,7 @@
 import Vue from 'vue';
 import Vuetify from 'vuetify';
 import ru from 'vuetify/src/locale/ru';
-import 'vuetify/dist/vuetify.min.css';
-// import colors from 'vuetify/lib/util/color.js';
+import colors from 'vuetify/lib/util/colors';
 
 Vue.use(Vuetify);
 
@@ -15,7 +14,6 @@ export default new Vuetify({
     current: 'ru'
   },
   theme: {
-    dark: false,
     options: { customProperties: true },
     themes: {
       light: {
@@ -27,6 +25,11 @@ export default new Vuetify({
         // darkbluelinks: '#408FBA',
         menuAccent: '#b9cddc',
         background: '#dbecf3'
+      },
+      dark: {
+        primary: colors.indigo.base,
+        secondary: colors.indigo.accent1,
+        accent: colors.indigo.lighten4
       }
     }
   }

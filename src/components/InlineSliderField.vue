@@ -28,9 +28,9 @@ export default class InlineSliderField extends Vue {
   @Prop({ type: Array, required: false, default: () => [] }) rules!:TRuleFunction[];
   @Prop({ type: Boolean, required: false, default: false }) readonly!:TRuleFunction[];
   @Prop({ type: Boolean, required: false, default: false }) disabled!:TRuleFunction[];
-  @Prop({ type: Number, required: false, default: 0 }) max!:number;
-  @Prop({ type: Number, required: false, default: 0 }) min!:number;
-  @Prop({ type: Number, required: false, default: 0 }) step!:number;
+  @Prop({ type: [Number, String], required: false, default: 0 }) max!:number;
+  @Prop({ type: [Number, String], required: false, default: 0 }) min!:number;
+  @Prop({ type: [Number, String], required: false, default: 0 }) step!:number;
   @PropSync('value', { required: false, default: null }) localValue!:any;
 }
 </script>

@@ -1,7 +1,7 @@
 import { RouteConfig } from 'vue-router';
 import mainPage from '@/views/pages/main/mainPage.vue';
 import Exercise from '@/views/pages/Exercise/Exercise.vue';
-import ExerciseAdd from '@/views/pages/Exercise/ExerciseAdd.vue';
+import ExerciseAddEdit from '@/views/pages/Exercise/ExerciseAddEdit.vue';
 
 const routes: Array<RouteConfig> = [
   {
@@ -13,13 +13,20 @@ const routes: Array<RouteConfig> = [
     name: 'Exercise',
     path: '/exercise',
     component: Exercise,
-    meta: { title: 'Архив' }
+    meta: { title: 'Упражнения' }
   },
   {
     name: 'ExerciseAdd',
     path: '/exercise/add',
-    component: ExerciseAdd,
-    meta: { title: 'Архив' }
+    component: ExerciseAddEdit,
+    meta: { title: 'Добавление упражнения' }
+  },
+  {
+    name: 'ExerciseEdit',
+    path: '/exercise/:id/edit',
+    component: ExerciseAddEdit,
+    meta: { title: 'Редактирование упражнения' },
+    props: true
   }
 ];
 

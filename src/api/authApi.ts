@@ -1,6 +1,6 @@
 import { Api, TResult } from '@/api/baseApi';
 
-const baseUrl = process.env.VUE_APP_API_GATEWAY;
+const baseUrl = process.env.VUE_APP_API;
 const loginUrl = 'auth/login';
 const logoutUrl = 'auth/logout';
 const refreshUrl = 'auth/refresh-token';

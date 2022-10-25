@@ -1,5 +1,6 @@
 
 import { TUser, Group } from '@/controllers/models/User';
+import { TSnackBar } from '@/components/snackbar/SnackBar';
 export default class State {
   user: TUser = {
     id: '',
@@ -23,60 +24,28 @@ export default class State {
   isDrawerMini = true;
 
   filters: Record<string, any> = {
-    incoming: {
-      New: {
-        state: 'New',
-        typeCodes: [],
-        period: [],
-        kwds: [],
-        source: '',
-        applicant: '',
-        reqNum: '',
-        statuses: []
-      },
-      Handled: {
-        state: 'Handled',
-        typeCodes: [],
-        period: [],
-        kwds: [],
-        source: '',
-        applicant: '',
-        reqNum: '',
-        statuses: []
-      },
-      Saved: {
-        state: 'Saved',
-        typeCodes: [],
-        period: [],
-        kwds: [],
-        source: '',
-        applicant: '',
-        reqNum: '',
-        statuses: []
-      }
+    exercise: {
+      categoryOfBodies: [],
+      name: '',
+      createdFrom: '',
+      createdTo: '',
+      isBased: '',
+      hardSkills: []
     }
   }
 
   loading = {
-    incoming: {
+    exercise: {
       list: true,
-      selectedRequest: true
-    },
-    outgoing: {
-      list: true,
-      selectedRequest: true
-    },
-    fgisdo: {
-      list: true,
-      selectedRequest: true
-    },
-    gisgmp: {
-      list: true,
-      selectedRequest: true
-    },
-    settings: {
-      list: true,
-      selectedRequest: true
+      selectedExercise: true
     }
   }
+
+  snackBar: TSnackBar = {
+    show: false,
+    status: 'info',
+    message: '',
+    isHtml: false,
+    timeout: -1,
+  };
 }
