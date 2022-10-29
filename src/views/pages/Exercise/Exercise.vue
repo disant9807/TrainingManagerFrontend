@@ -127,9 +127,9 @@ import Helper from '@/mixins/Helper';
 import Global from '@/mixins/GlobalMixin';
 import ExerciseController, { TExercise, HardSkill, TExerciseFilterViewModel } from '@/controllers/ExerciseController';
 
-import Filters from '../Components/Filters.vue';
+import Filters from './Components/Filters.vue';
 import Sorter from '../Components/Sorter.vue';
-import ExerciseInfo from '../Components/ExerciseInfo.vue';
+import ExerciseInfo from './Components/ExerciseInfo.vue';
 import ExerciseDelete from './ExerciseDelete.vue';
 
 import { Mutation, State } from 'vuex-class';

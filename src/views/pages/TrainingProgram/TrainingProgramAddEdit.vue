@@ -3,10 +3,10 @@
     <v-card>
       <v-card class="pb-5">
         <v-card-title v-if="!isEdit" class="darkblue white--text">
-          Добавление упражнения
+          Добавление тренировочной программы
         </v-card-title>
         <v-card-title v-else class="darkblue white--text">
-          Редактирование упражнения
+          Редактирование тренировочной прграммы
         </v-card-title>
         <v-card-text>
           <v-container>
@@ -22,28 +22,30 @@
                     :rules="[rules.required]"
                   />
                   <InlineTextField
-                    label="Краткое наименование*"
+                    label="Краткое наименование"
                     :value.sync="view.shortName"
                     :rules="[rules.required]"
                   />
-                  <inline-radio-buttons-field
-                    label="Базовое упражнение?"
-                    :objects="yesNo"
-                    :selected.sync="view.isBased"
+                  <InlineTextField
+                    label="Описание"
+                    :value.sync="view.shortName"
+                    :rules="[rules.required]"
                   />
-                  <inline-slider-field
-                    label="Сложность"
-                    min="10"
-                    max="30"
-                    step="10"
-                    :hint="hardSkillsHint"
-                    :selected.sync="hardSkills"
+                  <InlineTextField
+                    label="Описание"
+                    :value.sync="view.shortName"
+                    :rules="[rules.required]"
                   />
                 </v-col>
                 <v-col>
                   <InlineTextField
                     label="Описание"
                     :value.sync="view.description"
+                  />
+                </v-col>
+                <v-col>
+                  <TrainingProgramDayAddEdit
+                    :TrainingProgramDays="view.days"
                   />
                 </v-col>
               </v-row>
@@ -84,9 +86,11 @@ import InlineAutocompleteField from '@/components/InlineAutocompleteField.vue';
 import InlineRadioButtonsField from '@/components/InlineRadioButtonsField.vue';
 import InlineSliderField from '@/components/InlineSliderField.vue';
 import Global from '@/mixins/GlobalMixin';
-import ExerciseController, { TExercise, HardSkill } from '@/controllers/ExerciseController';
+import TrainingProgramController, { TTrainingProgram, TTrainingProgramDay } from '@/controllers/TrainingProgramController';
+import { TExercise, HardSkill } from '@/controllers/ExerciseController';
 import { Mutation, State } from 'vuex-class';
 import Loader from '@/components/Loader.vue';
+import TrainingProgramDayAddEdit from './Components/TrainingProgramDayAddEdit.vue';
 
 @Component({
   components: {
@@ -95,22 +99,21 @@ import Loader from '@/components/Loader.vue';
   InlineCheckField,
   InlineRadioButtonsField,
   InlineSliderField,
-  Loader
+  Loader,
+  TrainingProgramDayAddEdit
   }
   })
-export default class ExerciseAddEdit extends Global {
+export default class TrainingProgramAddEdit extends Global {
   @Ref('form') readonly form!: any;
 
   isEdit = false;
   editId: string | null = null;
-  view: TExercise = new TExercise();
+  view: TTrainingProgram = new TTrainingProgram();
 
-  hardSkills = 10;
-  hardSkillsHint = 'Легко';
   isLoading = false;
 
   mounted() {
-    if (this.$route.name === 'ExerciseEdit' && this.$route.params) {
+    if (this.$route.name === 'TrainingProgramEdit' && this.$route.params) {
       this.isEdit = true;
       this.editId = this.$route.params?.id;
       this.InitViewEdit();
@@ -121,49 +124,15 @@ export default class ExerciseAddEdit extends Global {
     try {
       this.isLoading = true;
       if (this.editId) {
-        const exercise = await ExerciseController.GetExerciseById(this.editId);
-        this.view = exercise;
-        this.initHardSkills();
+        const trainingProgram = await TrainingProgramController.GetTrainingProgramById(this.editId);
+        this.view = trainingProgram;
       }
-      else throw new Error('Ошибка, не удалось загрузить упражнение');
+      else throw new Error('Ошибка, не удалось загрузить тренировочную программу');
     } catch (error) {
       if (error instanceof Error) this.showError(error.message);
     } finally {
       this.isLoading = false;
     }
-  }
-
-  initHardSkills() {
-    if (this.view.hardSkill === HardSkill.easy) {
-      this.hardSkills = 10;
-    }
-    else if (this.view.hardSkill === HardSkill.normal) {
-      this.hardSkills = 20;
-    }
-    else if (this.view.hardSkill === HardSkill.hard) {
-      this.hardSkills = 30;
-    }
-  }
-
-  @Watch('hardSkills')
-  selectHardSkills() {
-    if (this.hardSkills === 10) {
-      this.hardSkillsHint = 'Легко';
-      this.view.hardSkill = HardSkill.easy;
-    } else if (this.hardSkills === 20) {
-      this.hardSkillsHint = 'Нормально';
-      this.view.hardSkill = HardSkill.normal;
-    } else if (this.hardSkills === 30) {
-      this.hardSkillsHint = 'Сложно';
-      this.view.hardSkill = HardSkill.hard;
-    }
-  }
-
-  get yesNo() {
-    return [
-      { value: true, text: 'Базовое' },
-      { value: false, text: 'Изолирующее' }
-    ];
   }
 
   async save() {
@@ -175,13 +144,13 @@ export default class ExerciseAddEdit extends Global {
     try {
       this.isLoading = true;
       if (!this.isEdit) {
-        const exrciseId = await ExerciseController.CreateExercise(this.view);
-        this.showSuccess(`Упражнение ${this.view.name} успешно добавлено с идентификатором ${exrciseId}`);
+        const exrciseId = await TrainingProgramController.CreateTrainingProgram(this.view);
+        this.showSuccess(`Тренировочная программа ${this.view.name} успешно добавлена с идентификатором ${exrciseId}`);
       } else if (this.isEdit && this.editId) {
-        const exrciseId = await ExerciseController.UpdateExercise(this.editId, this.view);
-        this.showSuccess(`Упражнение ${this.view.name} с идентификатором ${exrciseId} успешно обновлено!`);
+        const exrciseId = await TrainingProgramController.UpdateTrainingProgram(this.editId, this.view);
+        this.showSuccess(`Тренировочная программа ${this.view.name} с идентификатором ${exrciseId} успешно обновлена!`);
       }
-      this.goToExercise();
+      this.goToTrainingProgram();
     } catch (err) {
       this.showError(`Ошибка. Не удалось добавить/обновить упражнение ${this.view.name}`);
     } finally {
@@ -189,12 +158,12 @@ export default class ExerciseAddEdit extends Global {
     }
   }
 
-  private goToExercise() {
-    this.$router.push({ name: 'Exercise' });
+  private goToTrainingProgram() {
+    this.$router.push({ name: 'TrainingProgram' });
   }
 
   cancel() {
-    this.goToExercise();
+    this.goToTrainingProgram();
   }
 }
 
