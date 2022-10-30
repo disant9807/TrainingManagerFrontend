@@ -137,7 +137,7 @@ import Helper from '@/mixins/Helper';
 import DateTimePicker from '@/components/DateTime/DateTimePicker.vue';
 import FilterItem from '../../../../components/FilterItem.vue';
 import { Mutation, State } from 'vuex-class';
-import { TExerciseFilterViewModel } from '@/controllers/ExerciseController';
+import { TTrainingProgramFilterViewModel } from '@/controllers/TrainingProgramController';
 
 type TFilterType = 'name' | 'createdFrom' | 'createdTo' | 'isBased' | 'hardSkills' | 'categoryOfBodies';
 
@@ -155,12 +155,12 @@ export default class Filters extends mixins(Helper) {
   @State readonly loading!: any;
   @Mutation('setLoading') setLoading!: (options: any) => void;
 
-  get filterModel(): TExerciseFilterViewModel {
+  get filterModel(): TTrainingProgramFilterViewModel {
     return this.filters.exercise;
   }
 
-  set filterModel(value: TExerciseFilterViewModel) {
-    this.setFilters({ name: 'exercise', value });
+  set filterModel(value: TTrainingProgramFilterViewModel) {
+    this.setFilters({ name: 'trainingProgram', value });
     this.$emit('change');
   }
 
@@ -173,7 +173,7 @@ export default class Filters extends mixins(Helper) {
   }
 
   set isListLoading(value: boolean) {
-    this.setLoading({ category: 'exercise', name: 'list', value });
+    this.setLoading({ category: 'trainingProgram', name: 'list', value });
   }
 
   created(): void {

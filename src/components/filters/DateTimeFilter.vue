@@ -27,7 +27,7 @@
 </template>
 
 <script lang='ts'>
-import FilterItem from '@/views/pages/Exercise/Components/FilterItem.vue';
+import FilterItem from '@/components/FilterItem.vue';
 import { Vue, Component, Prop, PropSync, Ref } from 'vue-property-decorator';
 import DateTimePicker from '@/components/DateTime/DateTimePicker.vue';
 import { EBusEvents } from '@/plugins/eventbus';
