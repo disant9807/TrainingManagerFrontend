@@ -1,7 +1,7 @@
 import _Vue from 'vue';
 import { Api, TResult } from '@/api/baseApi';
 
-const baseUrl = process.env.VUE_APP_API_GATEWAY;
+const baseUrl = process.env.VUE_APP_API;
 const trainingUrl = 'trainingProgram';
 
 let _instance: TrainingProgramApi;

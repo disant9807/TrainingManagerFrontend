@@ -2,7 +2,9 @@
   <v-dialog
     v-model="dialog"
     scrollable
-    width="900"
+    fullscreen
+    hide-overlay
+    transition="dialog-bottom-transition"
   >
     <v-card class="pb-3">
       <v-card-title class="darkblue pl-3 py-0">
@@ -13,53 +15,66 @@
       </v-card-title>
       <v-card-text style="height: 300px;">
         <v-container>
-          <v-form
-            ref="form"
-            lazy-validation
-          >
-            <InlineTextField
-              label="Название тренировочного дня*"
-              :value.sync="view.name"
-              :rules="[rules.required]"
-            />
-            <InlineTextField
-              label="Описание тренировочного дня"
-              :value.sync="view.description"
-            />
-            <InlineSliderField
-              label="Отдых в днях"
-              min="0"
-              max="30"
-              step="1"
-              hint="После тренировочного дня"
-              :selected.sync="view.dayRelax"
-            />
-            <InlineSliderField
-              label="Номер тренировочного дня*"
-              min="0"
-              step="1"
-              hint="Порядок тренировки по номеру"
-              :max="maxNumber"
-              :selected.sync="view.numberOfTrainingProgram"
-            />
-            <InlineTextField
-              label="Описание тренировочного дня"
-              :value.sync="view.description"
-            />
-          </v-form>
-          <filters
-            @change="filtersChange"
-          />
-          <Sorter
-            :order.sync="order"
-            @change="filtersChange"
-          />
-          <select-exercises
-            class="py-5"
-            :loading="loading"
-            exercises
-            :selected.sync="localSelectedExercises"
-          />
+          <v-row>
+            <v-col>
+              <v-form
+                ref="form"
+                lazy-validation
+              >
+                <InlineTextField
+                  label="Название тренировочного дня*"
+                  :value.sync="view.name"
+                  :rules="[rules.required]"
+                />
+                <InlineTextField
+                  label="Описание тренировочного дня"
+                  :value.sync="view.description"
+                />
+                <InlineSliderField
+                  label="Отдых в днях"
+                  min="0"
+                  max="30"
+                  step="1"
+                  hint="После тренировочного дня"
+                  :selected.sync="view.dayRelax"
+                />
+                <InlineSliderField
+                  label="Номер тренировочного дня*"
+                  min="0"
+                  step="1"
+                  hint="Порядок тренировки по номеру"
+                  :max="maxNumber"
+                  :selected.sync="view.numberOfTrainingProgram"
+                />
+                <InlineTextField
+                  label="Описание тренировочного дня"
+                  :value.sync="view.description"
+                />
+              </v-form>
+            </v-col>
+            <v-col>
+              <v-sheet
+                class="mt-3 pt-3"
+                color="white"
+                elevation="1"
+                rounded
+              >
+                <filters
+                  @change="filtersChange"
+                />
+                <Sorter
+                  :order.sync="order"
+                  @change="filtersChange"
+                />
+                <select-exercises
+                  class="py-5"
+                  :loading="loading"
+                  :exercises="exercises"
+                  :selected.sync="localSelectedExercises"
+                />
+              </v-sheet>
+            </v-col>
+          </v-row>
         </v-container>
       </v-card-text>
       <v-card-actions class="ml-3">

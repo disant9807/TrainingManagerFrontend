@@ -8,6 +8,7 @@
       <v-subheader>Выбор упражнений</v-subheader>
 
       <v-list-item-group
+        v-if="exercises"
         v-model="selectedItems"
         multiple
       >
@@ -28,6 +29,12 @@
           </template>
         </v-list-item>
       </v-list-item-group>
+      <v-list-item v-else>
+        <v-list-item-content>
+          <v-list-item-title>Список упражнений пусть пуст</v-list-item-title>
+          <v-list-item-subtitle>Нажмите кнопку "Добавить" для добавления упражнения в справочник упражнений</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
     <Loader :value="loading" />
   </div>
@@ -54,13 +61,13 @@ export type userOrg = {
 })
 export default class SelectExercises extends mixins(Global) {
   @Prop(Boolean) loading!: boolean;
-  @Prop(Array) exercises!: TExercise[];
+  @Prop(Array) exercises!: TExercise[] | null;
   @PropSync('selected') selectedExercise!: TExercise[] | null;
 
   get selectedItems() {
     let selecteds: number[] = [];
 
-    this.exercises.forEach((e, inx) => {
+    this.exercises?.forEach((e, inx) => {
       if (this.selectedExercise?.some(z => z.id === e.id)) {
         selecteds.push(inx);
       }
@@ -70,7 +77,10 @@ export default class SelectExercises extends mixins(Global) {
   }
 
   set selectedItems(values: number[]) {
-    this.selectedExercise = values?.map(e => this.exercises[e]) ?? [];
+    if (this.exercises !== null) {
+      this.selectedExercise = values
+        ?.map(e => (this.exercises as TExercise[])[e]) ?? [];
+    }
   }
 }
 </script>

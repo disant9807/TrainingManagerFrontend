@@ -28,27 +28,26 @@
                   />
                   <InlineTextField
                     label="Описание"
-                    :value.sync="view.shortName"
-                    :rules="[rules.required]"
-                  />
-                  <InlineTextField
-                    label="Описание"
-                    :value.sync="view.shortName"
-                    :rules="[rules.required]"
-                  />
-                </v-col>
-                <v-col>
-                  <InlineTextField
-                    label="Описание"
                     :value.sync="view.description"
                   />
                 </v-col>
                 <v-col>
-                  <TrainingProgramDayAddEdit
-                    :TrainingProgramDays="view.days"
+                  <InlineTextField
+                    label="В разработке"
+                    :value.sync="view.description"
                   />
                 </v-col>
               </v-row>
+              <v-sheet
+                class="mt-3 py-3"
+                color="white"
+                elevation="1"
+                rounded
+              >
+                <TrainingProgramDayAddEdit
+                  :TrainingProgramDays.sync="view.days"
+                />
+              </v-sheet>
             </v-form>
           </v-container>
         </v-card-text>
@@ -141,18 +140,23 @@ export default class TrainingProgramAddEdit extends Global {
       return;
     }
 
+    if (!this.view?.days || (this.view?.days && this.view?.days?.length < 1)) {
+      this.showInfo('Необходимо добавить хотя-бы 1 тренировочный день');
+      return;
+    }
+
     try {
       this.isLoading = true;
       if (!this.isEdit) {
-        const exrciseId = await TrainingProgramController.CreateTrainingProgram(this.view);
-        this.showSuccess(`Тренировочная программа ${this.view.name} успешно добавлена с идентификатором ${exrciseId}`);
+        const trainingProgram = await TrainingProgramController.CreateTrainingProgram(this.view);
+        this.showSuccess(`Тренировочная программа ${this.view.name} успешно добавлена с идентификатором ${trainingProgram}`);
       } else if (this.isEdit && this.editId) {
-        const exrciseId = await TrainingProgramController.UpdateTrainingProgram(this.editId, this.view);
-        this.showSuccess(`Тренировочная программа ${this.view.name} с идентификатором ${exrciseId} успешно обновлена!`);
+        const trainingProgramId = await TrainingProgramController.UpdateTrainingProgram(this.editId, this.view);
+        this.showSuccess(`Тренировочная программа ${this.view.name} с идентификатором ${trainingProgramId} успешно обновлена!`);
       }
       this.goToTrainingProgram();
     } catch (err) {
-      this.showError(`Ошибка. Не удалось добавить/обновить упражнение ${this.view.name}`);
+      this.showError(`Ошибка. Не удалось добавить/обновить тренировочную программу ${this.view.name}`);
     } finally {
       this.isLoading = false;
     }
