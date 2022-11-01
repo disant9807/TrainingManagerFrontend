@@ -15,7 +15,7 @@
         <v-btn
           color="white"
           outlined
-          @click="goToExerciseAdd"
+          @click="goToTrainingProgramAdd"
         >
           Добавить
         </v-btn>
@@ -28,32 +28,31 @@
         @change="filtersChange"
       />
       <v-list
-        v-if="exercises.list.length"
+        v-if="trainingPrograms.list.length"
         dense
         class="requestList"
       >
         <v-list-item-group
-          v-model="exercises.selectedItem"
+          v-model="trainingPrograms.selectedItem"
           color="primary"
           mandatory
           @change="onSelectRequest"
         >
           <v-list-item
-            v-for="(item, i) in exercises.list"
+            v-for="(item, i) in trainingPrograms.list"
             :key="i"
             two-line
-            :title="exerciseItemName(item)"
+            :title="ItemName(item)"
           >
             <v-list-item-content>
               <v-list-item-title v-text="item.name" />
-              <v-list-item-subtitle v-text="exerciseItemIsBase(item)" />
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
       </v-list>
     </v-card>
     <div class="right-main-container">
-      <template v-if="exercises.list.length">
+      <template v-if="trainingPrograms.list.length">
         <v-card>
           <v-card-title class="darkblue py-0">
             <v-subheader class="white--text font-weight-light">
@@ -65,7 +64,7 @@
               color="white"
               text
               class="mr-2"
-              @click="onClickEditExercise"
+              @click="onClickEditTrainingProgram"
             >
               <v-icon class="mr-3">mdi-pencil</v-icon>
               Редактировать
@@ -74,7 +73,7 @@
               small
               color="red white--text"
               class="ml-2"
-              @click="onClickDeleteExerecise"
+              @click="onClickDeleteTrainingProgram"
             >
               <v-icon class="mr-3">mdi-delete</v-icon>
               Удалить
@@ -83,12 +82,12 @@
           <v-container
             class="details-container"
           >
-            <ExerciseInfo
-              :request="exercises.selectedExercise"
+            <TrainingProgramInfo
+              :request="trainingPrograms.selectedTrainingProgram"
             />
-            <ExerciseDelete
-              :exercise-delete-state.sync="exerciseDeleteState"
-              :request="exercises.selectedActionExercise"
+            <TrainingProgramDelete
+              :training-program-delete-state.sync="trainingProgramDeleteState"
+              :request="trainingPrograms.selectedActionTrainingProgram"
               @refresh="onEmitRefresh"
             />
           </v-container>
@@ -102,7 +101,7 @@
         height="100%"
       >
         <v-card
-          v-if="isAny(exercises.selectedExercise)"
+          v-if="isAny(trainingPrograms.selectedTrainingProgram)"
           class="my-card"
         >
           <Loader :value="isRequestLoading" />
@@ -113,7 +112,7 @@
           style="flex-direction: column"
         >
           <v-icon size="80px">mdi-clipboard-outline</v-icon>
-          Упражнений не найдено...
+          Тренировочных программ не найдено...
         </div>
       </div>
     </div>
@@ -125,32 +124,32 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 import { mixins } from 'vue-class-component';
 import Helper from '@/mixins/Helper';
 import Global from '@/mixins/GlobalMixin';
-import ExerciseController, { TExercise, HardSkill, TExerciseFilterViewModel } from '@/controllers/ExerciseController';
-import TrainingProgramControllel, { TTrainingProgram, TTrainingProgramDay, TTrainingProgramFilterViewModel } from '@/controllers/TrainingProgramController';
+import { TExercise } from '@/controllers/ExerciseController';
+import TrainingProgramControllel, { TTrainingProgram, TTrainingProgramFilterViewModel } from '@/controllers/TrainingProgramController';
 
 import Filters from './Components/Filters.vue';
 import Sorter from '../Components/Sorter.vue';
-import ExerciseInfo from './Components/ExerciseInfo.vue';
-import ExerciseDelete from './ExerciseDelete.vue';
+import TrainingProgramInfo from './Components/TrainingProgramInfo.vue';
+import TrainingProgramDelete from './TrainingProgramDelete.vue';
 
 import { Mutation, State } from 'vuex-class';
 
 import { TOrder } from '@/types/globals';
 import { TResult } from '@/api/baseApi';
 
-export type TExercisesView = {
+export type TTrainingProgramView = {
   selectedItem: number,
-  selectedExercise: any | null,
-  selectedActionExercise: any | null,
-  list: TExercise[],
+  selectedTrainingProgram: any | null,
+  selectedActionTrainingProgram: any | null,
+  list: TTrainingProgram[],
 }
 
 @Component({
   components: {
   Filters,
   Sorter,
-  ExerciseInfo,
-  ExerciseDelete
+  TrainingProgramInfo,
+  TrainingProgramDelete
   }
   })
 export default class TrainingProgram extends mixins(Helper, Global) {
@@ -159,31 +158,27 @@ export default class TrainingProgram extends mixins(Helper, Global) {
   @State readonly loading!: any;
   @Mutation('setLoading') setLoading!: (options: any) => void;
 
-  exerciseDeleteState = false;
+  trainingProgramDeleteState = false;
 
   order: TOrder = 'Desc';
 
-  exercises: TExercisesView = {
+  trainingPrograms: TTrainingProgramView = {
     selectedItem: 0,
-    selectedExercise: null,
-    selectedActionExercise: null,
+    selectedTrainingProgram: null,
+    selectedActionTrainingProgram: null,
     list: [],
   };
 
-  exerciseItemName(item: TExercise) {
+  ItemName(item: TTrainingProgram) {
     return item.shortName ?? item.name;
   }
 
-  exerciseItemIsBase(item: TExercise) {
-    return item.isBased ? 'Базовое' : 'Изолирующее';
-  }
-
-  get filtersModel(): TExerciseFilterViewModel {
-    return this.filters.exercise;
+  get filtersModel(): TTrainingProgramFilterViewModel {
+    return this.filters.trainingProgram;
   }
 
   get loadingModel() {
-    return this.loading.exercise;
+    return this.loading.trainingProgram;
   }
 
   get isListLoading() {
@@ -191,7 +186,7 @@ export default class TrainingProgram extends mixins(Helper, Global) {
   }
 
   set isListLoading(value: boolean) {
-    this.setLoading({ category: 'exercise', name: 'list', value });
+    this.setLoading({ category: 'trainingProgram', name: 'list', value });
   }
 
   get isRequestLoading() {
@@ -199,7 +194,7 @@ export default class TrainingProgram extends mixins(Helper, Global) {
   }
 
   set isRequestLoading(value: boolean) {
-    this.setLoading({ category: 'exercise', name: 'selectedExercise', value });
+    this.setLoading({ category: 'trainingProgram', name: 'selectedTrainingProgram', value });
   }
 
   mounted() {
@@ -208,60 +203,60 @@ export default class TrainingProgram extends mixins(Helper, Global) {
 
   async filtersChange(): Promise<void> {
     this.isListLoading = true;
-    const response = await ExerciseController.GetExercise(this.filtersModel, this.order);
+    const response = await TrainingProgramControllel.GetTrainingProgram(this.filtersModel, this.order);
     if (response.success) {
-      this.$set(this.exercises, 'list', response?.data || []);
-      this.$set(this.exercises, 'selectedItem', 0);
-      this.$set(this.exercises, 'selectedExercise', null);
+      this.$set(this.trainingPrograms, 'list', response?.data || []);
+      this.$set(this.trainingPrograms, 'selectedItem', 0);
+      this.$set(this.trainingPrograms, 'selectedTrainingProgram', null);
 
-      await this.onSelectRequest(this.exercises.selectedItem);
+      await this.onSelectRequest(this.trainingPrograms.selectedItem);
     }
   }
 
-  deleteExercise(item: number) {
-    const exercise = this.exercises.list[item];
-    this.$set(this.exercises, 'selectedActionExercise', exercise);
-    this.exerciseDeleteState = true;
+  deleteTrainingProgram(item: number) {
+    const exercise = this.trainingPrograms.list[item];
+    this.$set(this.trainingPrograms, 'selectedActionTrainingProgram', exercise);
+    this.trainingProgramDeleteState = true;
   }
 
-  editExercise(item: number) {
-    const exercise = this.exercises.list[item];
-    this.$set(this.exercises, 'selectedActionExercise', exercise);
-    this.goToExerciseEdit(exercise.id);
+  editTrainingProgram(item: number) {
+    const exercise = this.trainingPrograms.list[item];
+    this.$set(this.trainingPrograms, 'selectedActionTrainingProgram', exercise);
+    this.goToTrainingProgramEdit(exercise.id);
   }
 
   onEmitRefresh() {
     this.filtersChange();
   }
 
-  onClickDeleteExerecise() {
-    this.$set(this.exercises, 'selectedActionExercise', null);
-    this.deleteExercise(this.exercises.selectedItem);
+  onClickDeleteTrainingProgram() {
+    this.$set(this.trainingPrograms, 'selectedActionTrainingProgram', null);
+    this.deleteTrainingProgram(this.trainingPrograms.selectedItem);
   }
 
-  onClickEditExercise() {
-    this.$set(this.exercises, 'selectedActionExercise', null);
-    this.editExercise(this.exercises.selectedItem);
+  onClickEditTrainingProgram() {
+    this.$set(this.trainingPrograms, 'selectedActionTrainingProgram', null);
+    this.editTrainingProgram(this.trainingPrograms.selectedItem);
   }
 
   async onSelectRequest(item: number): Promise<void> {
-    if (this.exercises.list.length) {
+    if (this.trainingPrograms.list.length) {
       this.isRequestLoading = true;
 
-      const selectedExercise = this.exercises.list[item];
+      const selectedTrainingProgram = this.trainingPrograms.list[item];
 
-      const responseRequestInfo = await ExerciseController.GetExerciseById(selectedExercise.id);
-      this.$set(this.exercises, 'selectedExercise', responseRequestInfo);
+      const responseRequestInfo = await TrainingProgramControllel.GetTrainingProgramById(selectedTrainingProgram.id);
+      this.$set(this.trainingPrograms, 'selectedTrainingProgram', responseRequestInfo);
     }
     this.isRequestLoading = false;
   }
 
-  goToExerciseEdit(id: string) {
-    this.$router.push({ name: 'ExerciseEdit', params: { id } });
+  goToTrainingProgramEdit(id: string) {
+    this.$router.push({ name: 'TrainingProgramEdit', params: { id } });
   }
 
-  goToExerciseAdd() {
-    this.$router.push({ name: 'ExerciseAdd' });
+  goToTrainingProgramAdd() {
+    this.$router.push({ name: 'TrainingProgramAdd' });
   }
 }
 </script>

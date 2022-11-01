@@ -28,93 +28,42 @@
     <fieldset class="fieldset" aria-hidden="true">
       <legend style="width: 86.25px;text-align: -webkit-center;"><span>фильтры</span></legend>
       <div class="filterBlock pa-1 pb-4">
+        <DateTimeFilter
+          ref="dateTime"
+          chip-text="Период создания"
+          menu-header-text="Выбор периода"
+          :start-date-time.sync="createdFrom"
+          :end-date-time.sync="createdTo"
+          :count="filterModel?.period?.filter(d => d).length"
+          @change="apply('period')"
+        />
+        <SliderFilter
+          chip-text="Период тренировочных дней в программе"
+          menu-header-text="Выбор периода"
+          :start.sync="minCountTraining"
+          :end.sync="maxCountTraining"
+          :count="filterModel?.periodTraining?.filter(d => d).length"
+          @change="apply('periodTraining')"
+        />
         <filter-item
-          :menu-model="isCreatedFrom"
-          :count="+!!filterModel.createdFrom"
-          chip-text="Добавлено от"
-          menu-header-text="Дата добавления"
-          @apply="apply('createdFrom')"
-          @cancel="cancel('createdFrom')"
-          @clear="clear('createdFrom')"
+          :menu-model="isExercise"
+          :count="+!!filterModel.exercises"
+          chip-text="Присутствующие в тренировочной программе"
+          menu-header-text="Упражнения"
+          @apply="apply('exercise')"
+          @cancel="cancel('exercise')"
+          @clear="clear('exercise')"
         >
-          <DateTimePicker
-            :selected-date-time.sync="createdFrom"
+          <v-autocomplete
+            v-model="exercise"
+            :items="exercisesList"
+            item-text="text"
+            item-value="value"
+            readonly
+            multiply
+            filled
+            @click="onOpenModalFilterExercise"
           />
-        </filter-item>
-        <filter-item
-          :menu-model="isCreatedTo"
-          :count="+!!filterModel.createdTo"
-          chip-text="Добавлено до"
-          menu-header-text="Дата добавления"
-          @apply="apply('createdTo')"
-          @cancel="cancel('createdTo')"
-          @clear="clear('createdTo')"
-        >
-          <DateTimePicker
-            :selected-date-time.sync="createdTo"
-          />
-        </filter-item>
-        <filter-item
-          :menu-model="isSelectBased"
-          :count="+!!filterModel.isBased"
-          chip-text="Базовое/Изолирующее"
-          menu-header-text="Категория упражнения"
-          @apply="apply('isBased')"
-          @cancel="cancel('isBased')"
-          @clear="clear('isBased')"
-        >
-          <v-radio-group
-            v-model="isBased"
-            column
-          >
-            <v-radio
-              label="Базовое"
-              :value="true"
-            />
-            <v-radio
-              label="Изолирующее"
-              :value="false"
-            />
-            <v-radio
-              label="Не важно"
-              :value="undefined"
-            />
-          </v-radio-group>
-        </filter-item>
-
-        <filter-item
-          :menu-model="isHardSkills"
-          :count="hardSkillsCount"
-          chip-text="Сложность"
-          menu-header-text="сложность"
-          @apply="apply('hardSkills')"
-          @cancel="cancel('hardSkills')"
-          @clear="clear('hardSkills')"
-        >
-          <v-list dense height="350px" class="list">
-            <v-list-item-group
-              v-model="hardSkills"
-              multiple
-              active-class=""
-            >
-              <v-list-item
-                v-for="(item, i) in Object.entries(exerciseHardSkills)"
-                :key="`list-item-${i}`"
-                :value="item[0]"
-              >
-                <template v-slot:default="{ active }">
-                  <v-list-item-action>
-                    <v-checkbox
-                      :key="`checkbox_${i}`"
-                      color="primary"
-                      :input-value="active"
-                    />
-                  </v-list-item-action>
-                  <v-list-item-title class="secondary--text" v-text="item[1]" />
-                </template>
-              </v-list-item>
-            </v-list-item-group>
-          </v-list>
         </filter-item>
       </div>
       <v-btn
@@ -127,6 +76,13 @@
         <v-icon class="white--text">mdi-close</v-icon>
       </v-btn>
     </fieldset>
+    <ModalFilterExercise
+      :show="selectExercisesState"
+      :selected.sync="selectExercise"
+      :ids-selected="exercise"
+      @select="onClickSelectExercise"
+      @cancel="onClickCancelExercise"
+    />
   </div>
 </template>
 
@@ -136,17 +92,25 @@ import { mixins } from 'vue-class-component';
 import Helper from '@/mixins/Helper';
 import DateTimePicker from '@/components/DateTime/DateTimePicker.vue';
 import FilterItem from '../../../../components/FilterItem.vue';
+import DateTimeFilter from '@/components/filters/DateTimeFilter.vue';
+import SliderFilter from '@/components/filters/SliderFilter.vue';
 import { Mutation, State } from 'vuex-class';
 import { TTrainingProgramFilterViewModel } from '@/controllers/TrainingProgramController';
+import { TExercise } from '@/controllers/ExerciseController';
+import ModalFilterExercise from '@/views/pages/Components/ModalFilterExercise.vue';
+import { TVuetifyOptionsList } from '@/types/globals';
 
-type TFilterType = 'name' | 'createdFrom' | 'createdTo' | 'isBased' | 'hardSkills' | 'categoryOfBodies';
+type TFilterType = 'name' | 'period' | 'exercise' | 'periodTraining';
 
 export type TIncomingRouteName = 'New' | 'Handled' | 'Saved';
 
 @Component({
   components: {
   FilterItem,
-  DateTimePicker
+  DateTimePicker,
+  DateTimeFilter,
+  ModalFilterExercise,
+  SliderFilter
   }
   })
 export default class Filters extends mixins(Helper) {
@@ -156,7 +120,7 @@ export default class Filters extends mixins(Helper) {
   @Mutation('setLoading') setLoading!: (options: any) => void;
 
   get filterModel(): TTrainingProgramFilterViewModel {
-    return this.filters.exercise;
+    return this.filters.trainingProgram;
   }
 
   set filterModel(value: TTrainingProgramFilterViewModel) {
@@ -178,53 +142,64 @@ export default class Filters extends mixins(Helper) {
 
   created(): void {
     this.name = this.filterModel.name || '';
-    this.createdFrom = this.filterModel.createdFrom || '';
-    this.createdTo = this.filterModel.createdTo || '';
-    this.isBased = this.filterModel.isBased || undefined;
-    this.hardSkills = this.filterModel.hardSkills || [];
+    [this.createdFrom, this.createdTo] = this.filterModel.period || [];
+    [this.minCountTraining, this.maxCountTraining] = this.filterModel.periodTraining || [];
+    this.exercise = this.filterModel.exercises || [];
     this.categoryOfBodies = this.filterModel.categoryOfBodies || [];
   }
 
   name = '';
 
-  isCreatedFrom = false;
   createdFrom = '';
-
-  isCreatedTo = false;
   createdTo = '';
+  isPeriod = false;
+  period = [];
 
-  isSelectBased = false;
-  isBased: boolean | undefined = undefined;
+  minCountTraining = '';
+  maxCountTraining = '';
+  isPeriodTraining = false;
+  periodTraining = [];
 
-  isHardSkills = false;
-  hardSkills: any[] = [];
+  isExercise = false;
+  exercise: string[] = [];
+
   categoryOfBodies: any[] = [];
 
-  exerciseHardSkills = {
-    easy: 'Легко',
-    normal: 'Нормально',
-    hard: 'Сложно',
-  };
+  selectExercisesState = false;
+  selectExercise: TExercise[] | null = [];
 
-  get hardSkillsCount() {
-    return this.filterModel.hardSkills?.length ?? 0;
+  get exercisesList(): TVuetifyOptionsList[] {
+    return this.selectExercise?.map(e => {
+      return { value: e.id, text: e.shortName ?? e.name };
+    }) ?? [];
+  }
+
+  onOpenModalFilterExercise() {
+    this.selectExercisesState = true;
+  }
+
+  onClickSelectExercise() {
+    this.exercise = this.selectExercise?.map(e => e.id) ?? [];
+    this.selectExercisesState = false;
+  }
+
+  onClickCancelExercise() {
+    this.selectExercisesState = false;
   }
 
   clearFilters(): void {
     this.name = '';
-    this.createdFrom = '';
-    this.createdTo = '';
-    this.isBased = undefined;
-    this.hardSkills = [];
+    this.period = [];
+    this.periodTraining = [];
+    this.exercise = [];
     this.categoryOfBodies = [];
 
     this.filterModel = {
       name: '',
-      createdFrom: '',
-      createdTo: '',
-      isBased: undefined,
-      hardSkills: [],
-      categoryOfBodies: []
+      period: [],
+      periodTraining: [],
+      categoryOfBodies: [],
+      exercises: []
     };
 
     this.$emit('change');
@@ -237,24 +212,16 @@ export default class Filters extends mixins(Helper) {
         this.filterModel = { ...this.filterModel, name: this.name };
         break;
 
-      case 'createdFrom':
-        this.filterModel = { ...this.filterModel, createdFrom: this.createdFrom };
+      case 'period':
+        this.filterModel = { ...this.filterModel, period: [this.createdFrom, this.createdTo] };
         break;
 
-      case 'createdTo':
-        this.filterModel = { ...this.filterModel, createdTo: this.createdTo };
+      case 'periodTraining':
+        this.filterModel = { ...this.filterModel, periodTraining: [this.minCountTraining, this.maxCountTraining] };
         break;
 
-      case 'isBased':
-        this.filterModel = { ...this.filterModel, isBased: this.isBased };
-        break;
-
-      case 'hardSkills':
-        this.filterModel = { ...this.filterModel, hardSkills: this.hardSkills };
-        break;
-
-      case 'categoryOfBodies':
-        this.filterModel = { ...this.filterModel, categoryOfBodies: this.categoryOfBodies };
+      case 'exercise':
+        this.filterModel = { ...this.filterModel, exercises: this.exercise };
         break;
 
       default:
@@ -271,24 +238,16 @@ export default class Filters extends mixins(Helper) {
         this.name = this.filterModel.name || '';
         break;
 
-      case 'createdFrom':
-        this.createdFrom = this.filterModel.createdFrom || '';
+      case 'period':
+        [this.createdFrom, this.createdTo] = this.filterModel.period || [];
         break;
 
-      case 'createdTo':
-        this.createdTo = this.filterModel.createdTo || '';
+      case 'periodTraining':
+        [this.minCountTraining, this.maxCountTraining] = this.filterModel.periodTraining || [];
         break;
 
-      case 'isBased':
-        this.isBased = this.filterModel.isBased || undefined;
-        break;
-
-      case 'hardSkills':
-        this.hardSkills = this.filterModel.hardSkills || [];
-        break;
-
-      case 'categoryOfBodies':
-        this.categoryOfBodies = this.filterModel.categoryOfBodies || [];
+      case 'exercise':
+        this.exercise = this.filterModel.exercises || [];
         break;
 
       default:
@@ -304,29 +263,19 @@ export default class Filters extends mixins(Helper) {
         this.filterModel = { ...this.filterModel, name: '' };
         break;
 
-      case 'createdFrom':
-        this.createdFrom = '';
-        this.filterModel = { ...this.filterModel, createdFrom: '' };
+      case 'period':
+        [this.createdFrom, this.createdTo] = ['', ''];
+        this.filterModel = { ...this.filterModel, period: [] };
         break;
 
-      case 'createdTo':
-        this.createdTo = '';
-        this.filterModel = { ...this.filterModel, createdTo: '' };
+      case 'periodTraining':
+        [this.minCountTraining, this.maxCountTraining] = ['', ''];
+        this.filterModel = { ...this.filterModel, periodTraining: [] };
         break;
 
-      case 'isBased':
-        this.isBased = undefined;
-        this.filterModel = { ...this.filterModel, isBased: undefined };
-        break;
-
-      case 'hardSkills':
-        this.hardSkills = [];
-        this.filterModel = { ...this.filterModel, hardSkills: [] };
-        break;
-
-      case 'categoryOfBodies':
-        this.categoryOfBodies = [];
-        this.filterModel = { ...this.filterModel, categoryOfBodies: [] };
+      case 'exercise':
+        this.exercise = [];
+        this.filterModel = { ...this.filterModel, exercises: [] };
         break;
 
       default:

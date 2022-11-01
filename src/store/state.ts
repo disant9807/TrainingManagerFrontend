@@ -31,6 +31,13 @@ export default class State {
       createdTo: '',
       isBased: '',
       hardSkills: []
+    },
+    trainingProgram: {
+      categoryOfBodies: [],
+      name: '',
+      period: [],
+      periodTraining: [],
+      exercises: []
     }
   }
 
@@ -38,6 +45,10 @@ export default class State {
     exercise: {
       list: true,
       selectedExercise: true
+    },
+    trainingProgram: {
+      list: true,
+      selectedTrainingProgram: true
     }
   }
 

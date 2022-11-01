@@ -9,11 +9,9 @@ const trainingProgramApi = Api.getTrainingProgramApi();
 export type TTrainingProgramFilterViewModel = {
   categoryOfBodies?: string[],
   name?: string,
-  createdFrom?: string;
-  createdTo?: string;
-  Exercises?: string[];
-  MaxCountTrainingDays?: number;
-  MinCountTrainingDays?: number;
+  exercises?: string[];
+  periodTraining?: string[];
+  period?: string[];
 }
 
 export type TTrainingProgramFilterModel = {
@@ -21,9 +19,9 @@ export type TTrainingProgramFilterModel = {
   name?: string,
   createdFrom?: string;
   createdTo?: string;
-  Exercises?: string[];
-  MaxCountTrainingDays?: number;
-  MinCountTrainingDays?: number;
+  exercises?: string[];
+  maxCountTrainingDays?: string;
+  minCountTrainingDays?: string;
   order: TOrder,
   start?: string,
   count?: string
@@ -87,16 +85,18 @@ class ExerciseModel extends BaseController {
   }
 
   async GetTrainingProgram(filter: TTrainingProgramFilterViewModel, order: TOrder): Promise<TResult<TTrainingProgram[]>> {
-    const { categoryOfBodies, name, createdFrom, createdTo, Exercises, MaxCountTrainingDays, MinCountTrainingDays } = filter;
+    const { categoryOfBodies, name, periodTraining, exercises, period } = filter;
+    const [createdFrom, createdTo] = period || [];
+    const [minCountTrainingDays, maxCountTrainingDays] = periodTraining || [];
 
     const filterModel: TTrainingProgramFilterModel | undefined = {
       categoryOfBodies: categoryOfBodies ?? [],
       name,
       createdFrom,
       createdTo,
-      Exercises,
-      MaxCountTrainingDays,
-      MinCountTrainingDays,
+      exercises,
+      minCountTrainingDays,
+      maxCountTrainingDays,
       order
     };
 

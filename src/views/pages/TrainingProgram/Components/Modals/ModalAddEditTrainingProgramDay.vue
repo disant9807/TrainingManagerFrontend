@@ -109,7 +109,7 @@ import Global from '@/mixins/GlobalMixin';
 import { Component, PropSync, Prop, Watch, Ref } from 'vue-property-decorator';
 import ExerciseController, { TExercise, TExerciseFilterViewModel } from '@/controllers/ExerciseController';
 import { TTrainingProgramDay } from '@/controllers/TrainingProgramController';
-import SelectExercises from './SelectExercises.vue';
+import SelectExercises from '../../../Components/SelectExercises.vue';
 import Filters from '@/views/pages/Exercise/Components/Filters.vue';
 import Sorter from '@/views/pages/Components/Sorter.vue';
 import { Mutation, State } from 'vuex-class';
