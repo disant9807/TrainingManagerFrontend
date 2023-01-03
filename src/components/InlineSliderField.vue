@@ -11,8 +11,10 @@
         :max="max"
         :min="min"
         :step="step"
+        :thumb-label="thumbLabel"
         filled
         persistent-hint
+        always-dirty
       />
     </v-col>
   </v-row>
@@ -20,7 +22,7 @@
 
 <script lang="ts">
 import { TRuleFunction } from '@/mixins/Validation';
-import { Component, Vue, Prop, PropSync } from 'vue-property-decorator';
+import { Component, Vue, Prop, PropSync, Watch } from 'vue-property-decorator';
 @Component
 export default class InlineSliderField extends Vue {
   @Prop({ type: String, default: '' }) hint!: string;
@@ -31,7 +33,19 @@ export default class InlineSliderField extends Vue {
   @Prop({ type: [Number, String], required: false, default: 0 }) max!:number;
   @Prop({ type: [Number, String], required: false, default: 0 }) min!:number;
   @Prop({ type: [Number, String], required: false, default: 0 }) step!:number;
-  @PropSync('value', { required: false, default: null }) localValue!:any;
+  @Prop({ type: [Boolean, String], required: false, default: false }) thumbLabel!:any;
+  @PropSync('value', { required: false, default: '' }) realValue!:any;
+  localValue = '';
+
+  @Watch('value', { immediate: true })
+  updateLocalValue() {
+    this.localValue = this.realValue;
+  }
+
+  @Watch('localValue', { immediate: true })
+  updateRealValue() {
+    this.realValue = this.localValue;
+  }
 }
 </script>
 
