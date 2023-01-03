@@ -5,18 +5,18 @@
       two-line
       flat
     >
-      <v-subheader>Выбор упражнений</v-subheader>
+      <v-subheader>Выбор Тренировочных программ</v-subheader>
 
       <v-list-item-group
-        v-if="exercises"
+        v-if="trainingPrograms"
         v-model="selectedItems"
         :multiple="multiple"
       >
-        <v-list-item v-for="item in exercises">
+        <v-list-item v-for="item in trainingPrograms">
           <template v-slot:default="{ active, }">
             <v-list-item-action>
               <v-checkbox
-                :input-value="selectedExercise?.some(e => e.id === item.id)"
+                :input-value="selectedTrainingPrograms?.some(e => e.id === item.id)"
                 color="primary"
               ></v-checkbox>
             </v-list-item-action>
@@ -44,7 +44,7 @@ import { Component, Prop, PropSync, Watch } from 'vue-property-decorator';
 import Global from '@/mixins/GlobalMixin';
 import { mixins } from 'vue-class-component';
 import Loader from '@/components/Loader.vue';
-import { TExercise } from '@/controllers/ExerciseController';
+import { TTrainingProgram } from '@/controllers/TrainingProgramController';
 
 export type userOrg = {
   title: boolean,
@@ -59,10 +59,10 @@ export type userOrg = {
   Loader
   }
 })
-export default class SelectExercises extends mixins(Global) {
+export default class SelectTrainingProgram extends mixins(Global) {
   @Prop(Boolean) loading!: boolean;
-  @Prop(Array) exercises!: TExercise[] | null;
-  @PropSync('selected') selectedExercise!: TExercise[] | null;
+  @Prop(Array) trainingPrograms!: TTrainingProgram[] | null;
+  @PropSync('selected') selectedTrainingPrograms!: TTrainingProgram[] | null;
   @Prop({
     type: Boolean,
     default: true
@@ -71,8 +71,8 @@ export default class SelectExercises extends mixins(Global) {
   get selectedItems() {
     let selecteds: number[] = [];
 
-    this.exercises?.forEach((e, inx) => {
-      if (this.selectedExercise?.some(z => z.id === e.id)) {
+    this.trainingPrograms?.forEach((e, inx) => {
+      if (this.selectedTrainingPrograms?.some(z => z.id === e.id)) {
         selecteds.push(inx);
       }
     });
@@ -81,11 +81,11 @@ export default class SelectExercises extends mixins(Global) {
   }
 
   set selectedItems(values: number[] | number) {
-    if (this.exercises !== null && values instanceof Array) {
-      this.selectedExercise = (values as number[])
-        .map(e => (this.exercises as TExercise[])[e]) ?? [];
-    } else if (this.exercises !== null) {
-      this.selectedExercise = [(this.exercises as TExercise[])[values as number]];
+    if (this.trainingPrograms !== null && values instanceof Array) {
+      this.selectedTrainingPrograms = (values as number[])
+        .map(e => (this.trainingPrograms as TTrainingProgram[])[e]) ?? [];
+    } else if (this.trainingPrograms !== null) {
+      this.selectedTrainingPrograms = [(this.trainingPrograms as TTrainingProgram[])[values as number]];
     }
   }
 }

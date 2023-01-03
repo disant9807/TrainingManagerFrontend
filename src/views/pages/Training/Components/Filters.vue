@@ -37,18 +37,27 @@
           :count="filterModel?.period?.filter(d => d).length"
           @change="apply('period')"
         />
-        <SliderFilter
-          chip-text="Период тренировочных дней в программе"
+        <DateTimeFilter
+          ref="dateTime"
+          chip-text="Период тренировки"
           menu-header-text="Выбор периода"
-          :start.sync="minCountTraining"
-          :end.sync="maxCountTraining"
-          :count="filterModel?.periodTraining?.filter(d => d).length"
-          @change="apply('periodTraining')"
+          :start-date-time.sync="trainingFrom"
+          :end-date-time.sync="trainingTo"
+          :count="filterModel?.periodTrainingDate?.filter(d => d).length"
+          @change="apply('periodTrainingDate')"
+        />
+        <SliderFilter
+          chip-text="Период количество упражнений"
+          menu-header-text="Период упражнений"
+          :start.sync="minCountApproach"
+          :end.sync="maxCountApproach"
+          :count="filterModel?.periodApproachs?.filter(d => d).length"
+          @change="apply('periodApproachs')"
         />
         <filter-item
           :menu-model="isExercise"
           :count="+!!filterModel.exercises"
-          chip-text="Присутствующие в тренировочной программе"
+          chip-text="Упражнения"
           menu-header-text="Упражнения"
           @apply="apply('exercise')"
           @cancel="cancel('exercise')"
@@ -77,6 +86,38 @@
             </v-btn>
           </div>
         </filter-item>
+        <filter-item
+          :menu-model="isExercise"
+          :count="+!!filterModel.exercises"
+          chip-text="Тренировочные программы"
+          menu-header-text="Тренировочные программы"
+          @apply="apply('trainingPrograms')"
+          @cancel="cancel('trainingPrograms')"
+          @clear="clear('trainingPrograms')"
+        >
+          <div class="d-flex">
+            <v-autocomplete
+              v-model="exercise"
+              :items="exercisesList"
+              item-text="text"
+              item-value="value"
+              :readonly="true"
+              :multiply="true"
+              filled
+              @click="onOpenModalFilterTrainingProgram"
+            />
+            <v-btn
+              color="darkblue"
+              class="ml-3 mt-2"
+              icon
+              @click="onOpenModalFilterTrainingProgram"
+            >
+              <v-icon dark>
+                mdi-pencil
+              </v-icon>
+            </v-btn>
+          </div>
+        </filter-item>
       </div>
       <v-btn
         fab
@@ -95,6 +136,13 @@
       @select="onClickSelectExercise"
       @cancel="onClickCancelExercise"
     />
+    <ModalFilterTrainingProgram
+      :show="selectTrainingProgramState"
+      :selected.sync="selectTrainingProgram"
+      :ids-selected="trainingPrograms"
+      @select="onClickSelectTrainingProgram"
+      @cancel="onClickCancelTrainingProgram"
+    />
   </div>
 </template>
 
@@ -107,12 +155,14 @@ import FilterItem from '../../../../components/FilterItem.vue';
 import DateTimeFilter from '@/components/filters/DateTimeFilter.vue';
 import SliderFilter from '@/components/filters/SliderFilter.vue';
 import { Mutation, State } from 'vuex-class';
-import { TTrainingProgramFilterViewModel } from '@/controllers/TrainingProgramController';
+import { TTraining, TTrainingFilterModel, TTrainingFilterViewModel } from '@/controllers/TrainingController';
 import { TExercise } from '@/controllers/ExerciseController';
+import { TTrainingProgram } from '@/controllers/TrainingProgramController';
 import ModalFilterExercise from '@/views/pages/Components/ModalFilterExercise.vue';
+import ModalFilterTrainingProgram from '@/views/pages/Components/ModalFilterTrainingProgram.vue';
 import { TVuetifyOptionsList } from '@/types/globals';
 
-type TFilterType = 'name' | 'period' | 'exercise' | 'periodTraining';
+type TFilterType = 'name' | 'period' | 'periodTrainingTime' | 'trainingPrograms' | 'isNoneTrainingProgram' | 'periodApproachs' | 'periodTrainingDate' | 'exercise';
 
 export type TIncomingRouteName = 'New' | 'Handled' | 'Saved';
 
@@ -122,6 +172,7 @@ export type TIncomingRouteName = 'New' | 'Handled' | 'Saved';
   DateTimePicker,
   DateTimeFilter,
   ModalFilterExercise,
+  ModalFilterTrainingProgram,
   SliderFilter
   }
   })
@@ -131,12 +182,12 @@ export default class Filters extends mixins(Helper) {
   @State readonly loading!: any;
   @Mutation('setLoading') setLoading!: (options: any) => void;
 
-  get filterModel(): TTrainingProgramFilterViewModel {
-    return this.filters.trainingProgram;
+  get filterModel(): TTrainingFilterViewModel {
+    return this.filters.training;
   }
 
-  set filterModel(value: TTrainingProgramFilterViewModel) {
-    this.setFilters({ name: 'trainingProgram', value });
+  set filterModel(value: TTrainingFilterViewModel) {
+    this.setFilters({ name: 'training', value });
     this.$emit('change');
   }
 
@@ -149,13 +200,17 @@ export default class Filters extends mixins(Helper) {
   }
 
   set isListLoading(value: boolean) {
-    this.setLoading({ category: 'trainingProgram', name: 'list', value });
+    this.setLoading({ category: 'training', name: 'list', value });
   }
 
   created(): void {
     this.name = this.filterModel.name || '';
     [this.createdFrom, this.createdTo] = this.filterModel.period || [];
-    [this.minCountTraining, this.maxCountTraining] = this.filterModel.periodTraining || [];
+    [this.trainingFrom, this.trainingTo] = this.filterModel.periodTrainingDate || [];
+    this.trainingPrograms = this.filterModel.trainingPrograms || [];
+    this.isNoneTrainingProgram = this.filterModel.isNoneTrainingProgram || null;
+    [this.minCountApproach, this.maxCountApproach] = this.filterModel.periodApproachs || [];
+    [this.minTimeSec, this.maxTimeSec] = this.filterModel.periodTrainingTime || [];
     this.exercise = this.filterModel.exercises || [];
     this.categoryOfBodies = this.filterModel.categoryOfBodies || [];
   }
@@ -167,10 +222,22 @@ export default class Filters extends mixins(Helper) {
   isPeriod = false;
   period = [];
 
-  minCountTraining = '';
-  maxCountTraining = '';
-  isPeriodTraining = false;
-  periodTraining = [];
+  trainingFrom = '';
+  trainingTo = '';
+  periodTrainingDate = [];
+
+  isTrainingProgram = false;
+  trainingPrograms: string[] = [];
+
+  isNoneTrainingProgram: boolean | null = null;
+
+  periodApproachs = [];
+  minCountApproach = '';
+  maxCountApproach = '';
+
+  periodTrainingTime = [];
+  minTimeSec = '';
+  maxTimeSec = '';
 
   isExercise = false;
   exercise: string[] = [];
@@ -179,6 +246,9 @@ export default class Filters extends mixins(Helper) {
 
   selectExercisesState = false;
   selectExercise: TExercise[] | null = [];
+
+  selectTrainingProgramState = false;
+  selectTrainingProgram: TTrainingProgram[] | null = [];
 
   get exercisesList(): TVuetifyOptionsList[] {
     return this.selectExercise?.map(e => {
@@ -199,17 +269,46 @@ export default class Filters extends mixins(Helper) {
     this.selectExercisesState = false;
   }
 
+  onOpenModalFilterTrainingProgram() {
+    this.selectTrainingProgramState = true;
+  }
+
+  onClickSelectTrainingProgram() {
+    this.trainingPrograms = this.selectTrainingProgram?.map(e => e.id) ?? [];
+    this.selectTrainingProgramState = false;
+  }
+
+  onClickCancelTrainingProgram() {
+    this.selectTrainingProgramState = false;
+  }
+
   clearFilters(): void {
     this.name = '';
+    this.createdFrom = '';
+    this.createdTo = '';
     this.period = [];
-    this.periodTraining = [];
+    this.trainingFrom = '';
+    this.trainingTo = '';
+    this.periodTrainingTime = [];
+    this.minTimeSec = '';
+    this.maxTimeSec = '';
+    this.trainingPrograms = [];
+    this.isNoneTrainingProgram = null;
+    this.minCountApproach = '';
+    this.maxCountApproach = '';
+    this.periodApproachs = [];
+    this.periodTrainingDate = [];
     this.exercise = [];
     this.categoryOfBodies = [];
 
     this.filterModel = {
       name: '',
       period: [],
-      periodTraining: [],
+      periodTrainingTime: [],
+      trainingPrograms: [],
+      isNoneTrainingProgram: undefined,
+      periodApproachs: [],
+      periodTrainingDate: [],
       categoryOfBodies: [],
       exercises: []
     };
@@ -228,8 +327,24 @@ export default class Filters extends mixins(Helper) {
         this.filterModel = { ...this.filterModel, period: [this.createdFrom, this.createdTo] };
         break;
 
-      case 'periodTraining':
-        this.filterModel = { ...this.filterModel, periodTraining: [this.minCountTraining, this.maxCountTraining] };
+      case 'periodTrainingTime':
+        this.filterModel = { ...this.filterModel, periodTrainingTime: [this.minTimeSec, this.maxTimeSec] };
+        break;
+
+      case 'trainingPrograms':
+        this.filterModel = { ...this.filterModel, trainingPrograms: this.trainingPrograms };
+        break;
+
+      case 'isNoneTrainingProgram':
+        this.filterModel = { ...this.filterModel, isNoneTrainingProgram: this.isNoneTrainingProgram ?? undefined };
+        break;
+
+      case 'periodApproachs':
+        this.filterModel = { ...this.filterModel, periodApproachs: [this.minCountApproach, this.maxCountApproach] };
+        break;
+
+      case 'periodTrainingDate':
+        this.filterModel = { ...this.filterModel, periodTrainingDate: [this.trainingFrom, this.trainingTo] };
         break;
 
       case 'exercise':
@@ -254,8 +369,24 @@ export default class Filters extends mixins(Helper) {
         [this.createdFrom, this.createdTo] = this.filterModel.period || [];
         break;
 
-      case 'periodTraining':
-        [this.minCountTraining, this.maxCountTraining] = this.filterModel.periodTraining || [];
+      case 'periodTrainingTime':
+        [this.minTimeSec, this.maxTimeSec] = this.filterModel.periodTrainingTime || [];
+        break;
+
+      case 'trainingPrograms':
+        this.trainingPrograms = this.filterModel.trainingPrograms || [];
+        break;
+
+      case 'isNoneTrainingProgram':
+        this.isNoneTrainingProgram = this.filterModel.isNoneTrainingProgram || null;
+        break;
+
+      case 'periodApproachs':
+        [this.minCountApproach, this.maxCountApproach] = this.filterModel.periodApproachs || [];
+        break;
+
+      case 'periodTrainingDate':
+        [this.trainingFrom, this.trainingTo] = this.filterModel.periodTrainingDate || [];
         break;
 
       case 'exercise':
@@ -280,9 +411,29 @@ export default class Filters extends mixins(Helper) {
         this.filterModel = { ...this.filterModel, period: [] };
         break;
 
-      case 'periodTraining':
-        [this.minCountTraining, this.maxCountTraining] = ['', ''];
-        this.filterModel = { ...this.filterModel, periodTraining: [] };
+      case 'periodTrainingTime':
+        [this.minTimeSec, this.maxTimeSec] = ['', ''];
+        this.filterModel = { ...this.filterModel, periodTrainingTime: [] };
+        break;
+
+      case 'trainingPrograms':
+        this.trainingPrograms = [];
+        this.filterModel = { ...this.filterModel, trainingPrograms: [] };
+        break;
+
+      case 'isNoneTrainingProgram':
+        this.isNoneTrainingProgram = null;
+        this.filterModel = { ...this.filterModel, isNoneTrainingProgram: undefined };
+        break;
+
+      case 'periodApproachs':
+        [this.minCountApproach, this.maxCountApproach] = ['', ''];
+        this.filterModel = { ...this.filterModel, periodApproachs: [] };
+        break;
+
+      case 'periodTrainingDate':
+        [this.trainingFrom, this.trainingTo] = ['', ''];
+        this.filterModel = { ...this.filterModel, periodTrainingDate: [] };
         break;
 
       case 'exercise':

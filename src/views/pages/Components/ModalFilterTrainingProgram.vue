@@ -8,7 +8,7 @@
     <v-card class="pb-3">
       <v-card-title class="darkblue pl-3 py-0">
         <v-subheader class="white--text font-weight-light header-wrap">
-          <div class="header">Выбор упражнений</div>
+          <div class="header">Выбор тренировочных программ</div>
         </v-subheader>
       </v-card-title>
       <v-card-text style="height: 400px;">
@@ -20,11 +20,11 @@
             :order.sync="order"
             @change="filtersChange"
           />
-          <select-exercises
+          <select-training-program
             class="py-5"
             :loading="loading"
-            :exercises="exercises"
-            :selected.sync="localSelectedExercises"
+            :training-programs="trainingPrograms"
+            :selected.sync="localSelectedTrainingPrograms"
             multiple
           />
         </v-container>
@@ -59,9 +59,9 @@
 <script lang="ts">
 import Global from '@/mixins/GlobalMixin';
 import { Component, PropSync, Prop, Watch, Ref } from 'vue-property-decorator';
-import ExerciseController, { TExercise, TExerciseFilterViewModel } from '@/controllers/ExerciseController';
-import SelectExercises from '@/views/pages/Components/SelectExercises.vue';
-import Filters from '@/views/pages/Exercise/Components/Filters.vue';
+import TrainingProgramController, { TTrainingProgram, TTrainingProgramFilterViewModel } from '@/controllers/TrainingProgramController';
+import SelectTrainingProgram from './SelectTrainingprogram.vue';
+import Filters from '@/views/pages/TrainingProgram/Components/Filters.vue';
 import Sorter from '@/views/pages/Components/Sorter.vue';
 import { State } from 'vuex-class';
 import { TOrder } from '@/types/globals';
@@ -69,15 +69,15 @@ import { TOrder } from '@/types/globals';
 
 @Component({
   components: {
-  SelectExercises,
+  SelectTrainingProgram,
   Filters,
   Sorter
   }
   })
-export default class ModalFilterExercise extends Global {
+export default class ModalFilterTrainingProgram extends Global {
   @State readonly filters!: any;
   @PropSync('show') readonly dialog!: boolean;
-  @PropSync('selected', { required: false, default: null }) selectedExercise!: TExercise[] | null;
+  @PropSync('selected', { required: false, default: null }) selectedTrainingProgram!: TTrainingProgram[] | null;
   @Prop({
     type: Array,
     default: null
@@ -90,19 +90,18 @@ export default class ModalFilterExercise extends Global {
 
   loading = false;
   order: TOrder = 'Desc';
-  exercises: TExercise[] = [];
-  localSelectedExercises: TExercise[] | null = null;
+  trainingPrograms: TTrainingProgram[] = [];
+  localSelectedTrainingPrograms: TTrainingProgram[] | null = null;
   localIds: string[] | null = null;
 
-  get filtersModel(): TExerciseFilterViewModel {
-    return this.filters.exercise;
+  get filtersModel(): TTrainingProgramFilterViewModel {
+    return this.filters.trainingPrograms;
   }
 
   @Watch('show')
   initComponent() {
     if (this.dialog) {
-      if(this.localIds !== this.idsSelected)
-      {
+      if (this.localIds !== this.idsSelected) {
         this.unpackIdsSelected();
       } else {
         this.unpackDataSelected();
@@ -122,47 +121,47 @@ export default class ModalFilterExercise extends Global {
   }
 
   unpackDataSelected() {
-    this.localSelectedExercises = this.selectedExercise ?? [];
+    this.localSelectedTrainingPrograms = this.selectedTrainingProgram ?? [];
   }
 
   unpackIdsSelected() {
     this.loading = true;
     try {
-      let exercise: TExercise[] = [];
+      let trainingPrograms: TTrainingProgram[] = [];
       this.idsSelected?.forEach(async i => {
-        const response = await ExerciseController.GetExerciseById(i);
-        exercise.push(response);
+        const response = await TrainingProgramController.GetTrainingProgramById(i);
+        trainingPrograms.push(response);
       });
       this.localIds = this.idsSelected;
-      this.localSelectedExercises = exercise;
-      this.selectedExercise = this.localSelectedExercises;
+      this.localSelectedTrainingPrograms = trainingPrograms;
+      this.selectedTrainingProgram = this.localSelectedTrainingPrograms;
     } catch (error) {
-      this.showError('Ошибка. Не удалось загрузить упражнения');
+      this.showError('Ошибка. Не удалось загрузить тренировочную программу');
     } finally {
       this.loading = false;
     }
   }
 
   packData(): boolean {
-    if (!this.localSelectedExercises || this.localSelectedExercises?.length === 0) {
-      this.showInfo("Пожалуйста выберите хотя-бы одно упражнение");
+    if (!this.localSelectedTrainingPrograms || this.localSelectedTrainingPrograms?.length === 0) {
+      this.showInfo("Пожалуйста выберите хотя-бы одну тренировочную программу");
       return false;
     }
-    this.selectedExercise = this.localSelectedExercises;
+    this.selectedTrainingProgram = this.localSelectedTrainingPrograms;
     return true;
   }
 
   async filtersChange(): Promise<void> {
     this.loading = true;
     try {
-      const response = await ExerciseController.GetExercise(this.filtersModel, this.order);
+      const response = await TrainingProgramController.GetTrainingProgram(this.filtersModel, this.order);
       if (response.success) {
-        this.exercises = response?.data ?? [];
+        this.trainingPrograms = response?.data ?? [];
       } else {
         throw new Error();
       }
     } catch (error) {
-      this.showError('Ошибка. Не удалось загрузить список тренировок');
+      this.showError('Ошибка. Не удалось загрузить список тренировочных программ');
     } finally {
       this.loading = false;
     }

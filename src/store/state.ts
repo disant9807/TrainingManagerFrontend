@@ -38,6 +38,25 @@ export default class State {
       period: [],
       periodTraining: [],
       exercises: []
+    },
+    training: {
+      name: '',
+      createdFrom: '',
+      createdTo: '',
+      period: [],
+      trainingFrom: '',
+      trainingTo: '',
+      periodTrainingTime: [],
+      minTimeSec: '',
+      maxTimeSec: '',
+      trainingPrograms: [],
+      isNoneTrainingProgram: null,
+      minCountApproach: '',
+      maxCountApproach: '',
+      periodApproachs: [],
+      periodTrainingDate: [],
+      exercise: [],
+      categoryOfBodies: []
     }
   }
 
@@ -49,6 +68,10 @@ export default class State {
     trainingProgram: {
       list: true,
       selectedTrainingProgram: true
+    },
+    training: {
+      list: true,
+      selectedTraining: true
     }
   }
 
