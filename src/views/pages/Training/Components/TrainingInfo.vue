@@ -39,6 +39,15 @@
                   <v-list-item-subtitle> {{ `Подробнее` }} </v-list-item-subtitle>
                 </v-list-item-content>
               </template>
+
+              <v-list-item
+                v-for="child, index in item.items"
+                :key="index"
+              >
+                <v-list-item-content>
+                  <v-list-item-title>{{ `Подход: ${child.value.numberOfApproach}; Вес: ${child.value.weight}; Время: ${child.value.time};` }}</v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
             </v-list-group>
           </template>
           <v-list-item v-else>
@@ -57,14 +66,21 @@ import { Component, Prop, Watch, Model } from 'vue-property-decorator';
 import { mixins } from 'vue-class-component';
 
 import { TTrainingProgram, TTrainingProgramDay } from '@/controllers/TrainingProgramController';
-import { TTraining, TApproach } from '@/controllers/TrainingController';
+import { TTraining, TApproach, TApproachItem } from '@/controllers/TrainingController';
 import { TExercise } from '@/controllers/ExerciseController';
 import { TResult } from '@/api/baseApi';
 
-export type TApproachItem = {
+export type TApproachItemEl = {
+  action: string | null,
+  value: TApproachItem,
+  active: boolean | null
+}
+
+export type TApproachEl = {
   action: string | null,
   value: TApproach,
-  active: boolean | null
+  active: boolean | null,
+  items: Array<TApproachItemEl>
 }
 
 @Component
@@ -83,14 +99,21 @@ export default class TrainingInfo
     return this.localTraining?.trainingprogram;
   }
 
-  get items(): TApproachItem[] | [] {
+  get items(): TApproachEl[] | [] {
     return this.localTraining?.approachs.sort(e => e.numberOfTraining)
-      ?.map((e, index) => {
+      .map((e, index) => {
         return {
           action: 'mdi-tag',
           value: e,
-          active: index === 0
-        } as TApproachItem;
+          active: index === 0,
+          items: e.approachsItems.map((z, indexz) => {
+            return {
+              action: 'mdi-tag',
+              value: z,
+              active: indexz === 0,
+            } as TApproachItemEl;
+          })
+        } as TApproachEl;
       }) ?? [];
   }
 }

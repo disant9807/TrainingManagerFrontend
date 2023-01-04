@@ -65,12 +65,12 @@ export class TApproach {
   id: string;
   numberOfTraining: number;
   exercise: TExercise | null;
-  approachItems: TApproachItem[];
+  approachsItems: TApproachItem[];
   constructor() {
     this.id = '';
     this.numberOfTraining = 0;
     this.exercise = null;
-    this.approachItems = [];
+    this.approachsItems = [];
   }
 }
 

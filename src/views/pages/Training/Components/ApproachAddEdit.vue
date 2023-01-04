@@ -25,20 +25,38 @@
         </template>
 
         <v-list-item
-          v-for="child, index in item.items"
-          :key="index"
+          v-for="child, indexz in item.items"
+          :key="indexz"
         >
           <v-list-item-content>
             <v-list-item-title>{{ `Подход: ${child.value.numberOfApproach}; Вес: ${child.value.weight}; Время: ${child.value.time};` }}</v-list-item-title>
           </v-list-item-content>
+          <v-list-item-action>
+            <div class="d-flex">
+              <v-btn icon @click="onClickUpNumberApproachItem(index, indexz)">
+                <v-icon color="grey lighten-1">mdi-arrow-up</v-icon>
+              </v-btn>
+              <v-btn icon class="ml-2" @click="onClickDownNumberApproachItem(index, indexz)">
+                <v-icon color="grey lighten-1">mdi-arrow-down</v-icon>
+              </v-btn>
+              <v-btn icon class="ml-2" @click="onClickEdlitApproachItem(index, indexz)">
+                <v-icon color="grey lighten-1">mdi-pen</v-icon>
+              </v-btn>
+              <v-btn icon class="ml-2">
+                <v-icon color="grey lighten-1">mdi-close</v-icon>
+              </v-btn>
+            </div>
+          </v-list-item-action>
         </v-list-item>
         <v-list-item link @click="onClickAddApproachItem(index)">
-          <v-list-item-icon>
-            <v-icon>mdi-plus-outline</v-icon>
-          </v-list-item-icon>
           <v-list-item-content>
             <v-list-item-title>Добавить подход</v-list-item-title>
           </v-list-item-content>
+          <v-list-item-action>
+            <v-btn icon>
+              <v-icon color="grey lighten-1">mdi-plus</v-icon>
+            </v-btn>
+          </v-list-item-action>
         </v-list-item>
       </v-list-group>
     </v-list>
@@ -49,11 +67,11 @@
       @select="onClickSelectExercise"
       @canel="onClickCanelExercise"
     />
-    <ModalAddEditApproach
-      :show="stateModalAddApproach"
-      :is-edit="isEditApproach"
-      :number-of-approach="0"
-      :selected.sync="editApproach"
+    <ModalAddEditApproachItem
+      :show="stateModalAddApproachItem"
+      :is-edit="isEditApproachItem"
+      :number-of-approach="numberOfApproach"
+      :selected.sync="editApproachItem"
       @select="onClickSelect"
       @cancel="onClickCancel"
     />
@@ -70,7 +88,7 @@ import InlineAutocompleteField from '@/components/InlineAutocompleteField.vue';
 import InlineRadioButtonsField from '@/components/InlineRadioButtonsField.vue';
 import InlineSliderField from '@/components/InlineSliderField.vue';
 import Loader from '@/components/Loader.vue';
-import ModalAddEditApproach from './Modals/ModalAddEditApproachItem.vue';
+import ModalAddEditApproachItem from './Modals/ModalAddEditApproachItem.vue';
 import ModalAddExercise from './Modals/ModalAddExercise.vue';
 
 export type TApproachItemEl = {
@@ -93,7 +111,7 @@ export type TApproachEl = {
   InlineCheckField,
   InlineRadioButtonsField,
   InlineSliderField,
-  ModalAddEditApproach,
+  ModalAddEditApproachItem,
   ModalAddExercise,
   Loader
   }
@@ -104,46 +122,49 @@ export default class ApproachAddEdit extends Global {
     default: []
   }) approachs!: TApproach[] | null;
 
-  exercises: TExercise[] | null = null;
   stateModalAddExercise = false;
   isEditExercise = false;
   editExercise: TExercise | null = null;
 
-  stateModalAddApproach = false;
-  isEditApproach = false;
-  approachEditIndex: number | null = null;
-  editApproach: TApproachItem | null = null;
+  stateModalAddApproachItem = false;
+  isEditApproachItem = false;
+  editApproachItem: TApproachItem | null = null;
+  numberOfApproach = 0;
 
   indexApproach = 0;
+  indexApproachItem = 0;
+  keyApproachList = 0;
 
   get localApproach(): TApproach[] | [] {
     return this.approachs ?? [];
   }
 
   get items(): TApproachEl[] | [] {
-    return this.localApproach
+    return this.localApproach.sort((a, b) => { return a.numberOfTraining - b.numberOfTraining; })
       .map((e, index) => {
         return {
-          action: 'mdi-tag',
+          action: 'mdi-dumbbell',
           value: e,
-          active: index === 0,
-          items: e.approachItems.map((z, indexz) => {
-            return {
-              action: 'mdi-tag',
-              value: z,
-              active: indexz === 0,
-            } as TApproachItemEl;
-          })
+          active: index === this.indexApproach,
+          items: e.approachsItems.sort((a, b) => { return a.numberOfApproach - b.numberOfApproach; })
+            .map((z, indexz) => {
+              return {
+                value: z,
+                active: indexz === 0,
+              } as TApproachItemEl;
+            })
         } as TApproachEl;
       }) ?? [];
   }
 
   initModalAddApproachItem(indexApproach: number) {
-    this.approachEditIndex = null;
-    this.isEditApproach = false;
-    this.editApproach = null;
+    this.isEditApproachItem = false;
+    this.editApproachItem = null;
     this.indexApproach = indexApproach;
-    this.stateModalAddApproach = true;
+
+    this.numberOfApproach = this.approachs ? this.approachs[indexApproach].approachsItems.length + 1 : 1;
+
+    this.stateModalAddApproachItem = true;
   }
 
   initModalAddExercise() {
@@ -152,21 +173,23 @@ export default class ApproachAddEdit extends Global {
     this.stateModalAddExercise = true;
   }
 
-  initModalEdit(approach: TApproach, indx: number) {
-    this.approachEditIndex = indx;
-    this.isEditApproach = true;
-    // this.editApproach = approach;
-    this.stateModalAddApproach = true;
+  initModalEditApproachItem(indexApproach: number, indexApproachItem: number) {
+    this.isEditApproachItem = true;
+    this.indexApproach = indexApproach;
+    this.indexApproachItem = indexApproachItem;
+    this.editApproachItem = this.approachs ? this.approachs[indexApproach].approachsItems[indexApproachItem] : null;
+    this.numberOfApproach = this.approachs ? this.approachs[indexApproach].approachsItems[indexApproachItem].numberOfApproach : 1;
+    this.stateModalAddApproachItem = true;
   }
 
   updateItems(item: TExercise) {
     let approach = new TApproach();
     approach.exercise = item;
 
-    if (this.approachs as TApproach[] && this.approachs && this.approachEditIndex !== null) {
-      approach.numberOfTraining = this.approachEditIndex;
-      this.$set(this.approachs, this.approachEditIndex, approach);
-    } else if (this.approachs as TApproach[] && this.approachs && this.approachEditIndex === null) {
+    if (this.approachs as TApproach[] && this.approachs && this.indexApproach !== null) {
+      approach.numberOfTraining = this.indexApproach;
+      this.$set(this.approachs, this.indexApproach, approach);
+    } else if (this.approachs as TApproach[] && this.approachs && this.indexApproach === null) {
       approach.numberOfTraining = this.approachs.length;
       this.approachs.push(approach);
     } else {
@@ -176,10 +199,29 @@ export default class ApproachAddEdit extends Global {
   }
 
   updateApproachItem(item: TApproachItem) {
-    if (this.approachs && this.approachs[this.indexApproach] && this.approachs[this.indexApproach].approachItems) {
-      this.approachs[this.indexApproach].approachItems.push(item);
-    } else if(this.approachs && this.approachs[this.indexApproach] && !this.approachs[this.indexApproach].approachItems) {
-      this.approachs[this.indexApproach].approachItems = [item];
+    if (this.isEditApproachItem && this.approachs && this.approachs[this.indexApproach] && this.approachs[this.indexApproach].approachsItems) {
+      this.approachs[this.indexApproach].approachsItems[this.indexApproachItem] = item;
+    } else if (!this.isEditApproachItem && this.approachs && this.approachs[this.indexApproach] && this.approachs[this.indexApproach].approachsItems) {
+      this.approachs[this.indexApproach].approachsItems.push(item);
+    } else if (!this.isEditApproachItem && this.approachs && this.approachs[this.indexApproach] && !this.approachs[this.indexApproach].approachsItems) {
+      this.approachs[this.indexApproach].approachsItems = [item];
+    }
+  }
+
+  updateNumberApproachItem(indexApproach: number, indexApproachItem: number, value: number) {
+    if (this.approachs &&
+    this.approachs[indexApproach] &&
+    this.approachs[indexApproach].approachsItems &&
+    value > 0 &&
+    value <= this.approachs[indexApproach].approachsItems.length
+    ) {
+      const oldValue = this.approachs[indexApproach].approachsItems[indexApproachItem].numberOfApproach;
+      const indexOfAnotherValue = this.approachs[indexApproach].approachsItems.findIndex(e => e.numberOfApproach === value);
+
+      this.$set(this.approachs[indexApproach].approachsItems[indexOfAnotherValue], 'numberOfApproach', oldValue);
+      this.$set(this.approachs[indexApproach].approachsItems[indexApproachItem], 'numberOfApproach', value);
+
+      this.keyApproachList++;
     }
   }
 
@@ -187,16 +229,19 @@ export default class ApproachAddEdit extends Global {
     this.initModalAddApproachItem(indexApproach);
   }
 
+  onClickEdlitApproachItem(indexApproach: number, indexApproachItem: number) {
+    this.initModalEditApproachItem(indexApproach, indexApproachItem);
+  }
+
   onClickSelect() {
-    if (this.editApproach) {
-      this.updateApproachItem(this.editApproach);
-      this.indexApproach = 0;
-      this.stateModalAddApproach = false;
+    if (this.editApproachItem) {
+      this.updateApproachItem(this.editApproachItem);
+      this.stateModalAddApproachItem = false;
     }
   }
 
   onClickCancel() {
-    this.stateModalAddApproach = false;
+    this.stateModalAddApproachItem = false;
   }
 
   onClickAddExercise() {
@@ -212,6 +257,20 @@ export default class ApproachAddEdit extends Global {
 
   onClickCanelExercise() {
     this.stateModalAddExercise = false;
+  }
+
+  onClickDownNumberApproachItem(indexApproach: number, indexApproachItem: number) {
+    if (this.approachs) {
+      this.updateNumberApproachItem(indexApproach, indexApproachItem,
+        this.approachs[indexApproach].approachsItems[indexApproachItem].numberOfApproach + 1);
+    }
+  }
+
+  onClickUpNumberApproachItem(indexApproach: number, indexApproachItem: number) {
+    if (this.approachs) {
+      this.updateNumberApproachItem(indexApproach, indexApproachItem,
+        this.approachs[indexApproach].approachsItems[indexApproachItem].numberOfApproach - 1);
+    }
   }
 }
 </script>

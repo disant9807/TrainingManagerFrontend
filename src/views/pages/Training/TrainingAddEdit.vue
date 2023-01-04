@@ -25,6 +25,16 @@
                     label="Описание"
                     :value.sync="view.description"
                   />
+                </v-col>
+                <v-col>
+                  <InlineDateField
+                    label="Дата тренировки"
+                    :value.sync="view.trainingDate"
+                  />
+                  <InlineTextField
+                    label="В разработке"
+                    :value.sync="view.description"
+                  />
                   <InlineSliderField
                     label="Время тренировки"
                     min="0"
@@ -32,16 +42,6 @@
                     step="1"
                     hint="в минутах"
                     :value.sync="view.time"
-                  />
-                  <InlineDateField
-                    label="Дата тренировки"
-                    :value.sync="view.trainingDate"
-                  />
-                </v-col>
-                <v-col>
-                  <InlineTextField
-                    label="В разработке"
-                    :value.sync="view.description"
                   />
                 </v-col>
               </v-row>
