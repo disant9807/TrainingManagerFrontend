@@ -131,7 +131,10 @@ export default class ApproachAddEdit extends Global {
   editApproachItem: TApproachItem | null = null;
   numberOfApproach = 0;
 
-  indexApproach = 0;
+
+
+
+  indexApproach: number | null = null;
   indexApproachItem = 0;
   keyApproachList = 0;
 
@@ -171,6 +174,7 @@ export default class ApproachAddEdit extends Global {
     this.isEditExercise = false;
     this.editExercise = null;
     this.stateModalAddExercise = true;
+    this.indexApproach = null;
   }
 
   initModalEditApproachItem(indexApproach: number, indexApproachItem: number) {
@@ -199,12 +203,14 @@ export default class ApproachAddEdit extends Global {
   }
 
   updateApproachItem(item: TApproachItem) {
-    if (this.isEditApproachItem && this.approachs && this.approachs[this.indexApproach] && this.approachs[this.indexApproach].approachsItems) {
-      this.approachs[this.indexApproach].approachsItems[this.indexApproachItem] = item;
-    } else if (!this.isEditApproachItem && this.approachs && this.approachs[this.indexApproach] && this.approachs[this.indexApproach].approachsItems) {
-      this.approachs[this.indexApproach].approachsItems.push(item);
-    } else if (!this.isEditApproachItem && this.approachs && this.approachs[this.indexApproach] && !this.approachs[this.indexApproach].approachsItems) {
-      this.approachs[this.indexApproach].approachsItems = [item];
+    if (this.indexApproach) {
+      if (this.isEditApproachItem && this.approachs && this.approachs[this.indexApproach] && this.approachs[this.indexApproach].approachsItems) {
+        this.approachs[this.indexApproach].approachsItems[this.indexApproachItem] = item;
+      } else if (!this.isEditApproachItem && this.approachs && this.approachs[this.indexApproach] && this.approachs[this.indexApproach].approachsItems) {
+        this.approachs[this.indexApproach].approachsItems.push(item);
+      } else if (!this.isEditApproachItem && this.approachs && this.approachs[this.indexApproach] && !this.approachs[this.indexApproach].approachsItems) {
+        this.approachs[this.indexApproach].approachsItems = [item];
+      }
     }
   }
 
