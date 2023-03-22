@@ -124,7 +124,6 @@ import { Vue, Component, Prop } from 'vue-property-decorator';
 import { mixins } from 'vue-class-component';
 import Helper from '@/mixins/Helper';
 import Global from '@/mixins/GlobalMixin';
-import { TExercise } from '@/controllers/ExerciseController';
 import TrainingController, { TTraining, TTrainingFilterViewModel } from '@/controllers/TrainingController';
 import Filters from './Components/Filters.vue';
 import Sorter from '../Components/Sorter.vue';

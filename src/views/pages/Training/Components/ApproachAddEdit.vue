@@ -58,6 +58,16 @@
             </v-btn>
           </v-list-item-action>
         </v-list-item>
+        <v-list-item link @click="onClickDeleteApproachItem(index)">
+          <v-list-item-content>
+            <v-list-item-title>Удалить подход</v-list-item-title>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-btn icon>
+              <v-icon color="red lighten-1">mdi-close</v-icon>
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
       </v-list-group>
     </v-list>
     <ModalAddExercise
@@ -75,6 +85,12 @@
       @select="onClickSelect"
       @cancel="onClickCancel"
     />
+    <ModalDeleteApproach
+      :show="stateModalDeleteApproach"
+      :selected.sync="deleteApproach"
+      @select="onClickSelectDeleteApproach"
+      @canel="onClickCancelDeleteApproach"
+    />
   </div>
 </template>
 <script lang="ts">
@@ -90,6 +106,8 @@ import InlineSliderField from '@/components/InlineSliderField.vue';
 import Loader from '@/components/Loader.vue';
 import ModalAddEditApproachItem from './Modals/ModalAddEditApproachItem.vue';
 import ModalAddExercise from './Modals/ModalAddExercise.vue';
+import ModalDeleteApproach from './Modals/ModalDeleteApproach.vue';
+import { TSizeItem } from '@/controllers/SizeController';
 
 export type TApproachItemEl = {
   action: string | null,
@@ -113,6 +131,7 @@ export type TApproachEl = {
   InlineSliderField,
   ModalAddEditApproachItem,
   ModalAddExercise,
+  ModalDeleteApproach,
   Loader
   }
   })
@@ -122,6 +141,9 @@ export default class ApproachAddEdit extends Global {
     default: []
   }) approachs!: TApproach[] | null;
 
+  stateModalDeleteApproach = false;
+  deleteApproach: TApproach | null = null;
+
   stateModalAddExercise = false;
   isEditExercise = false;
   editExercise: TExercise | null = null;
@@ -130,10 +152,6 @@ export default class ApproachAddEdit extends Global {
   isEditApproachItem = false;
   editApproachItem: TApproachItem | null = null;
   numberOfApproach = 0;
-
-
-
-
   indexApproach: number | null = null;
   indexApproachItem = 0;
   keyApproachList = 0;
@@ -186,6 +204,11 @@ export default class ApproachAddEdit extends Global {
     this.stateModalAddApproachItem = true;
   }
 
+  initModalDeleteApproachItem(indexApproach: number) {
+    this.deleteApproach = this.approachs ? this.approachs[indexApproach] : null;
+    this.stateModalDeleteApproach = true;
+  }
+
   updateItems(item: TExercise) {
     let approach = new TApproach();
     approach.exercise = item;
@@ -231,6 +254,15 @@ export default class ApproachAddEdit extends Global {
     }
   }
 
+  deleteApproachItem(idApproach: string) {
+    const approachIndx = this.approachs?.findIndex(e => e.id === idApproach);
+    this.$delete(this.approachs as Array<TApproach>, approachIndx as number);
+  }
+
+  onClickDeleteApproachItem(indexApproach: number) {
+    this.initModalDeleteApproachItem(indexApproach);
+  }
+
   onClickAddApproachItem(indexApproach: number) {
     this.initModalAddApproachItem(indexApproach);
   }
@@ -259,6 +291,17 @@ export default class ApproachAddEdit extends Global {
       this.updateItems(this.editExercise);
       this.stateModalAddExercise = false;
     }
+  }
+
+  onClickSelectDeleteApproach() {
+    if (this.deleteApproach) {
+      this.deleteApproachItem(this.deleteApproach.id);
+      this.stateModalDeleteApproach = false;
+    }
+  }
+
+  onClickCancelDeleteApproach() {
+    this.stateModalDeleteApproach = false;
   }
 
   onClickCanelExercise() {
