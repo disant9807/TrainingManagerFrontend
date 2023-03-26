@@ -26,11 +26,13 @@ export class TSize {
   name: string;
   createdDate: string;
   sizeItems: Array<TSizeItem>;
+  isArchived: boolean;
   constructor() {
     this.id = '';
     this.name = '';
     this.createdDate = '';
     this.sizeItems = [];
+    this.isArchived = false;
   }
 }
 
