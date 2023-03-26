@@ -9,10 +9,14 @@ export type TSizeFilterViewModel = {
   categoryOfBodies?: string[],
   name?: string,
   period?: string[];
+  codeUnitsOfMeasurement?: string[],
+  createdFrom?: string,
+  createdTo?: string
 }
 
 export type TSizeFilterModel = {
   categoryOfBodies?: string[],
+  codeUnitsOfMeasurement?: string[],
   name?: string,
   createdFrom?: string;
   createdTo?: string;
@@ -71,10 +75,11 @@ class SizeModel extends BaseController {
   }
 
   async GetSize(filter: TSizeFilterViewModel, order: TOrder): Promise<TResult<TSize[]>> {
-    const { categoryOfBodies, name, period } = filter;
+    const { categoryOfBodies, name, period, codeUnitsOfMeasurement } = filter;
     const [createdFrom, createdTo] = period || [];
 
     const filterModel: TSizeFilterModel | undefined = {
+      codeUnitsOfMeasurement: codeUnitsOfMeasurement ?? [],
       categoryOfBodies: categoryOfBodies ?? [],
       name,
       createdFrom,
