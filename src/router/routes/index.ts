@@ -5,6 +5,8 @@ import TrainingProgramAddEdit from '@/views/pages/TrainingProgram/TrainingProgra
 import TrainingProgram from '@/views/pages/TrainingProgram/TrainingProgram.vue';
 import TrainingAddEdit from '@/views/pages/Training/TrainingAddEdit.vue';
 import Training from '@/views/pages/Training/Training.vue';
+import Size from '@/views/pages/Size/Size.vue';
+import SizeAddEdit from '@/views/pages/SizeAddEdit.vue';
 
 const routes: Array<RouteConfig> = [
   {
@@ -67,6 +69,25 @@ const routes: Array<RouteConfig> = [
     path: '/training/:id/edit',
     component: TrainingAddEdit,
     meta: { title: 'Редактирование тренировоки' },
+    props: true
+  },
+  {
+    name: 'Size',
+    path: '/size',
+    component: Size,
+    meta: { title: 'Замеры' }
+  },
+  {
+    name: 'SizeAdd',
+    path: '/size/add',
+    component: SizeAddEdit,
+    meta: { title: 'Добавление замера' }
+  },
+  {
+    name: 'SizeEdit',
+    path: '/size/:id/edit',
+    component: SizeAddEdit,
+    meta: { title: 'Редактирование замера' },
     props: true
   }
 ];

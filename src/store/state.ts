@@ -57,6 +57,14 @@ export default class State {
       periodTrainingDate: [],
       exercise: [],
       categoryOfBodies: []
+    },
+    size: {
+      name: '',
+      createdFrom: '',
+      createdTo: '',
+      period: [],
+      categoryOfBodies: [],
+      codeUnitsOfMeasurement: []
     }
   }
 
@@ -72,6 +80,10 @@ export default class State {
     training: {
       list: true,
       selectedTraining: true
+    },
+    size: {
+      list: true,
+      selectedSize: true
     }
   }
 
