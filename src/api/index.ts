@@ -4,6 +4,7 @@ import { getInstance as getExerciseApi } from '@/api/exerciseApi';
 import { getInstance as getTrainingProgramApi } from '@/api/TrainingProgramApi';
 import { getInstance as getTrainingApi } from '@/api/TrainingApi';
 import { getInstance as getSizeApi } from '@/api/SizeApi';
+import { getInstance as getGoalApi } from '@/api/GoalApi';
 
 export default {
   base,
@@ -11,5 +12,6 @@ export default {
   getExerciseApi,
   getTrainingProgramApi,
   getTrainingApi,
-  getSizeApi
+  getSizeApi,
+  getGoalApi
 };

@@ -65,6 +65,18 @@ export default class State {
       period: [],
       categoryOfBodies: [],
       codeUnitsOfMeasurement: []
+    },
+    goal: {
+      name: '',
+      description: '',
+      period: [],
+      periodCompletion: [],
+      categoryOfBodies: [],
+      codeUnitsOfMeasurement: [],
+      createdFrom: '',
+      createdTo: '',
+      completionFrom: '',
+      completionTo: ''
     }
   }
 
@@ -84,6 +96,10 @@ export default class State {
     size: {
       list: true,
       selectedSize: true
+    },
+    goal: {
+      list: true,
+      selectedGoal: true
     }
   }
 

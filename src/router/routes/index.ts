@@ -6,7 +6,9 @@ import TrainingProgram from '@/views/pages/TrainingProgram/TrainingProgram.vue';
 import TrainingAddEdit from '@/views/pages/Training/TrainingAddEdit.vue';
 import Training from '@/views/pages/Training/Training.vue';
 import Size from '@/views/pages/Size/Size.vue';
-import SizeAddEdit from '@/views/pages/SizeAddEdit.vue';
+import SizeAddEdit from '@/views/pages/Size/SizeAddEdit.vue';
+import Goal from '@/views/pages/Goal/Goal.vue';
+import GoalAddEdit from '@/views/pages/Goal/GoalAddEdit.vue';
 
 const routes: Array<RouteConfig> = [
   {
@@ -89,7 +91,26 @@ const routes: Array<RouteConfig> = [
     component: SizeAddEdit,
     meta: { title: 'Редактирование замера' },
     props: true
-  }
+  },
+  {
+    name: 'Goal',
+    path: '/goal',
+    component: Goal,
+    meta: { title: 'Цели' }
+  },
+  {
+    name: 'GoalAdd',
+    path: '/goal/add',
+    component: GoalAddEdit,
+    meta: { title: 'Добавление цели' }
+  },
+  {
+    name: 'GoalEdit',
+    path: '/goal/edit',
+    component: GoalAddEdit,
+    meta: { title: 'Редактирование цели' },
+    props: true
+  },
 ];
 
 export default routes;
