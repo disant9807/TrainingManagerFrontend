@@ -106,7 +106,8 @@ export default class NavigationLinks extends Vue {
     { id: 1, title: 'Тренировки', isHuge: true, icon: 'mdi-weight-lifter', pathName: 'Training' },
     { id: 2, title: 'Упражнения', isHuge: true, icon: 'mdi-dumbbell', pathName: 'Exercise' },
     { id: 3, title: 'Тренировочные программы', isHuge: true, icon: 'mdi-book-open', pathName: 'TrainingProgram' },
-    // { id: 4, title: 'Цели', isHuge: true, icon: 'mdi-cloud-download', pathName: 'Exercise' },
+    { id: 4, title: 'Цели', isHuge: true, icon: 'mdi-flag-checkered', pathName: 'Goal' },
+    { id: 5, title: 'Замеры', isHuge: true, icon: 'mdi-beaker', pathName: 'Size' },
     // { id: 5, title: 'Замеры', isHuge: true, icon: 'mdi-cloud-upload', pathName: 'Exercise' },
     // { id: 6, title: 'Статистика', isHuge: true, icon: 'mdi-cloud-download', pathName: 'Exercise' }
   ];

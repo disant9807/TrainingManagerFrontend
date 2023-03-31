@@ -42,7 +42,7 @@
                 rounded
               >
                 <SubGoalAddEdit
-                  :size-items.sync="view.subGoals"
+                  :sub-goals.sync="view.subGoals"
                 />
               </v-sheet>
             </v-form>
@@ -91,7 +91,7 @@ import SubGoalAddEdit from './Components/SubGoalAddEdit.vue';
   SubGoalAddEdit
   }
   })
-export default class TrainingAddEdit extends Global {
+export default class GoalAddEdit extends Global {
   @Ref('form') readonly form!: any;
 
   isEdit = false;
