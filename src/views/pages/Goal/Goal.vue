@@ -7,10 +7,10 @@
           size="32"
           class="mr-4"
         >
-          mdi-ruler
+          mdi-flag-checkered
         </v-icon>
         <v-subheader class="white--text font-weight-light headerWrap">
-          <div class="header">Замеры</div>
+          <div class="header">Цели</div>
         </v-subheader>
         <v-btn
           color="white"

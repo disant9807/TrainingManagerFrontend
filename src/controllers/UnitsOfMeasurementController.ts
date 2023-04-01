@@ -11,7 +11,7 @@ export type TUnitsOfMeasurementFilterViewModel = {
 
 export type TUnitsOfMeasurementFilterModel = {
   queryString?: string,
-  order: TOrder,
+  order?: TOrder,
   start?: string,
   count?: string
 }
@@ -36,17 +36,16 @@ class UnitsOfMeasurementModel extends BaseController {
   }
 
   async UpdateUnitsOfMeasurement(code: string, unitsOfMeasurement: TUnitsOfMeasurement) {
-    return await this.handleAndResolve(() => unitsOfMeasurementController.UpdateUnitsOfMeasurementApi(unitsOfMeasurement));
+    return await this.handleAndResolve(() => unitsOfMeasurementController.UpdateUnitsOfMeasurementApi(code, unitsOfMeasurement));
   }
 
   async GetUnitsOfMeasurementById(code: string): Promise<TUnitsOfMeasurement> {
     return await this.handleAndResolve(() => unitsOfMeasurementController.GetUnitsOfMeasurementApiById(code));
   }
 
-  async GetUnitsOfMeasurement(filter: TUnitsOfMeasurementFilterModel, order: TOrder): Promise<TResult<TUnitsOfMeasurement[]>> {
+  async GetUnitsOfMeasurement(filter: TUnitsOfMeasurementFilterModel): Promise<TResult<TUnitsOfMeasurement[]>> {
     const filterModel: TUnitsOfMeasurementFilterModel | undefined = {
-      queryString: filter.queryString,
-      order
+      queryString: filter.queryString
     };
 
     return await unitsOfMeasurementController.GetUnitsOfMeasurementApi(filterModel);

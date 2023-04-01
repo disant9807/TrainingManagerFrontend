@@ -26,8 +26,8 @@ export class UnitsOfMeasurementApi {
       return this.api.POST(baseUrl, `${sizeUrl}/create`, size);
     }
 
-    UpdateUnitsOfMeasurementApi(size: any): Promise<TResult<string>> {
-      return this.api.POST(baseUrl, `${sizeUrl}/update`, size);
+    UpdateUnitsOfMeasurementApi(code: string, size: any): Promise<TResult<string>> {
+      return this.api.POST(baseUrl, `${sizeUrl}/${code}/update`, size);
     }
 
     GetUnitsOfMeasurementApiById(id: string): Promise<TResult<any>> {

@@ -39,7 +39,8 @@ import { Vue, Component } from 'vue-property-decorator';
 @Component
 export default class Settings extends Vue {
   spravochniki = [
-    { text: 'Единицы измерения', pathName: 'UnitsOfMeasurement' }
+    { text: 'Единицы измерения', pathName: 'Units' },
+    { text: 'Части тела', pathName: 'CodeOfBody' }
   ]
 }
 </script>

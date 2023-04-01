@@ -77,6 +77,9 @@ export default class State {
       createdTo: '',
       completionFrom: '',
       completionTo: ''
+    },
+    unitsofmeasurement: {
+      queryString: ''
     }
   }
 
@@ -100,6 +103,10 @@ export default class State {
     goal: {
       list: true,
       selectedGoal: true
+    },
+    unitsofmeasurement: {
+      list: true,
+      selectedUnitsOfMeasurement: true
     }
   }
 

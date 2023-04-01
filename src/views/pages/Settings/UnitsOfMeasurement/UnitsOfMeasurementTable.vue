@@ -1,9 +1,9 @@
 <template>
   <v-data-table
     :loading="loading"
-    :loading-text="$localize('userGuide.loadingText','settings')"
+    loading-text="Загрузка поазателей"
     :headers="headers"
-    :items="users"
+    :items="unitsOfMeasurement"
     :page.sync="page"
     :items-per-page="10"
     multi-sort
@@ -28,7 +28,7 @@
       </v-tooltip>
     </template>
     <template
-      v-if="!!users"
+      v-if="!!unitsOfMeasurement"
       v-slot:body="{ items }"
     >
       <tbody>
@@ -37,32 +37,8 @@
           :key="item.id"
         >
           <td> {{ index + 1 }}</td>
-          <td> {{ item.id }} </td>
-          <td> {{ item.surname + ' ' + item.firstName + ' ' + item.middleName }} </td>
-          <td> {{ item.email }} </td>
-          <td> {{ toLocalDate(item.certificateFrom) }}</td>
-          <td> {{ toLocalDate(item.certificateTo) }}</td>
-          <td> {{ item.organization }} </td>
-          <td> {{ item.department }} </td>
-          <td> {{ toLocalDate(item.createdDatetime) }} </td>
-          <td>
-            <v-simple-checkbox
-              v-model="item.blocked"
-              disabled
-            />
-          </td>
-          <td>
-            <v-simple-checkbox
-              v-model="item.archive"
-              disabled
-            />
-          </td>
-          <td>
-            <v-simple-checkbox
-              v-model="item.fromAD"
-              disabled
-            />
-          </td>
+          <td> {{ item.code }} </td>
+          <td> {{ item.value }} </td>
           <td style="white-space: nowrap;">
             <v-icon
               small
@@ -81,40 +57,6 @@
             >
               mdi-delete
             </v-icon>
-            <v-icon
-              v-else
-              small
-              color="darkblue"
-              class="mr-2"
-              @click="$emit('restore', item)"
-            >
-              mdi-restore
-            </v-icon>
-            <v-icon
-              v-if="item.blocked"
-              small
-              color="darkblue"
-              class="mr-2"
-              @click="$emit('unblock', item)"
-            >
-              mdi-lock-open-variant
-            </v-icon>
-            <v-icon
-              v-else
-              small
-              color="darkblue"
-              class="mr-2"
-              @click="$emit('block', item)"
-            >
-              mdi-lock
-            </v-icon>
-            <v-icon
-              small
-              color="darkblue"
-              @click="copy(item)"
-            >
-              mdi-content-copy
-            </v-icon>
           </td>
         </tr>
       </tbody>
@@ -128,44 +70,20 @@ import Global from '@/mixins/GlobalMixin';
 import Helper from '@/mixins/Helper';
 import { mixins } from 'vue-class-component';
 import { toDateFormat } from '@/utils/dateHelper';
-import { TUser } from '@/controllers/UserController';
-import { ERequestMode } from '@/api/models/enums';
+import { TUnitsOfMeasurement } from '@/controllers/UnitsOfMeasurementController';
 
 @Component
-export default class UserGuideTable extends mixins(Global, Helper) {
-  @Prop(Array) users!: TUser[];
+export default class UnitsOfMeasurementTable extends mixins(Global, Helper) {
+  @Prop(Array) unitsOfMeasurement!: TUnitsOfMeasurement[];
   @Prop(Boolean) loading!: boolean;
 
   page = 1;
   headers = [
     { text: '№', value: 'index', sortable: false },
-    { text: this.$localize('userGuide.thLogin', 'settings'), value: 'id' },
-    { text: this.$localize('userGuide.thName', 'settings'), value: 'firstName' },
-    { text: this.$localize('userGuide.thEmail', 'settings'), value: 'email' },
-    { text: this.$localize('userGuide.thCertificateFrom', 'settings'), value: 'certificateFrom' },
-    { text: this.$localize('userGuide.thCertificateTo', 'settings'), value: 'certificateTo' },
-    { text: 'Организация', value: 'organization' },
-    { text: this.$localize('userGuide.thDepartament', 'settings'), value: 'department' },
-    { text: 'Дата создания', value: 'createdDatetime' },
-    { text: 'Заблокирован', value: 'blocked', align: 'center' },
-    { text: this.$localize('userGuide.thArchive', 'settings'), value: 'archive', align: 'center' },
-    { text: this.$localize('userGuide.thFromAD', 'settings'), value: 'fromAD' },
+    { text: 'Код', value: 'code' },
+    { text: 'Значение', value: 'value' },
     { text: '', value: 'action', sortable: false }
   ]
-
-  toLocalDate(date: string | Date) {
-    return toDateFormat(date, null);
-  }
-
-  copy(data: typeof TUser) {
-    this.$router.push({
-      name: 'EditUserForm',
-      params: {
-        mode: ERequestMode.COPY,
-        data: data as any
-      }
-    });
-  }
 }
 
 </script>

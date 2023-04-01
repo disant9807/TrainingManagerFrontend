@@ -9,6 +9,8 @@ import Size from '@/views/pages/Size/Size.vue';
 import SizeAddEdit from '@/views/pages/Size/SizeAddEdit.vue';
 import Goal from '@/views/pages/Goal/Goal.vue';
 import GoalAddEdit from '@/views/pages/Goal/GoalAddEdit.vue';
+import Settings from '@/views/pages/Settings/Settings.vue';
+import UnitsOfMeasurementGuide from '@/views/pages/Settings/UnitsOfMeasurement/UnitsOfMeasurementGuide.vue';
 
 const routes: Array<RouteConfig> = [
   {
@@ -111,6 +113,18 @@ const routes: Array<RouteConfig> = [
     meta: { title: 'Редактирование цели' },
     props: true
   },
+  {
+    name: 'Settings',
+    path: '/settings',
+    component: Settings,
+    meta: { title: 'Настройки' }
+  },
+  {
+    name: 'Units',
+    path: '/unitsofmeasurement',
+    component: UnitsOfMeasurementGuide,
+    meta: { title: 'Показатели' }
+  }
 ];
 
 export default routes;

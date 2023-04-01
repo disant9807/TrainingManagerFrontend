@@ -6,37 +6,69 @@
       @close="closeDeleteDialog"
     >
       <div class="d-flex justify-center">
-        <span> {{ $localize('userRemoveConfirmMessage', 'messages') }} </span>
+        <span> Вы действительно желаете удалить показатель ? </span>
       </div>
     </modal-dialog>
 
     <modal-dialog
-      :is-open="restoreDialog"
-      :modal-data="modalRestoreData"
-      @close="closeRestoreDialog"
+      :is-open="editDialog"
+      :modal-data="modalEditData"
+      @close="closeEditDialog"
     >
-      <div class="d-flex justify-center">
-        <span> {{ $localize('userRestoreConfirmMessage', 'messages') }} </span>
-      </div>
+      <v-form
+        ref="formEdit"
+        lazy-validation
+      >
+        <v-row>
+          <v-col>
+            <InlineTextField
+              label="Код показателя"
+              :value.sync="viewEdit.code"
+              :rules="[rules.required]"
+            />
+          </v-col>
+        </v-row>
+        <v-row>
+          <v-col>
+            <InlineTextField
+              label="Значение показателя"
+              :value.sync="viewEdit.value"
+              :rules="[rules.required]"
+            />
+          </v-col>
+        </v-row>
+      </v-form>
     </modal-dialog>
 
     <modal-dialog
-      :is-open="blockDialog"
-      :modal-data="modalBlockData"
-      @close="closeBlockDialog"
+      :is-open="addDialog"
+      :modal-data="modalAddData"
+      @close="closeAddDialog"
     >
-      <div class="d-flex justify-center">
-        <span> {{ $localize('userBlockConfirmMessage', 'messages') }} </span>
-      </div>
-    </modal-dialog>
-
-    <modal-dialog
-      :is-open="unblockDialog"
-      :modal-data="modalUnblockData"
-      @close="closeUnblockDialog"
-    >
-      <div class="d-flex justify-center">
-        <span> {{ $localize('userUnblockConfirmMessage', 'messages') }} </span>
+      <div class="container">
+        <v-form
+          ref="formAdd"
+          lazy-validation
+        >
+          <v-row>
+            <v-col>
+              <InlineTextField
+                label="Код показателя"
+                :value.sync="viewAdd.code"
+                :rules="[rules.required]"
+              />
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-col>
+              <InlineTextField
+                label="Значение показателя"
+                :value.sync="viewAdd.value"
+                :rules="[rules.required]"
+              />
+            </v-col>
+          </v-row>
+        </v-form>
       </div>
     </modal-dialog>
 
@@ -47,32 +79,23 @@
           size="32"
           class="mr-4"
         >
-          mdi-account-group
+          mdi-warehouse
         </v-icon>
         <v-subheader class="white--text font-weight-light header-wrap">
-          <div class="header">{{ $localize('userGuide.header', 'settings') }}</div>
+          <div class="header">Справочник показателей</div>
         </v-subheader>
       </v-card-title>
       <v-row>
-        <v-col class="col-1">
+        <v-col class="col-1 mr-1">
           <v-btn
             color="primary"
             class="ml-3 mt-3"
-            @click="$router.push({ name: 'EditUserForm' })"
+            @click="initAdd()"
           >
-            {{ $localize('userGuide.addUserBtn', 'settings') }}
+            Добавить
           </v-btn>
         </v-col>
-        <v-col class="col-1">
-          <v-btn
-            color="primary"
-            class="mt-3 mx-3"
-            @click="$router.push({ name: 'EditUsersSettings' })"
-          >
-            {{ $localize('userGuide.usersSettingsBtn', 'settings') }}
-          </v-btn>
-        </v-col>
-        <v-col class="col-1">
+        <v-col class="col-1 mr-1">
           <v-btn
             color="primary"
             class="mt-3 ml-6"
@@ -85,65 +108,68 @@
           <filters @change="loadData" />
         </v-col>
       </v-row>
-      <users-table
-        :users="users"
+      <units-of-measurement-table
+        :units-of-measurement="unitsOfMeasurements"
         :loading="loading"
-        @edit="(user) => $router.push({ name: 'EditUserForm', params: { id: user.id } })"
-        @delete="(user) => { editedItem = user; removeDialog = true; }"
-        @restore="user => { editedItem = user; restoreDialog = true; }"
-        @block="user => { editedItem = user; blockDialog = true; }"
-        @unblock="user => { editedItem = user; unblockDialog = true; }"
+        @edit="(unitsOfMeasurement) => initEdit(unitsOfMeasurement)"
+        @delete="(unitsOfMeasurement) => { deletedItem = unitsOfMeasurement; removeDialog = true; }"
       />
     </v-card>
   </div>
 </template>
 <script lang="ts">
 import ModalDialog, { TModalView } from '@/components/ModalDialog.vue';
-import { Component } from 'vue-property-decorator';
+import { Component, Ref } from 'vue-property-decorator';
 import Global from '@/mixins/GlobalMixin';
 import { mixins } from 'vue-class-component';
-import UsersTable from './UsersTable.vue';
-import UserController, { TUserGuideFilterModel, filterName, TUser } from '@/controllers/UserController';
+import UnitsOfMeasurementTable from './UnitsOfMeasurementTable.vue';
+import UnitsOfMeasurementController, { TUnitsOfMeasurement, TUnitsOfMeasurementFilterModel } from '@/controllers/UnitsOfMeasurementController';
 import Filters from './Filters/Filters.vue';
 import { State } from 'vuex-class';
-import OrganizationsController from '@/controllers/OrganizationsController';
+import InlineTextField from '@/components/InlineTextField.vue';
 
 @Component({
   components: {
-    ModalDialog,
-    UsersTable,
-    Filters
+  ModalDialog,
+  UnitsOfMeasurementTable,
+  Filters,
+  InlineTextField
   }
 })
 
-export default class UserGuide extends mixins(Global) {
+export default class UnitsOfMeasurementGuide extends mixins(Global) {
+  @Ref('formEdit') readonly formEdit!: any;
+  @Ref('formAdd') readonly formAdd!: any;
   @State readonly filters!: any;
 
-  users: TUser[] = [];
+  unitsOfMeasurements: TUnitsOfMeasurement[] = [];
   loading = false;
 
   removeDialog = false;
   editDialog = false;
-  restoreDialog = false;
-  blockDialog = false;
-  unblockDialog = false;
+  addDialog = false;
 
-  editedItem: TUser = {} as TUser;
+  deletedItem: TUnitsOfMeasurement = {} as TUnitsOfMeasurement;
 
-  get filterModel(): TUserGuideFilterModel {
-    return this.filters[filterName];
+  viewEdit: TUnitsOfMeasurement = new TUnitsOfMeasurement();
+  editCode: string | null = null;
+
+  viewAdd: TUnitsOfMeasurement = new TUnitsOfMeasurement();
+
+  get filterModel(): TUnitsOfMeasurementFilterModel {
+    return this.filters.unitsofmeasurement;
   }
 
   get modalDeleteData(): TModalView {
     return {
-      title: this.$localize('confirmation.title', 'modalData'),
+      title: 'Вы действительно желаете удалить показатель ?',
       titleIcon: '',
       maxWidth: 420,
       actions: [
         {
           label: 'Продолжить',
           onClick: () => {
-            this.delete(this.editedItem);
+            this.delete(this.deletedItem);
             this.closeDeleteDialog();
           }
         },
@@ -155,58 +181,43 @@ export default class UserGuide extends mixins(Global) {
     };
   }
 
-  get modalRestoreData() : TModalView {
+  get modalEditData(): TModalView {
     return {
-      title: this.$localize('confirmation.title', 'modalData'),
+      title: 'Редактирование показателя',
+      titleIcon: '',
+      maxWidth: 420,
       actions: [
         {
-          label: this.$localize('confirmation.proceedAction', 'modalData'),
+          label: 'Сохранить',
           onClick: () => {
-            this.restore(this.editedItem);
-            this.closeRestoreDialog();
+            this.update();
+            this.closeEditDialog();
           }
         },
         {
-          label: this.$localize('confirmation.cancelAction', 'modalData'),
-          onClick: () => this.closeRestoreDialog()
+          label: 'Отмена',
+          onClick: () => this.closeEditDialog()
         }
       ]
     };
   }
 
-  get modalBlockData() : TModalView {
+  get modalAddData(): TModalView {
     return {
-      title: this.$localize('confirmation.title', 'modalData'),
+      title: 'Добавление показателя',
+      titleIcon: '',
+      maxWidth: 420,
       actions: [
         {
-          label: this.$localize('confirmation.proceedAction', 'modalData'),
+          label: 'Сохранить',
           onClick: () => {
-            this.blockToggle(this.editedItem, true);
-            this.closeBlockDialog();
+            this.add();
+            this.closeAddDialog();
           }
         },
         {
-          label: this.$localize('confirmation.cancelAction', 'modalData'),
-          onClick: () => this.closeBlockDialog()
-        }
-      ]
-    };
-  }
-
-  get modalUnblockData() : TModalView {
-    return {
-      title: this.$localize('confirmation.title', 'modalData'),
-      actions: [
-        {
-          label: this.$localize('confirmation.proceedAction', 'modalData'),
-          onClick: () => {
-            this.blockToggle(this.editedItem, false);
-            this.closeUnblockDialog();
-          }
-        },
-        {
-          label: this.$localize('confirmation.cancelAction', 'modalData'),
-          onClick: () => this.closeUnblockDialog()
+          label: 'Отмена',
+          onClick: () => this.closeAddDialog()
         }
       ]
     };
@@ -215,8 +226,8 @@ export default class UserGuide extends mixins(Global) {
   async loadData() {
     try {
       this.loading = true;
-      const response = await UserController.getUsers(this.filterModel);
-      this.users = response.sort((a, b) => a.surname.toLowerCase() > b.surname.toLowerCase() ? 1 : -1);
+      const response = await UnitsOfMeasurementController.GetUnitsOfMeasurement(this.filterModel);
+      this.unitsOfMeasurements = response?.data.sort((a, b) => a.value.toLowerCase() > b.value.toLowerCase() ? 1 : -1);
     } catch (error: any) {
       this.showError(error);
     } finally {
@@ -224,67 +235,76 @@ export default class UserGuide extends mixins(Global) {
     }
   }
 
-  edit(user: TUser) {
-    this.editedItem = { ...user };
+  initEdit(unit: TUnitsOfMeasurement) {
+    this.editCode = unit.code;
+    this.viewEdit = { ...unit };
     this.editDialog = true;
   }
 
-  async delete(item: TUser) {
+  initAdd() {
+    this.viewAdd = {} as TUnitsOfMeasurement;
+    this.addDialog = true;
+  }
+
+  async delete(item: TUnitsOfMeasurement) {
     try {
-      await UserController.removeUser(item.id);
-      this.showSuccess(this.$localize('userRemovedMessage', 'messages'));
+      await UnitsOfMeasurementController.RemoveUnitsOfMeasurement(item.code);
+      this.showSuccess('Показатель успешно удален');
       await this.loadData();
     } catch (error) {
       if (error instanceof Error) this.showError(error.message);
     }
   }
 
-  async restore(item: TUser) {
+  async update() {
+    if (!this.formEdit.validate()) {
+      this.showInfo('Необходимо заполнить обязательные поля!');
+      return;
+    }
+
     try {
-      await UserController.removeUser(item.id, false);
-      this.showSuccess(this.$localize('userRestoredMessage', 'messages'));
+      await UnitsOfMeasurementController.UpdateUnitsOfMeasurement(this.editCode as string, this.viewEdit);
+      this.showSuccess('Показатель успешно обновлен');
       await this.loadData();
-    } catch (error: any) {
-      this.showError(error);
+    } catch (error) {
+      if (error instanceof Error) this.showError(error.message);
     }
   }
 
-  async blockToggle(item: TUser, block: boolean) {
+  async add() {
+    if (!this.formAdd.validate()) {
+      this.showInfo('Необходимо заполнить обязательные поля!');
+      return;
+    }
+
     try {
-      await UserController.userBlockToggle(item.id, block);
-      this.showSuccess(this.$localize(block 
-        ? 'userBlockedMessage' : 'userUnblockedMessage', 
-      'messages'));
+      await UnitsOfMeasurementController.CreateUnitsOfMeasurement(this.viewAdd);
+      this.showSuccess('Показатель успешно создан');
       await this.loadData();
-    } catch (error: any) {
-      this.showError(error);
+    } catch (error) {
+      if (error instanceof Error) this.showError(error.message);
     }
   }
 
   closeDeleteDialog() {
-    this.editedItem = {} as TUser;
+    this.deletedItem = {} as TUnitsOfMeasurement;
     this.removeDialog = false;
   }
 
-  closeRestoreDialog() {
-    this.editedItem = {} as TUser;
-    this.restoreDialog = false;
+  closeEditDialog() {
+    this.editCode = null;
+    this.viewEdit = {} as TUnitsOfMeasurement;
+    this.editDialog = false;
   }
 
-  closeBlockDialog() {
-    this.editedItem = {} as TUser;
-    this.blockDialog = false;
-  }
-
-  closeUnblockDialog() {
-    this.editedItem = {} as TUser;
-    this.unblockDialog = false;
+  closeAddDialog() {
+    this.viewAdd = {} as TUnitsOfMeasurement;
+    this.addDialog = false;
   }
 
   async mounted() {
     try {
       await this.loadData();
-      await OrganizationsController.getDepartments();
     } catch (error) {
       if (error instanceof Error) this.showError(error.message);
     }

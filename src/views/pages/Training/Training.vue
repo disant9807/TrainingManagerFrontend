@@ -7,7 +7,7 @@
           size="32"
           class="mr-4"
         >
-          mdi-book-open
+          mdi-weight-lifter
         </v-icon>
         <v-subheader class="white--text font-weight-light headerWrap">
           <div class="header">Тренировки</div>
