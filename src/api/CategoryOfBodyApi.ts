@@ -26,8 +26,8 @@ export class CategoryOfBodyApi {
       return this.api.POST(baseUrl, `${sizeUrl}/create`, size);
     }
 
-    UpdateCategoryOfBody(size: any): Promise<TResult<string>> {
-      return this.api.POST(baseUrl, `${sizeUrl}/update`, size);
+    UpdateCategoryOfBody(code: string, size: any): Promise<TResult<string>> {
+      return this.api.POST(baseUrl, `${sizeUrl}/${code}/update`, size);
     }
 
     GetCategoryOfBodyById(id: string): Promise<TResult<any>> {

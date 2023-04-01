@@ -11,6 +11,7 @@ import Goal from '@/views/pages/Goal/Goal.vue';
 import GoalAddEdit from '@/views/pages/Goal/GoalAddEdit.vue';
 import Settings from '@/views/pages/Settings/Settings.vue';
 import UnitsOfMeasurementGuide from '@/views/pages/Settings/UnitsOfMeasurement/UnitsOfMeasurementGuide.vue';
+import CregoryOfBodyGuide from '@/views/pages/Settings/CategoryOfBody/CategoryOfBodyGuide.vue';
 
 const routes: Array<RouteConfig> = [
   {
@@ -123,6 +124,12 @@ const routes: Array<RouteConfig> = [
     name: 'Units',
     path: '/unitsofmeasurement',
     component: UnitsOfMeasurementGuide,
+    meta: { title: 'Показатели' }
+  },
+  {
+    name: 'CategoryOfBody',
+    path: '/categoryofbody',
+    component: CregoryOfBodyGuide,
     meta: { title: 'Показатели' }
   }
 ];

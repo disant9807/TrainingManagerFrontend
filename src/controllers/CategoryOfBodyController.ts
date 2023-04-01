@@ -11,7 +11,7 @@ export type TCategoryOfBodyFilterViewModel = {
 
 export type TCategoryOfBodyFilterModel = {
   queryString?: string,
-  order: TOrder,
+  order?: TOrder,
   start?: string,
   count?: string
 }
@@ -40,17 +40,16 @@ class CategoryOfBodyModel extends BaseController {
   }
 
   async UpdateCategoryOfBody(code: string, categoryOfBody: TCategoryOfBody) {
-    return await this.handleAndResolve(() => categoryOfBodyApi.UpdateCategoryOfBody(categoryOfBody));
+    return await this.handleAndResolve(() => categoryOfBodyApi.UpdateCategoryOfBody(code, categoryOfBody));
   }
 
   async GetCategoryOfBodyById(code: string): Promise<TCategoryOfBody> {
     return await this.handleAndResolve(() => categoryOfBodyApi.GetCategoryOfBodyById(code));
   }
 
-  async GetCategoryOfBody(filter: TCategoryOfBodyFilterModel, order: TOrder): Promise<TResult<TCategoryOfBody[]>> {
+  async GetCategoryOfBody(filter: TCategoryOfBodyFilterModel): Promise<TResult<TCategoryOfBody[]>> {
     const filterModel: TCategoryOfBodyFilterModel | undefined = {
-      queryString: filter.queryString,
-      order
+      queryString: filter.queryString
     };
 
     return await categoryOfBodyApi.GetCategoryOfBody(filterModel);

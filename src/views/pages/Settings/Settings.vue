@@ -1,36 +1,34 @@
 <template>
-  <v-container>
-    <v-card>
-      <v-card-title class="text-h5">
-        <v-icon color="white" large class="mr-2">mdi-cog-outline</v-icon>
-        Настройки
-      </v-card-title>
-      <v-card-text>
-        <v-row class="pa-5">
-          <v-col>
-            <v-list class="mb-5" flat>
-              <v-subheader class="mb-4">
-                <span class="text-h6">Справочники</span>
-              </v-subheader>
-              <v-list-item
-                v-for="(item, i) in spravochniki"
-                :key="i"
-                link
-                :to="{ name: item.pathName }"
-              >
-                <v-list-item-icon>
-                  <v-icon>mdi-chevron-right</v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title v-text="item.text" />
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-col>
-        </v-row>
-      </v-card-text>
-    </v-card>
-  </v-container>
+  <v-card>
+    <v-card-title class="text-h5">
+      <v-icon color="white" large class="mr-2">mdi-cog-outline</v-icon>
+      Настройки
+    </v-card-title>
+    <v-card-text>
+      <v-row class="pa-5">
+        <v-col>
+          <v-list class="mb-5" flat>
+            <v-subheader class="mb-4">
+              <span class="text-h6">Справочники</span>
+            </v-subheader>
+            <v-list-item
+              v-for="(item, i) in spravochniki"
+              :key="i"
+              link
+              :to="{ name: item.pathName }"
+            >
+              <v-list-item-icon>
+                <v-icon>mdi-chevron-right</v-icon>
+              </v-list-item-icon>
+              <v-list-item-content>
+                <v-list-item-title v-text="item.text" />
+              </v-list-item-content>
+            </v-list-item>
+          </v-list>
+        </v-col>
+      </v-row>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script lang="ts">
@@ -40,7 +38,7 @@ import { Vue, Component } from 'vue-property-decorator';
 export default class Settings extends Vue {
   spravochniki = [
     { text: 'Единицы измерения', pathName: 'Units' },
-    { text: 'Части тела', pathName: 'CodeOfBody' }
+    { text: 'Показатели', pathName: 'CategoryOfBody' }
   ]
 }
 </script>

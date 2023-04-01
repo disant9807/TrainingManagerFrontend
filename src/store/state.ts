@@ -80,6 +80,9 @@ export default class State {
     },
     unitsofmeasurement: {
       queryString: ''
+    },
+    categoryofbody: {
+      queryString: ''
     }
   }
 
@@ -107,6 +110,10 @@ export default class State {
     unitsofmeasurement: {
       list: true,
       selectedUnitsOfMeasurement: true
+    },
+    categoryofbody: {
+      list: true,
+      selectedategoryofbody: true
     }
   }
 
