@@ -100,6 +100,22 @@
         </slot>
       </v-card-actions>
     </v-card>
+    <ModalFilterCategoryOfBody
+      :show="selectCategoryOfBodyState"
+      :selected.sync="selectCategoryOfBodies"
+      :ids-selected="view.bodyCode"
+      :multiple="false"
+      @select="onClickSelectCategoryOfBody"
+      @cancel="onClickCancelCategoryOfBody"
+    />
+    <ModalFilterUnitsOfMeasurement
+      :show="selectUnitsOfMeasurementState"
+      :selected.sync="selectUnitsOfMeasurement"
+      :ids-selected="view.codeUnitsOfMeasurement"
+      :multiple="false"
+      @select="onClickSelectUnitsOfMeasurement"
+      @cancel="onClickCancelUnitsOfMeasurement"
+    />
   </v-dialog>
 </template>
 <script lang="ts">

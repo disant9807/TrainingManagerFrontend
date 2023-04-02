@@ -19,7 +19,7 @@
           <select-units-of-measurements
             class="py-5"
             :loading="loading"
-            units-of-measurement
+            :unitsOfMeasurement="unitsOfMeasurement"
             :selected.sync="localSelectedUnitsOfMeasurement"
             multiple
           />

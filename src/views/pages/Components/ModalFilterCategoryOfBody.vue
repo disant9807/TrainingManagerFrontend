@@ -19,7 +19,7 @@
           <select-category-of-body
             class="py-5"
             :loading="loading"
-            category-of-bodies
+            :CategoryOfBodies="CategoryOfBodies"
             :selected.sync="localSelectedCategoryOfBodies"
             multiple
           />
