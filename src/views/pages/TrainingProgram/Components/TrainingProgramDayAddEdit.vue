@@ -115,15 +115,16 @@ export default class TrainingProgramDayAddEdit extends Global {
       0;
   }
 
-  get items(): TTrainingProgramDayItem[] | [] {
-    return this.localTrainingPrograms?.sort(e => e.numberOfTrainingProgram)
-      ?.map((e, index) => {
-        return {
-          action: 'mdi-tag',
-          value: e,
-          active: index === 0
-        } as TTrainingProgramDayItem;
-      }) ?? [];
+  get items(): Array<TTrainingProgramDayItem> {
+    const programs = this.localTrainingPrograms || [];
+
+    programs.sort((a, b) => a.numberOfTrainingProgram - b.numberOfTrainingProgram);
+
+    return programs.map((program, index) => ({
+      action: 'mdi-tag',
+      value: program,
+      active: index === 0
+    }));
   }
 
   initModalAdd() {
@@ -140,11 +141,13 @@ export default class TrainingProgramDayAddEdit extends Global {
     this.stateModalAddDay = true;
   }
 
-  updateDays(item: TTrainingProgramDay) {
-    if (this.days as TTrainingProgramDay[] && this.days && this.daysEditIndex !== null) {
-      this.$set(this.days, this.daysEditIndex, item);
-    } else if (this.days as TTrainingProgramDay[] && this.days && this.daysEditIndex === null) {
-      this.days.push(item);
+  updateDays(item: TTrainingProgramDay): void {
+    const isDaysExist: boolean = Array.isArray(this.days) && this.days.length > 0;
+
+    if (isDaysExist && this.daysEditIndex !== null) {
+      this.$set(this.days as TTrainingProgramDay[], this.daysEditIndex, item);
+    } else if (isDaysExist && this.daysEditIndex === null) {
+      (this.days as TTrainingProgramDay[]).push(item);
     } else {
       this.days = [item];
     }

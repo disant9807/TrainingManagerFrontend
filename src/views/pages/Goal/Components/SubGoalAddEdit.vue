@@ -112,10 +112,12 @@ export default class SubGoalAddEdit extends Global {
   }
 
   updateItems(item: TSubGoal) {
-    if (this.goalItems as TSubGoal[] && this.goalItems && this.idxSubGoal !== null) {
-      this.$set(this.goalItems, this.idxSubGoal, item);
-    } else if (this.goalItems as TSubGoal[] && this.goalItems && this.idxSubGoal === null) {
-      this.goalItems.push(item);
+    const isSubGoalArray: boolean = Array.isArray(this.goalItems) && this.goalItems.every(i => i instanceof TSubGoal);
+
+    if (isSubGoalArray && this.idxSubGoal !== null) {
+      this.$set(this.goalItems as TSubGoal[], this.idxSubGoal, item);
+    } else if (isSubGoalArray && this.idxSubGoal === null) {
+      (this.goalItems as TSubGoal[]).push(item);
     } else {
       this.goalItems = [item];
     }
