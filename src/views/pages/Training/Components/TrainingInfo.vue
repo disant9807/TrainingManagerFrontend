@@ -100,21 +100,24 @@ export default class TrainingInfo
   }
 
   get items(): TApproachEl[] | [] {
-    return this.localTraining?.approachs.sort(e => e.numberOfTraining)
-      .map((e, index) => {
-        return {
-          action: 'mdi-tag',
-          value: e,
-          active: index === 0,
-          items: e.approachsItems.map((z, indexz) => {
-            return {
-              action: 'mdi-tag',
-              value: z,
-              active: indexz === 0,
-            } as TApproachItemEl;
-          })
-        } as TApproachEl;
-      }) ?? [];
+    if (!this.localTraining) return [];
+
+    const approachs = this.localTraining.approachs.sort((a, b) => a.numberOfTraining - b.numberOfTraining);
+    const items = approachs.map((e, index) => {
+      return {
+        action: 'mdi-tag',
+        value: e,
+        active: index === 0,
+        items: e.approachsItems.map((z, indexz) => {
+          return {
+            action: 'mdi-tag',
+            value: z,
+            active: indexz === 0,
+          } as TApproachItemEl;
+        })
+      } as TApproachEl;
+    });
+    return items;
   }
 }
 </script>

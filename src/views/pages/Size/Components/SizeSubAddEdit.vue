@@ -112,10 +112,12 @@ export default class SizeSubAddEdit extends Global {
   }
 
   updateItems(item: TSizeItem) {
-    if (this.sizeItems as TSizeItem[] && this.sizeItems && this.idxSubSize !== null) {
-      this.$set(this.sizeItems, this.idxSubSize, item);
-    } else if (this.sizeItems as TSizeItem[] && this.sizeItems && this.idxSubSize === null) {
-      this.sizeItems.push(item);
+    const isValidSizeItems = Array.isArray(this.sizeItems) && this.sizeItems.length;
+
+    if (isValidSizeItems && typeof this.idxSubSize === 'number') {
+      this.$set(this.sizeItems as TSizeItem[], this.idxSubSize, item);
+    } else if (isValidSizeItems) {
+      (this.sizeItems as TSizeItem[]).push(item);
     } else {
       this.sizeItems = [item];
     }

@@ -161,21 +161,21 @@ export default class ApproachAddEdit extends Global {
   }
 
   get items(): TApproachEl[] | [] {
-    return this.localApproach.sort((a, b) => { return a.numberOfTraining - b.numberOfTraining; })
-      .map((e, index) => {
-        return {
-          action: 'mdi-dumbbell',
-          value: e,
-          active: index === this.indexApproach,
-          items: e.approachsItems.sort((a, b) => { return a.numberOfApproach - b.numberOfApproach; })
-            .map((z, indexz) => {
-              return {
-                value: z,
-                active: indexz === 0,
-              } as TApproachItemEl;
-            })
-        } as TApproachEl;
-      }) ?? [];
+    const sortedApproach = this.localApproach.sort((a, b) => a.numberOfTraining - b.numberOfTraining);
+    const items: TApproachEl[] = sortedApproach.map((e, index) => {
+      const sortedApproachItems = e.approachsItems.sort((a, b) => a.numberOfApproach - b.numberOfApproach);
+      const approachItems = sortedApproachItems.map((z, indexz) => ({
+        value: z,
+        active: indexz === 0,
+      } as TApproachItemEl));
+      return {
+        action: 'mdi-dumbbell',
+        value: e,
+        active: index === this.indexApproach,
+        items: approachItems
+      };
+    });
+    return items ?? [];
   }
 
   initModalAddApproachItem(indexApproach: number) {
@@ -196,29 +196,32 @@ export default class ApproachAddEdit extends Global {
   }
 
   initModalEditApproachItem(indexApproach: number, indexApproachItem: number) {
+    const approach = this.approachs?.[indexApproach];
+    const approachItem = approach?.approachsItems?.[indexApproachItem];
+
     this.isEditApproachItem = true;
     this.indexApproach = indexApproach;
     this.indexApproachItem = indexApproachItem;
-    this.editApproachItem = this.approachs ? this.approachs[indexApproach].approachsItems[indexApproachItem] : null;
-    this.numberOfApproach = this.approachs ? this.approachs[indexApproach].approachsItems[indexApproachItem].numberOfApproach : 1;
+    this.editApproachItem = approachItem ?? null;
+    this.numberOfApproach = approachItem?.numberOfApproach ?? 1;
     this.stateModalAddApproachItem = true;
-  }
+}
 
   initModalDeleteApproachItem(indexApproach: number) {
     this.deleteApproach = this.approachs ? this.approachs[indexApproach] : null;
     this.stateModalDeleteApproach = true;
   }
 
-  updateItems(item: TExercise) {
+  updateItems(input: TExercise) {
     let approach = new TApproach();
-    approach.exercise = item;
+    approach.exercise = input;
 
-    if (this.approachs as TApproach[] && this.approachs && this.indexApproach !== null) {
+    if (this.approachs && this.indexApproach !== null) {
       approach.numberOfTraining = this.indexApproach;
       this.$set(this.approachs, this.indexApproach, approach);
-    } else if (this.approachs as TApproach[] && this.approachs && this.indexApproach === null) {
+    } else if (this.approachs && this.indexApproach === null) {
       approach.numberOfTraining = this.approachs.length;
-      this.approachs.push(approach);
+      this.approachs.push(...[approach]);
     } else {
       approach.numberOfTraining = 0;
       this.approachs = [approach];
@@ -226,32 +229,45 @@ export default class ApproachAddEdit extends Global {
   }
 
   updateApproachItem(item: TApproachItem) {
-    if (this.indexApproach) {
-      if (this.isEditApproachItem && this.approachs && this.approachs[this.indexApproach] && this.approachs[this.indexApproach].approachsItems) {
-        this.approachs[this.indexApproach].approachsItems[this.indexApproachItem] = item;
-      } else if (!this.isEditApproachItem && this.approachs && this.approachs[this.indexApproach] && this.approachs[this.indexApproach].approachsItems) {
-        this.approachs[this.indexApproach].approachsItems.push(item);
-      } else if (!this.isEditApproachItem && this.approachs && this.approachs[this.indexApproach] && !this.approachs[this.indexApproach].approachsItems) {
-        this.approachs[this.indexApproach].approachsItems = [item];
+    const approach = this.approachs?.[this.indexApproach as number];
+
+    if (this.indexApproach && approach) {
+      const approachItems = approach.approachsItems;
+
+      if (approachItems) {
+        if (this.isEditApproachItem) {
+          approachItems[this.indexApproachItem] = item;
+        } else {
+          approachItems.push(item);
+        }
+      } else {
+        approach.approachsItems = [item];
       }
     }
   }
 
   updateNumberApproachItem(indexApproach: number, indexApproachItem: number, value: number) {
-    if (this.approachs &&
-    this.approachs[indexApproach] &&
-    this.approachs[indexApproach].approachsItems &&
-    value > 0 &&
-    value <= this.approachs[indexApproach].approachsItems.length
-    ) {
-      const oldValue = this.approachs[indexApproach].approachsItems[indexApproachItem].numberOfApproach;
-      const indexOfAnotherValue = this.approachs[indexApproach].approachsItems.findIndex(e => e.numberOfApproach === value);
+    const hasApproachs = this.approachs && Array.isArray(this.approachs);
+    if (!hasApproachs) return;
 
-      this.$set(this.approachs[indexApproach].approachsItems[indexOfAnotherValue], 'numberOfApproach', oldValue);
-      this.$set(this.approachs[indexApproach].approachsItems[indexApproachItem], 'numberOfApproach', value);
+    const currentApproach = (this.approachs as TApproach[])[indexApproach];
+    const hasCurrentApproach = currentApproach && Array.isArray(currentApproach.approachsItems);
+    if (!hasCurrentApproach) return;
 
-      this.keyApproachList++;
-    }
+    const isValueWithinBounds = value > 0 && value <= currentApproach.approachsItems.length;
+    if (!isValueWithinBounds) return;
+
+    const currentApproachItem = currentApproach.approachsItems[indexApproachItem];
+    const oldValue = currentApproachItem.numberOfApproach;
+
+    const indexOfOtherValue = currentApproach.approachsItems.findIndex(item => item.numberOfApproach === value);
+    const hasOtherValue = indexOfOtherValue >= 0 && indexOfOtherValue !== indexApproachItem;
+    if (!hasOtherValue) return;
+
+    this.$set(currentApproach.approachsItems[indexOfOtherValue], 'numberOfApproach', oldValue);
+    this.$set(currentApproachItem, 'numberOfApproach', value);
+
+    this.keyApproachList++;
   }
 
   deleteApproachItem(idApproach: string) {
