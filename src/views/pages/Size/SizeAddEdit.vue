@@ -95,7 +95,7 @@ export default class TrainingAddEdit extends Global {
   isLoading = false;
 
   mounted() {
-    if (this.$route.name === 'SizesEdit' && this.$route.params) {
+    if (this.$route.name === 'SizeEdit' && this.$route.params) {
       this.isEdit = true;
       this.editId = this.$route.params?.id;
       this.InitViewEdit();

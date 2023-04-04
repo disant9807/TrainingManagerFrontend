@@ -51,13 +51,13 @@
       :is-edit="isEditSize"
       :selected.sync="editSize"
       @select="onClickSelectSize"
-      @canel="onClickCanelSize"
+      @cancel="onClickCanelSize"
     />
     <ModalDeleteSubSize
       :show="stateModalDeleteSubSize"
       :selected.sync="deleteSubSize"
       @select="onClickSelectDeleteSubSize"
-      @canel="onClickCancelDeleteSubSize"
+      @cancel="onClickCancelDeleteSubSize"
     />
   </div>
 </template>
@@ -96,6 +96,7 @@ export default class SizeSubAddEdit extends Global {
 
   initModalAddSubSize() {
     this.isEditSize = false;
+    this.idxSubSize = null;
     this.editSize = null;
     this.stateModalAddSize = true;
   }
@@ -107,6 +108,7 @@ export default class SizeSubAddEdit extends Global {
 
   initModalEditSubSize(indexSubSize: number) {
     this.isEditSize = true;
+    this.idxSubSize = indexSubSize;
     this.editSize = this.sizeItems ? this.sizeItems[indexSubSize] : null;
     this.stateModalAddSize = true;
   }

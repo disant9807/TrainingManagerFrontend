@@ -51,12 +51,12 @@
       :is-edit="isEditGoal"
       :selected.sync="editGoal"
       @select="onClickSelectGoal"
-      @canel="onClickCanelGoal"
+      @cancel="onClickCanelGoal"
     />
     <ModalDeleteSubGoal
       :show="stateModalDeleteSubGoal"
       :selected.sync="deleteSubGoal"
-      @select="onClickCancelDeleteSubGoal"
+      @select="onClickSelectDeleteSubGoal"
       @canel="onClickCancelDeleteSubGoal"
     />
   </div>
@@ -98,6 +98,7 @@ export default class SubGoalAddEdit extends Global {
     this.isEditGoal = false;
     this.editGoal = null;
     this.stateModalAddGoal = true;
+    this.idxSubGoal = null;
   }
 
   initModalDeleteSubSize(indexSubSize: number) {
@@ -107,6 +108,7 @@ export default class SubGoalAddEdit extends Global {
 
   initModalEditSubGoal(indexSubSize: number) {
     this.isEditGoal = true;
+    this.idxSubGoal = indexSubSize;
     this.editGoal = this.goalItems ? this.goalItems[indexSubSize] : null;
     this.stateModalAddGoal = true;
   }

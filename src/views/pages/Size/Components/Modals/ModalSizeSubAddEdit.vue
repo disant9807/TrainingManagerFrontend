@@ -103,7 +103,7 @@
     <ModalFilterCategoryOfBody
       :show="selectCategoryOfBodyState"
       :selected.sync="selectCategoryOfBodies"
-      :ids-selected="view.bodyCode"
+      :ids-selected="codeCategoryOfBodies"
       :multiple="false"
       @select="onClickSelectCategoryOfBody"
       @cancel="onClickCancelCategoryOfBody"
@@ -111,7 +111,7 @@
     <ModalFilterUnitsOfMeasurement
       :show="selectUnitsOfMeasurementState"
       :selected.sync="selectUnitsOfMeasurement"
-      :ids-selected="view.codeUnitsOfMeasurement"
+      :ids-selected="codeUnitsOfMeasurement"
       :multiple="false"
       @select="onClickSelectUnitsOfMeasurement"
       @cancel="onClickCancelUnitsOfMeasurement"
@@ -165,6 +165,10 @@ export default class ModalSizeSubAddEdit extends Global {
     }) ?? [];
   }
 
+  get codeCategoryOfBodies(): string[] {
+    return [this.view.bodyCode];
+  }
+
   selectUnitsOfMeasurementState = false;
   selectUnitsOfMeasurement: TUnitsOfMeasurement[] | null = [];
 
@@ -172,6 +176,10 @@ export default class ModalSizeSubAddEdit extends Global {
     return this.selectUnitsOfMeasurement?.map(e => {
       return { value: e.code, text: e.value };
     }) ?? [];
+  }
+
+  get codeUnitsOfMeasurement(): string[] {
+    return [this.view.codeUnitsOfMeasurement];
   }
 
   @Watch('show')
