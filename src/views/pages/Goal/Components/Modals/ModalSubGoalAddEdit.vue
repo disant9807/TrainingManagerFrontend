@@ -21,8 +21,9 @@
                 ref="form"
                 lazy-validation
               >
-                <div class="d-flex">
+                <div class="d-flex" @click="onOpenModalFilterCategoryOfBody">
                   <v-autocomplete
+                    :key="`body-${key}`"
                     v-model="view.bodyCode"
                     :items="categoryOfBodiesList"
                     item-text="text"
@@ -30,28 +31,20 @@
                     :readonly="true"
                     :multiply="false"
                     :loading="isLoading"
-                    title="Измеряемая часть*"
+                    :rules="[rules.required]"
+                    label="Измеряемая часть*"
                     filled
                     @click="onOpenModalFilterCategoryOfBody"
                   />
-                  <v-btn
-                    color="darkblue"
-                    class="ml-3 mt-2"
-                    icon
-                    @click="onOpenModalFilterCategoryOfBody"
-                  >
-                    <v-icon dark>
-                      mdi-pencil
-                    </v-icon>
-                  </v-btn>
                 </div>
                 <InlineTextField
                   label="Предполагаемое значение*"
                   :value.sync="view.value"
-                  :rules="[rules.required]"
+                  :rules="[rules.required, rules.number]"
                 />
-                <div class="d-flex">
+                <div class="d-flex" @click="onOpenModalFilterUnitsOfMeasurement">
                   <v-autocomplete
+                    :key="`unit-${key}`"
                     v-model="view.codeUnitsOfMeasurement"
                     :items="unitsOfMeasurementList"
                     item-text="text"
@@ -59,20 +52,11 @@
                     :readonly="true"
                     :multiply="false"
                     :loading="isLoading"
-                    title="Единица измерения*"
+                    :rules="[rules.required]"
+                    label="Единица измерения*"
                     filled
                     @click="onOpenModalFilterUnitsOfMeasurement"
                   />
-                  <v-btn
-                    color="darkblue"
-                    class="ml-3 mt-2"
-                    icon
-                    @click="onOpenModalFilterUnitsOfMeasurement"
-                  >
-                    <v-icon dark>
-                      mdi-pencil
-                    </v-icon>
-                  </v-btn>
                 </div>
               </v-form>
             </v-col>
@@ -103,7 +87,7 @@
       </v-card-actions>
     </v-card>
     <ModalFilterCategoryOfBody
-      :show="selectCategoryOfBodyState"
+      :show.sync="selectCategoryOfBodyState"
       :selected.sync="selectCategoryOfBodies"
       :ids-selected="codeCategoryOfBodies"
       :multiple="false"
@@ -111,7 +95,7 @@
       @cancel="onClickCancelCategoryOfBody"
     />
     <ModalFilterUnitsOfMeasurement
-      :show="selectUnitsOfMeasurementState"
+      :show.sync="selectUnitsOfMeasurementState"
       :selected.sync="selectUnitsOfMeasurement"
       :ids-selected="codeUnitsOfMeasurement"
       :multiple="false"
@@ -123,10 +107,7 @@
 <script lang="ts">
 import { Component, PropSync, Prop, Watch, Ref } from 'vue-property-decorator';
 import InlineTextField from '@/components/InlineTextField.vue';
-import InlineCheckField from '@/components/InlineCheckField.vue';
 import InlineAutocompleteField from '@/components/InlineAutocompleteField.vue';
-import InlineRadioButtonsField from '@/components/InlineRadioButtonsField.vue';
-import InlineSliderField from '@/components/InlineSliderField.vue';
 import Global from '@/mixins/GlobalMixin';
 import { TSubGoal } from '@/controllers/GoalController';
 import ModalFilterCategoryOfBody from '@/views/pages/Components/ModalFilterCategoryOfBody.vue';
@@ -139,9 +120,6 @@ import { TVuetifyOptionsList } from '@/types/globals';
   components: {
   InlineTextField,
   InlineAutocompleteField,
-  InlineCheckField,
-  InlineRadioButtonsField,
-  InlineSliderField,
   ModalFilterCategoryOfBody,
   ModalFilterUnitsOfMeasurement
   }
@@ -161,6 +139,8 @@ export default class ModalSubGoalAddEdit extends Global {
 
   selectCategoryOfBodyState = false;
   selectCategoryOfBodies: TCategoryOfBody[] | null = [];
+
+  key = 0; // ужас ужас, переписать
 
   get categoryOfBodiesList(): TVuetifyOptionsList[] {
     return this.selectCategoryOfBodies?.map(e => {
@@ -224,6 +204,7 @@ export default class ModalSubGoalAddEdit extends Global {
     this.view.bodyCode = this.selectCategoryOfBodies
       ? this.selectCategoryOfBodies[0].code
       : '';
+    this.key += 1;
     this.selectCategoryOfBodyState = false;
   }
 
@@ -239,7 +220,8 @@ export default class ModalSubGoalAddEdit extends Global {
     this.view.codeUnitsOfMeasurement = this.selectUnitsOfMeasurement
       ? this.selectUnitsOfMeasurement[0].code
       : '';
-    this.selectCategoryOfBodyState = false;
+    this.key += 1;
+    this.selectUnitsOfMeasurementState = false;
   }
 
   onClickCancelUnitsOfMeasurement() {
@@ -251,6 +233,7 @@ export default class ModalSubGoalAddEdit extends Global {
   }
 
   async mounted() {
+    this.view.value = '0';
     this.unpackData();
   }
 }

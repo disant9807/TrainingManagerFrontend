@@ -24,32 +24,23 @@
         {{ localeDateFormat(localGoal.createdDate, false) }}
       </v-col>
     </v-row>
-    <v-row class="hover">
+    <v-row>
       <v-col>
         <h3>Подцели:</h3>
-        <v-list class="mt-1">
+        <v-list>
           <template v-if="items.length > 0">
-            <v-container
+            <v-card
               v-for="item, index in items"
               :key="index"
+              class="mt-4"
             >
-              <v-row dense>
-                <v-col>
-                  <v-card>
-                    <v-card-title class="text-h5">
-                      Цель по изменению: {{ item.bodyCode }}
-                    </v-card-title>
-                    <v-card-subtitle>{{ item.bodyCode }} должен стать {{ item.value }} {{ item.codeUnitsOfMeasurement }}</v-card-subtitle>
-                  </v-card>
-                </v-col>
-              </v-row>
-            </v-container>
+              <v-card-title class="text-h6">
+                Цель по изменению: {{ item.body?.shortName ?? item.body?.name }}
+              </v-card-title>
+              <v-card-subtitle>Показатель {{ item.body?.shortName ?? item.body?.name }} должен стать {{ item.value }} {{ item.unitsOfMeasurement?.value }}</v-card-subtitle>
+            </v-card>
           </template>
-          <v-list-item v-else>
-            <v-list-item-content>
-              <v-list-item-title>Список замеров пуст</v-list-item-title>
-            </v-list-item-content>
-          </v-list-item>
+          <h4 v-else class="mt-4">Список пуст...</h4>
         </v-list>
       </v-col>
     </v-row>

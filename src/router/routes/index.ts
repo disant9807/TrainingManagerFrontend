@@ -109,7 +109,7 @@ const routes: Array<RouteConfig> = [
   },
   {
     name: 'GoalEdit',
-    path: '/goal/edit',
+    path: '/goal/:id/edit',
     component: GoalAddEdit,
     meta: { title: 'Редактирование цели' },
     props: true

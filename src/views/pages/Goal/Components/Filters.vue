@@ -25,31 +25,6 @@
       </template>
     </v-text-field>
 
-    <v-text-field
-      v-model="name"
-      name="searchfield"
-      label="Введите описание"
-      outlined
-      clearable
-      class="ma-3 search-field"
-      hide-details
-      @keydown="onKeydown"
-    >
-      <template #append-outer>
-        <v-btn
-          color="primary"
-          outlined
-          fab
-          small
-          style="align-self: center"
-          class="ml-3"
-          @click="apply('description')"
-        >
-          <v-icon>mdi-magnify</v-icon>
-        </v-btn>
-      </template>
-    </v-text-field>
-
     <fieldset class="fieldset" aria-hidden="true">
       <legend style="width: 86.25px;text-align: -webkit-center;"><span>фильтры</span></legend>
       <div class="filterBlock pa-1 pb-4">
@@ -211,7 +186,7 @@ export default class Filters extends mixins(Helper) {
         break;
 
       case 'description':
-        this.filterModel = { ...this.filterModel, name: this.description };
+        this.filterModel = { ...this.filterModel, description: this.name };
         break;
 
       case 'period':
@@ -279,7 +254,7 @@ export default class Filters extends mixins(Helper) {
 
       case 'description':
         this.description = '';
-        this.filterModel = { ...this.filterModel, name: '' };
+        this.filterModel = { ...this.filterModel, description: '' };
         break;
 
       case 'periodCompletion':

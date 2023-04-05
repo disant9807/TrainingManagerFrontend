@@ -14,8 +14,8 @@
       </v-card-title>
       <v-card-text style="height: 300px;">
         <h3>{{ `Вы действительно желаете удалить подцель:
-        ${selectedSubGoal.bodyCode} = ${selectedSubGoal.value}
-        ${selectedSubGoal.codeUnitsOfMeasurement}?` }}</h3>
+        ${selectedSubGoal?.bodyCode} = ${selectedSubGoal?.value}
+        ${selectedSubGoal?.codeUnitsOfMeasurement}?` }}</h3>
       </v-card-text>
       <v-card-actions class="ml-3">
         <slot name="controls">
@@ -50,7 +50,7 @@ import { Component, PropSync } from 'vue-property-decorator';
 import { TSubGoal } from '@/controllers/GoalController';
 
 @Component
-export default class ModalDeleteSubSize extends Global {
+export default class ModalDeleteSubGoal extends Global {
   @PropSync('show') readonly dialog!: boolean;
   @PropSync('selected', { required: true }) selectedSubGoal!: TSubGoal;
   loading = false;

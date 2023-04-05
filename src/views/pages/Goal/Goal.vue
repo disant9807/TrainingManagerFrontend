@@ -82,7 +82,7 @@
           <v-container
             class="details-container"
           >
-            <SizeInfo
+            <GoalInfo
               :request="goal.selectedGoal"
             />
             <GoalDelete

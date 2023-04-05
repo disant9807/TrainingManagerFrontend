@@ -15,40 +15,41 @@
               lazy-validation
             >
               <v-row>
-                <v-col>
+                <v-col class="col-5">
+                  <SubGoalAddEdit
+                    :sub-goals.sync="view.subGoals"
+                  />
+                </v-col>
+                <v-col class="col-7 ">
+                  <div class="d-flex justify-end">
+                    <v-btn
+                      class="error mb-1"
+                      @click="onClickArchive"
+                      small
+                    >
+                      <v-icon class="mr-1">mdi-trash-can</v-icon>
+                      Удалить цель
+                    </v-btn>
+                  </div>
                   <InlineTextField
                     label="Название цели"
                     :value.sync="view.name"
                     :rules="[rules.required]"
                   />
-                </v-col>
-                <v-col>
                   <InlineTextField
                     label="Описание"
                     :value.sync="view.description"
                   />
-                </v-col>
-                <v-col>
                   <InlineDateField
                     label="Дата достижения"
                     :value.sync="view.completionDate"
                   />
                 </v-col>
               </v-row>
-              <v-sheet
-                class="mt-3 py-3"
-                color="white"
-                elevation="1"
-                rounded
-              >
-                <SubGoalAddEdit
-                  :sub-goals.sync="view.subGoals"
-                />
-              </v-sheet>
             </v-form>
           </v-container>
         </v-card-text>
-        <v-card-actions>
+        <v-card-actions class="px-6">
           <v-spacer />
           <v-btn
             class="primary"
@@ -72,6 +73,11 @@
         <Loader :value="isLoading" />
       </v-card>
     </v-card>
+    <GoalDelete
+      :goal-delete-state.sync="goalDeleteState"
+      :request="view"
+      @refresh="cancel"
+    />
   </section>
 </template>
 <script lang="ts">
@@ -82,18 +88,21 @@ import Global from '@/mixins/GlobalMixin';
 import GoalController, { TGoal } from '@/controllers/GoalController';
 import Loader from '@/components/Loader.vue';
 import SubGoalAddEdit from './Components/SubGoalAddEdit.vue';
+import GoalDelete from './GoalDelete.vue';
 
 @Component({
   components: {
   InlineTextField,
   InlineDateField,
   Loader,
-  SubGoalAddEdit
+  SubGoalAddEdit,
+  GoalDelete
   }
   })
 export default class GoalAddEdit extends Global {
   @Ref('form') readonly form!: any;
 
+  goalDeleteState = false;
   isEdit = false;
   editId: string | null = null;
   view: TGoal = new TGoal();
@@ -106,6 +115,10 @@ export default class GoalAddEdit extends Global {
       this.editId = this.$route.params?.id;
       this.InitViewEdit();
     }
+  }
+
+  async onClickArchive() {
+    this.goalDeleteState = true;
   }
 
   async InitViewEdit() {
@@ -145,6 +158,21 @@ export default class GoalAddEdit extends Global {
       this.isLoading = false;
     }
   }
+
+  /*
+  async archive() {
+    try {
+      this.isLoading = true;
+      await GoalController.ArchiveGoal(this.view.id, true);
+      this.showSuccess(`Цель ${this.view.name} успешно удалена`);
+      this.goToGoals();
+    } catch (err) {
+      this.showError(`Не удалось удалить цель ${this.view.name}`);
+    } finally {
+      this.isLoading = false;
+    }
+  }
+  */
 
   private goToGoals() {
     this.$router.push({ name: 'Goal' });

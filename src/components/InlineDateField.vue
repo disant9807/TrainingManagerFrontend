@@ -16,7 +16,6 @@
             :dense="false"
             :rules="rules.concat(isDate)"
             :hint="$localize('dateHint','validation')"
-            prepend-icon="mdi-calendar"
             v-bind="attrs"
             filled
             clearable

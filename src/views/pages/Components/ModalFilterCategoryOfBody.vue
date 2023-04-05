@@ -21,7 +21,7 @@
             :loading="loading"
             :CategoryOfBodies="CategoryOfBodies"
             :selected.sync="localSelectedCategoryOfBodies"
-            multiple
+            :multiple="multiple"
           />
         </v-container>
       </v-card-text>

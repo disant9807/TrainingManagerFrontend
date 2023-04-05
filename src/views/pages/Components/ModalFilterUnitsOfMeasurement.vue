@@ -21,7 +21,7 @@
             :loading="loading"
             :unitsOfMeasurement="unitsOfMeasurement"
             :selected.sync="localSelectedUnitsOfMeasurement"
-            multiple
+            :multiple="multiple"
           />
         </v-container>
       </v-card-text>
