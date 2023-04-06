@@ -12,26 +12,21 @@
         {{ localeDateFormat(localSize.createdDate, false) }}
       </v-col>
     </v-row>
-    <v-row class="hover">
+    <v-row>
       <v-col>
         <h3>Замеры</h3>
         <v-list class="mt-1">
           <template v-if="items.length > 0">
-            <v-container
+            <v-card
               v-for="item, index in items"
               :key="index"
+              class="mt-4"
             >
-              <v-row dense>
-                <v-col>
-                  <v-card>
-                    <v-card-title class="text-h5">
-                      Замер: {{ item.bodyCode }}
-                    </v-card-title>
-                    <v-card-subtitle>{{ item.bodyCode }} имеет размер {{ item.value }} {{ item.codeUnitsOfMeasurement }}</v-card-subtitle>
-                  </v-card>
-                </v-col>
-              </v-row>
-            </v-container>
+              <v-card-title class="text-h5">
+                Замер: {{ item.bodyCode }}
+              </v-card-title>
+              <v-card-subtitle>{{ item.bodyCode }} имеет размер {{ item.value }} {{ item.codeUnitsOfMeasurement }}</v-card-subtitle>
+            </v-card>
           </template>
           <v-list-item v-else>
             <v-list-item-content>

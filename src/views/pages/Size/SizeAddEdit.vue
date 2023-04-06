@@ -15,30 +15,33 @@
               lazy-validation
             >
               <v-row>
-                <v-col>
+                <v-col class="col-5">
+                  <SizeSubAddEdit
+                    :size-items.sync="view.sizeItems"
+                  />
+                </v-col>
+                <v-col class="col-7">
+                  <div class="d-flex justify-end">
+                    <v-btn
+                      class="error mb-1"
+                      @click="onClickArchive"
+                      small
+                    >
+                      <v-icon class="mr-1">mdi-trash-can</v-icon>
+                      Удалить замер
+                    </v-btn>
+                  </div>
                   <InlineTextField
                     label="Название замера"
                     :value.sync="view.name"
                     :rules="[rules.required]"
                   />
-                </v-col>
-                <v-col>
                   <InlineDateField
                     label="Дата Создания"
                     :value.sync="view.createdDate"
                   />
                 </v-col>
               </v-row>
-              <v-sheet
-                class="mt-3 py-3"
-                color="white"
-                elevation="1"
-                rounded
-              >
-                <SizeSubAddEdit
-                  :size-items.sync="view.sizeItems"
-                />
-              </v-sheet>
             </v-form>
           </v-container>
         </v-card-text>
@@ -66,6 +69,11 @@
         <Loader :value="isLoading" />
       </v-card>
     </v-card>
+    <SizeDelete
+      :size-delete-state.sync="sizeDeleteState"
+      :request="view"
+      @refresh="cancel"
+    />
   </section>
 </template>
 <script lang="ts">
@@ -76,18 +84,21 @@ import Global from '@/mixins/GlobalMixin';
 import SizeController, { TSize } from '@/controllers/SizeController';
 import Loader from '@/components/Loader.vue';
 import SizeSubAddEdit from './Components/SizeSubAddEdit.vue';
+import SizeDelete from './SizeDelete.vue';
 
 @Component({
   components: {
   InlineTextField,
   InlineDateField,
   Loader,
-  SizeSubAddEdit
+  SizeSubAddEdit,
+  SizeDelete
   }
   })
 export default class TrainingAddEdit extends Global {
   @Ref('form') readonly form!: any;
 
+  sizeDeleteState = false;
   isEdit = false;
   editId: string | null = null;
   view: TSize = new TSize();
@@ -100,6 +111,10 @@ export default class TrainingAddEdit extends Global {
       this.editId = this.$route.params?.id;
       this.InitViewEdit();
     }
+  }
+
+  async onClickArchive() {
+    this.sizeDeleteState = true;
   }
 
   async InitViewEdit() {
@@ -141,7 +156,7 @@ export default class TrainingAddEdit extends Global {
   }
 
   private goToSizes() {
-    this.$router.push({ name: 'Sizes' });
+    this.$router.push({ name: 'Size' });
   }
 
   cancel() {

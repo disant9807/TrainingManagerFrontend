@@ -39,23 +39,36 @@
         />
         <filter-item
           :menu-model="isCategoryOfBodies"
+          :count="filterModel?.categoryOfBodies?.length"
           chip-text="Часть измерения"
           menu-header-text="Выбор части"
           @apply="apply('categoryOfBodies')"
           @cancel="cancel('categoryOfBodies')"
           @clear="clear('categoryOfBodies')"
         >
-          <!-- в разработке -->
-        </filter-item>
-        <filter-item
-          :menu-model="isСodeUnitsOfMeasurement"
-          chip-text="Едница измерения"
-          menu-header-text="Выбор удиницы"
-          @apply="apply('codeUnitsOfMeasurement')"
-          @cancel="cancel('codeUnitsOfMeasurement')"
-          @clear="clear('codeUnitsOfMeasurement')"
-        >
-          <!-- в разработке -->
+          <div class="d-flex">
+            <v-autocomplete
+              v-model="categoryOfBodies"
+              :items="bodiesList"
+              label="Мышечные группы"
+              item-text="text"
+              item-value="value"
+              multiple
+              readonly
+              filled
+              @click="onOpenModalFilterBodies"
+            />
+            <v-btn
+              color="darkblue"
+              class="ml-3 mt-2"
+              icon
+              @click="clear('categoryOfBodies')"
+            >
+              <v-icon dark>
+                mdi-close
+              </v-icon>
+            </v-btn>
+          </div>
         </filter-item>
       </div>
       <v-btn
@@ -68,6 +81,13 @@
         <v-icon class="white--text">mdi-close</v-icon>
       </v-btn>
     </fieldset>
+    <ModalFilterCategoryOfBody
+      :show.sync="selectBodiesState"
+      :selected.sync="selectBodies"
+      :ids-selected="categoryOfBodies"
+      @select="onClickSelectBodies"
+      @cancel="onClickCancelBodies"
+    />
   </div>
 </template>
 
@@ -80,9 +100,14 @@ import FilterItem from '../../../../components/FilterItem.vue';
 import DateTimeFilter from '@/components/filters/DateTimeFilter.vue';
 import SliderFilter from '@/components/filters/SliderFilter.vue';
 import { Mutation, State } from 'vuex-class';
-import { TSizeFilterModel, TSizeFilterViewModel } from '@/controllers/SizeController';
+import { TSizeFilterViewModel } from '@/controllers/SizeController';
+import ModalFilterUnitsOfMeasurement from '@/views/pages/Components/ModalFilterUnitsOfMeasurement.vue';
+import ModalFilterCategoryOfBody from '@/views/pages/Components/ModalFilterCategoryOfBody.vue';
+import { TCategoryOfBody } from '@/controllers/CategoryOfBodyController';
+import { TUnitsOfMeasurement } from '@/controllers/UnitsOfMeasurementController';
+import { TVuetifyOptionsList } from '@/types/globals';
 
-type TFilterType = 'name' | 'period' | 'categoryOfBodies' | 'codeUnitsOfMeasurement';
+type TFilterType = 'name' | 'period' | 'categoryOfBodies' | 'codeUnitsOfMeasurement' | 'description' | 'periodCompletion';
 
 export type TIncomingRouteName = 'New' | 'Handled' | 'Saved';
 
@@ -91,7 +116,9 @@ export type TIncomingRouteName = 'New' | 'Handled' | 'Saved';
   FilterItem,
   DateTimePicker,
   DateTimeFilter,
-  SliderFilter
+  SliderFilter,
+  ModalFilterUnitsOfMeasurement,
+  ModalFilterCategoryOfBody
   }
   })
 export default class Filters extends mixins(Helper) {
@@ -118,7 +145,7 @@ export default class Filters extends mixins(Helper) {
   }
 
   set isListLoading(value: boolean) {
-    this.setLoading({ category: 'training', name: 'list', value });
+    this.setLoading({ category: 'goal', name: 'list', value });
   }
 
   created(): void {
@@ -130,28 +157,55 @@ export default class Filters extends mixins(Helper) {
 
   name = '';
 
+  description = '';
+
   createdFrom = '';
   createdTo = '';
   isPeriod = false;
   period = [];
 
-  trainingFrom = '';
-  trainingTo = '';
-  periodTrainingDate = [];
+  completionFrom = '';
+  completionTo = '';
+  isPeriodCompletion = [];
+  periodCompletion = [];
 
   isCategoryOfBodies = false;
-  categoryOfBodies: any[] = [];
+  categoryOfBodies: string[] = [];
+  selectBodiesState = false;
+  selectBodies: TCategoryOfBody[] | null = [];
 
   isСodeUnitsOfMeasurement = false;
-  codeUnitsOfMeasurement: any[] = [];
+  codeUnitsOfMeasurement: string[] = [];
+
+  get bodiesList(): TVuetifyOptionsList[] {
+    return this.selectBodies?.map(e => {
+      return { value: e.code, text: e.shortName ?? e.name };
+    }) ?? [];
+  }
+
+  onOpenModalFilterBodies() {
+    this.selectBodiesState = true;
+  }
+
+  onClickSelectBodies() {
+    this.categoryOfBodies = this.selectBodies?.map(e => e.code) ?? [];
+    this.selectBodiesState = false;
+    this.apply('categoryOfBodies');
+  }
+
+  onClickCancelBodies() {
+    this.selectBodiesState = false;
+  }
 
   clearFilters(): void {
     this.name = '';
+    this.description = '';
     this.createdFrom = '';
     this.createdTo = '';
     this.period = [];
-    this.trainingFrom = '';
-    this.trainingTo = '';
+    this.completionFrom = '';
+    this.completionTo = '';
+    this.periodCompletion = [];
     this.categoryOfBodies = [];
     this.codeUnitsOfMeasurement = [];
 
@@ -159,7 +213,9 @@ export default class Filters extends mixins(Helper) {
       name: '',
       period: [],
       categoryOfBodies: [],
-      codeUnitsOfMeasurement: []
+      codeUnitsOfMeasurement: [],
+      createdFrom: '',
+      createdTo: ''
     };
 
     this.$emit('change');
@@ -229,6 +285,7 @@ export default class Filters extends mixins(Helper) {
         break;
 
       case 'categoryOfBodies':
+        this.categoryOfBodies = [];
         this.filterModel = { ...this.filterModel, categoryOfBodies: [] };
         break;
 

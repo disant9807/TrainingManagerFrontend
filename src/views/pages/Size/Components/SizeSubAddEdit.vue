@@ -11,50 +11,36 @@
       </v-btn>
     </div>
     <v-card
-      max-width="400"
-      class="mx-auto"
+      v-for="item, index in items"
+      :key="index"
+      class="mt-4"
     >
-      <v-container
-        v-for="item, index in items"
-        :key="index"
-      >
-        <v-row dense>
-          <v-col>
-            <v-card>
-              <v-card-title class="text-h5">
-                Замер: {{ item.bodyCode }}
-              </v-card-title>
-
-              <v-card-subtitle>{{ item.bodyCode }} имеет размер {{ item.value }} {{ item.codeUnitsOfMeasurement }}</v-card-subtitle>
-
-              <v-card-actions>
-                <v-btn
-                  variant="text"
-                  @click="onClickEdlitSubSizeItem(index)"
-                >
-                  Изменить
-                </v-btn>
-                <v-btn
-                  variant="text"
-                  @click="onClickDeleteSubSize(index)"
-                >
-                  Удалить
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-container>
+      <v-card-title class="text-h5">
+        <div class="d-flex align-center justify-space-between" style="width:100%;">
+          <div>
+            Замер: {{ item.bodyCode }}
+          </div>
+          <div class="d-flex">
+            <v-btn icon @click="onClickEdlitSubSizeItem(index)">
+              <v-icon color="primary">mdi-pen</v-icon>
+            </v-btn>
+            <v-btn icon @click="onClickDeleteSubSize(index)">
+              <v-icon color="error">mdi-trash-can</v-icon>
+            </v-btn>
+          </div>
+        </div>
+      </v-card-title>
+      <v-card-subtitle>{{ item.bodyCode }} имеет размер {{ item.value }} {{ item.codeUnitsOfMeasurement }}</v-card-subtitle>
     </v-card>
     <ModalSizeSubAddEdit
-      :show="stateModalAddSize"
+      :show.sync="stateModalAddSize"
       :is-edit="isEditSize"
       :selected.sync="editSize"
       @select="onClickSelectSize"
       @cancel="onClickCanelSize"
     />
     <ModalDeleteSubSize
-      :show="stateModalDeleteSubSize"
+      :show.sync="stateModalDeleteSubSize"
       :selected.sync="deleteSubSize"
       @select="onClickSelectDeleteSubSize"
       @cancel="onClickCancelDeleteSubSize"
