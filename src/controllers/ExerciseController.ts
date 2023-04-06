@@ -2,6 +2,7 @@ import { BaseController } from './BaseController';
 import Api from '@/api';
 import { TOrder } from '@/types/globals';
 import { SUCCESS_CODES, TResult } from '@/api/baseApi';
+import { TCategoryOfBody } from './CategoryOfBodyController';
 
 const exerciseApi = Api.getExerciseApi();
 
@@ -28,9 +29,9 @@ export type TExerciseFilterModel = {
 }
 
 export enum HardSkill {
-  easy = 'easy',
-  normal = 'normal',
-  hard = 'hard'
+  easy = 1,
+  normal = 2,
+  hard = 3
 }
 
 export class TExercise {
@@ -42,6 +43,8 @@ export class TExercise {
   imagesIds: string[] | null;
   hardSkill: HardSkill | null;
   categoryOfBodiesIds: string [] | null;
+  categoryOfBodies: TCategoryOfBody[];
+  createdDate: string;
 
   constructor() {
     this.id = '';
@@ -52,6 +55,8 @@ export class TExercise {
     this.imagesIds = [];
     this.hardSkill = HardSkill.normal;
     this.categoryOfBodiesIds = [];
+    this.categoryOfBodies = [];
+    this.createdDate = '';
   }
 }
 

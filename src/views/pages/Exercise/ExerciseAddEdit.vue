@@ -39,11 +39,14 @@
                     :hint="hardSkillsHint"
                     :selected.sync="hardSkills"
                   />
-                </v-col>
-                <v-col>
                   <InlineTextField
                     label="Описание"
                     :value.sync="view.description"
+                  />
+                </v-col>
+                <v-col>
+                  <SubExerciseBodyAddEdit
+                    :bodies.sync="view.categoryOfBodies"
                   />
                 </v-col>
               </v-row>
@@ -87,6 +90,8 @@ import Global from '@/mixins/GlobalMixin';
 import ExerciseController, { TExercise, HardSkill } from '@/controllers/ExerciseController';
 import { Mutation, State } from 'vuex-class';
 import Loader from '@/components/Loader.vue';
+import { TCategoryOfBody } from '@/controllers/CategoryOfBodyController';
+import SubExerciseBodyAddEdit from './Components/SubExerciseBodyAddEdit.vue';
 
 @Component({
   components: {
@@ -95,6 +100,7 @@ import Loader from '@/components/Loader.vue';
   InlineCheckField,
   InlineRadioButtonsField,
   InlineSliderField,
+  SubExerciseBodyAddEdit,
   Loader
   }
   })
@@ -157,6 +163,16 @@ export default class ExerciseAddEdit extends Global {
       this.hardSkillsHint = 'Сложно';
       this.view.hardSkill = HardSkill.hard;
     }
+  }
+
+  @Watch('view.categoryOfBodies')
+  updateBodiesIds() {
+    this.view.categoryOfBodiesIds = this.view.categoryOfBodies
+      .map(e => e.code);
+  }
+
+  get codeCategoryOfBodies(): string[] {
+    return this.view.categoryOfBodiesIds ?? [];
   }
 
   get yesNo() {
