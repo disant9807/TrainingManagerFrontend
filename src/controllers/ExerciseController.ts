@@ -22,7 +22,6 @@ export type TExerciseFilterModel = {
   createdTo?: string,
   isBased?: boolean,
   hardSkills?: HardSkill[],
-  hardSkill?: HardSkill,
   order: TOrder,
   start?: string,
   count?: string
@@ -86,7 +85,6 @@ class ExerciseModel extends BaseController {
       createdFrom,
       createdTo,
       isBased,
-      hardSkill: hardSkills?.length === 1 ? hardSkills[0] : undefined,
       hardSkills: hardSkills ?? [],
       order
     };
