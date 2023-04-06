@@ -2,6 +2,8 @@ import { TOrder } from '@/types/globals';
 import Api from '@/api';
 import { BaseController } from './BaseController';
 import { SUCCESS_CODES, TResult } from '@/api/baseApi';
+import { TCategoryOfBody } from '@/controllers/CategoryOfBodyController';
+import { TUnitsOfMeasurement } from './UnitsOfMeasurementController';
 
 const sizeApi = Api.getSizeApi();
 
@@ -44,15 +46,19 @@ export class TSizeItem {
   id: string;
   sizeId: string;
   bodyCode: string;
+  body?: TCategoryOfBody;
   value: string;
   codeUnitsOfMeasurement: string;
+  unitsOfMeasurement?: TUnitsOfMeasurement;
   avatarId: string;
   constructor() {
     this.id = '';
     this.sizeId = '';
     this.bodyCode = '';
+    this.body = new TCategoryOfBody();
     this.value = '';
     this.codeUnitsOfMeasurement = '';
+    this.unitsOfMeasurement = new TUnitsOfMeasurement();
     this.avatarId = '';
   }
 }

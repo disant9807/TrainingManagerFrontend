@@ -18,7 +18,7 @@
       <v-card-title class="text-h5">
         <div class="d-flex align-center justify-space-between" style="width:100%;">
           <div>
-            Замер: {{ item.bodyCode }}
+            Замер: {{ item.body?.name }}
           </div>
           <div class="d-flex">
             <v-btn icon @click="onClickEdlitSubSizeItem(index)">
@@ -30,7 +30,7 @@
           </div>
         </div>
       </v-card-title>
-      <v-card-subtitle>{{ item.bodyCode }} имеет размер {{ item.value }} {{ item.codeUnitsOfMeasurement }}</v-card-subtitle>
+      <v-card-subtitle>{{ item.body?.shortName ?? items.body?.name }} имеет размер {{ item.value }} {{ item.unitsOfMeasurement?.value }}</v-card-subtitle>
     </v-card>
     <ModalSizeSubAddEdit
       :show.sync="stateModalAddSize"

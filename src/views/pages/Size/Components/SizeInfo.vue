@@ -23,9 +23,9 @@
               class="mt-4"
             >
               <v-card-title class="text-h5">
-                Замер: {{ item.bodyCode }}
+                Замер: {{ item.body?.name }}
               </v-card-title>
-              <v-card-subtitle>{{ item.bodyCode }} имеет размер {{ item.value }} {{ item.codeUnitsOfMeasurement }}</v-card-subtitle>
+              <v-card-subtitle>{{ item.body?.shortName ?? items.body?.name }} имеет размер {{ item.value }} {{ item.unitsOfMeasurement?.value }}</v-card-subtitle>
             </v-card>
           </template>
           <v-list-item v-else>

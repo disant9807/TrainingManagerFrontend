@@ -15,12 +15,12 @@
               lazy-validation
             >
               <v-row>
-                <v-col class="col-5">
+                <v-col class="col-7">
                   <SizeSubAddEdit
                     :size-items.sync="view.sizeItems"
                   />
                 </v-col>
-                <v-col class="col-7">
+                <v-col class="col-5">
                   <div class="d-flex justify-end">
                     <v-btn
                       class="error mb-1"
