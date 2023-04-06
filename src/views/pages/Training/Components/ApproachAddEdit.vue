@@ -29,44 +29,55 @@
           :key="indexz"
         >
           <v-list-item-content>
-            <v-list-item-title>{{ `Подход: ${child.value.numberOfApproach}; Вес: ${child.value.weight}; Время: ${child.value.time};` }}</v-list-item-title>
+            <div class="d-flex">
+              <v-icon
+                class="mr-3"
+              >
+                mdi-weather-windy
+              </v-icon>
+              <v-list-item-title>{{ `Подход: ${child.value.numberOfApproach}; Вес: ${child.value.weight}; Время: ${child.value.time};` }}</v-list-item-title>
+            </div>
           </v-list-item-content>
           <v-list-item-action>
             <div class="d-flex">
               <v-btn icon @click="onClickUpNumberApproachItem(index, indexz)">
-                <v-icon color="grey lighten-1">mdi-arrow-up</v-icon>
+                <v-icon color="success lighten-1">mdi-arrow-up</v-icon>
               </v-btn>
               <v-btn icon class="ml-2" @click="onClickDownNumberApproachItem(index, indexz)">
-                <v-icon color="grey lighten-1">mdi-arrow-down</v-icon>
+                <v-icon color="success lighten-1">mdi-arrow-down</v-icon>
               </v-btn>
               <v-btn icon class="ml-2" @click="onClickEdlitApproachItem(index, indexz)">
-                <v-icon color="grey lighten-1">mdi-pen</v-icon>
+                <v-icon color="primary lighten-1">mdi-pen</v-icon>
               </v-btn>
               <v-btn icon class="ml-2">
-                <v-icon color="grey lighten-1">mdi-close</v-icon>
+                <v-icon color="error lighten-1">mdi-close</v-icon>
               </v-btn>
             </div>
           </v-list-item-action>
         </v-list-item>
-        <v-list-item link @click="onClickAddApproachItem(index)">
+        <v-list-item active-color="success" link @click="onClickAddApproachItem(index)">
           <v-list-item-content>
-            <v-list-item-title>Добавить подход</v-list-item-title>
+            <v-list-item-title>
+              <div class="d-flex align-center">
+                <v-btn icon>
+                  <v-icon color="primary lighten-1">mdi-plus</v-icon>
+                </v-btn>
+                <h4>Добавить подход</h4>
+              </div>
+            </v-list-item-title>
           </v-list-item-content>
-          <v-list-item-action>
-            <v-btn icon>
-              <v-icon color="grey lighten-1">mdi-plus</v-icon>
-            </v-btn>
-          </v-list-item-action>
         </v-list-item>
         <v-list-item link @click="onClickDeleteApproachItem(index)">
           <v-list-item-content>
-            <v-list-item-title>Удалить подход</v-list-item-title>
+            <v-list-item-title>
+              <div class="d-flex align-center">
+                <v-btn icon>
+                  <v-icon color="error lighten-1">mdi-close</v-icon>
+                </v-btn>
+                <h4>Удалить подход</h4>
+              </div>
+            </v-list-item-title>
           </v-list-item-content>
-          <v-list-item-action>
-            <v-btn icon>
-              <v-icon color="red lighten-1">mdi-close</v-icon>
-            </v-btn>
-          </v-list-item-action>
         </v-list-item>
       </v-list-group>
     </v-list>

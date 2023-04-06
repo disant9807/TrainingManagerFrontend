@@ -25,36 +25,38 @@
                     label="Описание"
                     :value.sync="view.description"
                   />
-                </v-col>
-                <v-col>
                   <InlineDateField
                     label="Дата тренировки"
                     :value.sync="view.trainingDate"
                   />
-                  <InlineTextField
-                    label="В разработке"
-                    :value.sync="view.description"
-                  />
-                  <InlineSliderField
-                    label="Время тренировки"
-                    min="0"
-                    max="999"
-                    step="1"
-                    hint="в минутах"
-                    :value.sync="view.time"
-                  />
+                  <div class="d-flex align-center">
+                    <InlineSliderField
+                      label="Время тренировки"
+                      min="5"
+                      max="100"
+                      step="5"
+                      hint="в минутах"
+                      :value.sync="view.time"
+                    />
+                    <div class="d-flex flex-column align-center ml-4">
+                      <h2>{{ view.time }}</h2>
+                      <h4>Минут</h4>
+                    </div>
+                  </div>
+                </v-col>
+                <v-col>
+                  <v-sheet
+                    class="mt-3 py-3"
+                    color="white"
+                    elevation="1"
+                    rounded
+                  >
+                    <ApproachAddEdit
+                      :approachs.sync="view.approachs"
+                    />
+                  </v-sheet>
                 </v-col>
               </v-row>
-              <v-sheet
-                class="mt-3 py-3"
-                color="white"
-                elevation="1"
-                rounded
-              >
-                <ApproachAddEdit
-                  :approachs.sync="view.approachs"
-                />
-              </v-sheet>
             </v-form>
           </v-container>
         </v-card-text>

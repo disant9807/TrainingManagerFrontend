@@ -58,6 +58,7 @@
             <v-autocomplete
               v-model="exercise"
               :items="exercisesList"
+              label="Упражнения"
               item-text="text"
               item-value="value"
               multiple
@@ -109,6 +110,7 @@ import SliderFilter from '@/components/filters/SliderFilter.vue';
 import { Mutation, State } from 'vuex-class';
 import { TTrainingProgramFilterViewModel } from '@/controllers/TrainingProgramController';
 import { TExercise } from '@/controllers/ExerciseController';
+import { TCategoryOfBody } from '@/controllers/CategoryOfBodyController';
 import ModalFilterExercise from '@/views/pages/Components/ModalFilterExercise.vue';
 import { TVuetifyOptionsList } from '@/types/globals';
 
@@ -175,7 +177,7 @@ export default class Filters extends mixins(Helper) {
   isExercise = false;
   exercise: string[] = [];
 
-  categoryOfBodies: any[] = [];
+  categoryOfBodies: string[] = [];
 
   selectExercisesState = false;
   selectExercise: TExercise[] | null = [];

@@ -56,7 +56,7 @@
         />
         <filter-item
           :menu-model="isExercise"
-          :count="+!!filterModel.exercises"
+          :count="filterModel?.exercises?.length"
           chip-text="Упражнения"
           menu-header-text="Упражнения"
           @apply="apply('exercise')"
@@ -67,10 +67,11 @@
             <v-autocomplete
               v-model="exercise"
               :items="exercisesList"
+              label="Упражнения"
               item-text="text"
               item-value="value"
-              :readonly="true"
-              :multiply="true"
+              readonly
+              multiple
               filled
               @click="onOpenModalFilterExercise"
             />
@@ -78,17 +79,17 @@
               color="darkblue"
               class="ml-3 mt-2"
               icon
-              @click="onOpenModalFilterExercise"
+              @click="clear('exercise')"
             >
               <v-icon dark>
-                mdi-pencil
+                mdi-close
               </v-icon>
             </v-btn>
           </div>
         </filter-item>
         <filter-item
-          :menu-model="isExercise"
-          :count="+!!filterModel.exercises"
+          :menu-model="isTrainingProgram"
+          :count="filterModel?.trainingPrograms?.length"
           chip-text="Тренировочные программы"
           menu-header-text="Тренировочные программы"
           @apply="apply('trainingPrograms')"
@@ -97,12 +98,13 @@
         >
           <div class="d-flex">
             <v-autocomplete
-              v-model="exercise"
-              :items="exercisesList"
+              v-model="trainingPrograms"
+              :items="trainingProgramList"
+              label="Тренировочные программы"
               item-text="text"
               item-value="value"
-              :readonly="true"
-              :multiply="true"
+              readonly
+              multiple
               filled
               @click="onOpenModalFilterTrainingProgram"
             />
@@ -110,10 +112,10 @@
               color="darkblue"
               class="ml-3 mt-2"
               icon
-              @click="onOpenModalFilterTrainingProgram"
+              @click="clear('trainingPrograms')"
             >
               <v-icon dark>
-                mdi-pencil
+                mdi-close
               </v-icon>
             </v-btn>
           </div>
@@ -130,14 +132,14 @@
       </v-btn>
     </fieldset>
     <ModalFilterExercise
-      :show="selectExercisesState"
+      :show.sync="selectExercisesState"
       :selected.sync="selectExercise"
       :ids-selected="exercise"
       @select="onClickSelectExercise"
       @cancel="onClickCancelExercise"
     />
     <ModalFilterTrainingProgram
-      :show="selectTrainingProgramState"
+      :show.sync="selectTrainingProgramState"
       :selected.sync="selectTrainingProgram"
       :ids-selected="trainingPrograms"
       @select="onClickSelectTrainingProgram"
@@ -242,7 +244,7 @@ export default class Filters extends mixins(Helper) {
   isExercise = false;
   exercise: string[] = [];
 
-  categoryOfBodies: any[] = [];
+  categoryOfBodies: string[] = [];
 
   selectExercisesState = false;
   selectExercise: TExercise[] | null = [];
@@ -256,6 +258,12 @@ export default class Filters extends mixins(Helper) {
     }) ?? [];
   }
 
+  get trainingProgramList(): TVuetifyOptionsList[] {
+    return this.selectTrainingProgram?.map(e => {
+      return { value: e.id, text: e.shortName ?? e.name };
+    }) ?? [];
+  }
+
   onOpenModalFilterExercise() {
     this.selectExercisesState = true;
   }
@@ -263,6 +271,7 @@ export default class Filters extends mixins(Helper) {
   onClickSelectExercise() {
     this.exercise = this.selectExercise?.map(e => e.id) ?? [];
     this.selectExercisesState = false;
+    this.apply('exercise');
   }
 
   onClickCancelExercise() {
@@ -276,6 +285,7 @@ export default class Filters extends mixins(Helper) {
   onClickSelectTrainingProgram() {
     this.trainingPrograms = this.selectTrainingProgram?.map(e => e.id) ?? [];
     this.selectTrainingProgramState = false;
+    this.apply('trainingPrograms');
   }
 
   onClickCancelTrainingProgram() {

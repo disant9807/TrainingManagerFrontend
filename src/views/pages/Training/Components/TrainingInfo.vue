@@ -6,9 +6,6 @@
         {{ localTrainingProgram.name }}
       </v-col>
     </v-row>
-    <v-row v-else class="hover">
-      <v-col>Свободная тренировка</v-col>
-    </v-row>
     <v-row class="hover">
       <v-col>Дата тренировки</v-col>
       <v-col>
@@ -22,6 +19,12 @@
       </v-col>
     </v-row>
     <v-row class="hover">
+      <v-col>Описание тренировки</v-col>
+      <v-col>
+        {{ localTraining.description }}
+      </v-col>
+    </v-row>
+    <v-row>
       <v-col>
         <h3>Упражнения</h3>
         <v-list class="mt-1">
@@ -43,9 +46,17 @@
               <v-list-item
                 v-for="child, index in item.items"
                 :key="index"
+                :prepend-icon="item.action"
               >
                 <v-list-item-content>
-                  <v-list-item-title>{{ `Подход: ${child.value.numberOfApproach}; Вес: ${child.value.weight}; Время: ${child.value.time};` }}</v-list-item-title>
+                  <v-list-item-title>
+                    <v-icon
+                      class="mr-3"
+                    >
+                      mdi-weather-windy
+                    </v-icon>
+                    {{ `Подход: ${child.value.numberOfApproach}; Вес: ${child.value.weight}; Время: ${child.value.time};` }}
+                  </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list-group>
@@ -103,12 +114,12 @@ export default class TrainingInfo
     return this.localTraining?.approachs.sort(e => e.numberOfTraining)
       .map((e, index) => {
         return {
-          action: 'mdi-tag',
+          action: 'mdi-dumbbell',
           value: e,
           active: index === 0,
           items: e.approachsItems.map((z, indexz) => {
             return {
-              action: 'mdi-tag',
+              action: 'mdi-weather-windy',
               value: z,
               active: indexz === 0,
             } as TApproachItemEl;

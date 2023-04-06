@@ -95,7 +95,7 @@ export default class ModalFilterTrainingProgram extends Global {
   localIds: string[] | null = null;
 
   get filtersModel(): TTrainingProgramFilterViewModel {
-    return this.filters.trainingPrograms;
+    return this.filters.trainingProgram;
   }
 
   @Watch('show')
@@ -136,7 +136,7 @@ export default class ModalFilterTrainingProgram extends Global {
       this.localSelectedTrainingPrograms = trainingPrograms;
       this.selectedTrainingProgram = this.localSelectedTrainingPrograms;
     } catch (error) {
-      this.showError('Ошибка. Не удалось загрузить тренировочную программу');
+      this.showError(`Ошибка. Не удалось загрузить тренировочную программу ${error}`);
     } finally {
       this.loading = false;
     }
@@ -161,7 +161,7 @@ export default class ModalFilterTrainingProgram extends Global {
         throw new Error();
       }
     } catch (error) {
-      this.showError('Ошибка. Не удалось загрузить список тренировочных программ');
+      this.showError(`Ошибка. Не удалось загрузить список тренировочных программ ${error}`);
     } finally {
       this.loading = false;
     }

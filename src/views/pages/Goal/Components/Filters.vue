@@ -145,7 +145,7 @@ export default class Filters extends mixins(Helper) {
   periodCompletion = [];
 
   isCategoryOfBodies = false;
-  categoryOfBodies: any[] = [];
+  categoryOfBodies: string[] = [];
 
   isСodeUnitsOfMeasurement = false;
   codeUnitsOfMeasurement: any[] = [];
