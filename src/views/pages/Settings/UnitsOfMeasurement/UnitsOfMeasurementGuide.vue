@@ -248,7 +248,7 @@ export default class UnitsOfMeasurementGuide extends mixins(Global) {
 
   async delete(item: TUnitsOfMeasurement) {
     try {
-      await UnitsOfMeasurementController.RemoveUnitsOfMeasurement(item.code);
+      await UnitsOfMeasurementController.ArchiveUnitsOfMeasurement(item.code, true);
       this.showSuccess('Показатель успешно удален');
       await this.loadData();
     } catch (error) {

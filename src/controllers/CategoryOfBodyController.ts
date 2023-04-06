@@ -21,18 +21,19 @@ export class TCategoryOfBody {
   name: string;
   shortName: string;
   decsription: string;
+  isArchived: boolean;
   constructor() {
     this.code = '';
     this.name = '';
     this.shortName = '';
     this.decsription = '';
+    this.isArchived = false;
   }
 }
 
-
 class CategoryOfBodyModel extends BaseController {
-  async RemoveCategoryOfBody(code: string) {
-    return await this.handleAndResolve(() => categoryOfBodyApi.RemoveCategoryOfBodyApi(code));
+  async ArchiveCategoryOfBody(code: string, state: boolean) {
+    return await this.handleAndResolve(() => categoryOfBodyApi.ArchiveCategoryOfBodyApi(code, state));
   }
 
   async CreateCategoryOfBody(categoryOfBody: TCategoryOfBody) {

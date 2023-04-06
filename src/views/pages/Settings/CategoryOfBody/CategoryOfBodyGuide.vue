@@ -284,7 +284,7 @@ export default class CategoryOfBodyGuide extends mixins(Global) {
 
   async delete(item: TCategoryOfBody) {
     try {
-      await CategoryOfBodyController.RemoveCategoryOfBody(item.code);
+      await CategoryOfBodyController.ArchiveCategoryOfBody(item.code, true);
       this.showSuccess('Показатель успешно удален');
       await this.loadData();
     } catch (error) {

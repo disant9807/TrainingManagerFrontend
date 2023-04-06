@@ -19,16 +19,18 @@ export type TUnitsOfMeasurementFilterModel = {
 export class TUnitsOfMeasurement {
   code: string;
   value: string;
+  isArchive: boolean;
   constructor() {
     this.code = '';
     this.value = '';
+    this.isArchive = false;
   }
 }
 
 
 class UnitsOfMeasurementModel extends BaseController {
-  async RemoveUnitsOfMeasurement(code: string) {
-    return await this.handleAndResolve(() => unitsOfMeasurementController.RemoveUnitsOfMeasurementApiApi(code));
+  async ArchiveUnitsOfMeasurement(code: string, state: boolean) {
+    return await this.handleAndResolve(() => unitsOfMeasurementController.ArchiveUnitsOfMeasurementApiApi(code, state));
   }
 
   async CreateUnitsOfMeasurement(unitsOfMeasurement: TUnitsOfMeasurement) {

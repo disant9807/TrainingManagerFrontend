@@ -22,6 +22,10 @@ export class CategoryOfBodyApi {
       return this.api.POST(baseUrl, `${sizeUrl}/${code}/remove`);
     }
 
+    ArchiveCategoryOfBodyApi(code: string, state: boolean): Promise<TResult<any>> {
+      return this.api.POST(baseUrl, `${sizeUrl}/${code}/archive/${state}`);
+    }
+
     CreateCategoryOfBody(size: any): Promise<TResult<string>> {
       return this.api.POST(baseUrl, `${sizeUrl}/create`, size);
     }
