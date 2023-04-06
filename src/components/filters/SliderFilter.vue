@@ -8,20 +8,26 @@
     @cancel="cancel"
     @clear="cancel"
   >
-    <v-slider
-      v-model="lstart"
-      max="100"
-      min="-100"
-      filled
-      persistent-hint
-    />
-    <v-slider
-      v-model="lend"
-      max="100"
-      min="-100"
-      filled
-      persistent-hint
-    />
+    <div class="d-flex">
+      <h2 class="mr-3">{{ lstart }}</h2>
+      <v-slider
+        v-model="lstart"
+        max="50"
+        min="0"
+        filled
+        persistent-hint
+      />
+    </div>
+    <div class="d-flex">
+      <v-slider
+        v-model="lend"
+        max="100"
+        min="50"
+        filled
+        persistent-hint
+      />
+      <h2 class="ml-3">{{ lend }}</h2>
+    </div>
   </FilterItem>
 </template>
 

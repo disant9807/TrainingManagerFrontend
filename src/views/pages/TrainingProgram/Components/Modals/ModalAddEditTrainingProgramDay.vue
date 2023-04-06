@@ -20,6 +20,7 @@
               <v-form
                 ref="form"
                 lazy-validation
+                class="mt-6"
               >
                 <InlineTextField
                   label="Название тренировочного дня*"
@@ -32,28 +33,17 @@
                 />
                 <InlineSliderField
                   label="Отдых в днях"
-                  min="0"
-                  max="30"
+                  min="1"
+                  max="7"
                   step="1"
                   hint="После тренировочного дня"
-                  :selected.sync="view.dayRelax"
-                />
-                <InlineSliderField
-                  label="Номер тренировочного дня*"
-                  min="0"
-                  step="1"
-                  hint="Порядок тренировки по номеру"
-                  :max="maxNumber"
-                  :selected.sync="view.numberOfTrainingProgram"
-                />
-                <InlineTextField
-                  label="Описание тренировочного дня"
-                  :value.sync="view.description"
+                  :value.sync="view.dayRelax"
                 />
               </v-form>
             </v-col>
             <v-col>
               <v-sheet
+                style="min-height: 680px;"
                 class="mt-3 pt-3"
                 color="white"
                 elevation="1"
@@ -217,6 +207,9 @@ export default class ModalAddEditTrainingProgramDay extends Global {
   async mounted() {
     this.unpackData();
     this.filtersChange();
+    if (this.view?.numberOfTrainingProgram === 0) {
+      this.view.numberOfTrainingProgram += 1;
+    }
   }
 }
 </script>

@@ -47,9 +47,9 @@
         />
         <filter-item
           :menu-model="isExercise"
-          :count="+!!filterModel.exercises"
-          chip-text="Присутствующие в тренировочной программе"
-          menu-header-text="Упражнения"
+          :count="filterModel?.exercises?.length"
+          chip-text="Упражнения в тренировочной программе"
+          menu-header-text="Выбор упражнений"
           @apply="apply('exercise')"
           @cancel="cancel('exercise')"
           @clear="clear('exercise')"
@@ -60,8 +60,8 @@
               :items="exercisesList"
               item-text="text"
               item-value="value"
-              :readonly="true"
-              :multiply="true"
+              multiple
+              readonly
               filled
               @click="onOpenModalFilterExercise"
             />
@@ -69,10 +69,10 @@
               color="darkblue"
               class="ml-3 mt-2"
               icon
-              @click="onOpenModalFilterExercise"
+              @click="clear('exercise')"
             >
               <v-icon dark>
-                mdi-pencil
+                mdi-close
               </v-icon>
             </v-btn>
           </div>
@@ -89,7 +89,7 @@
       </v-btn>
     </fieldset>
     <ModalFilterExercise
-      :show="selectExercisesState"
+      :show.sync="selectExercisesState"
       :selected.sync="selectExercise"
       :ids-selected="exercise"
       @select="onClickSelectExercise"
@@ -193,6 +193,7 @@ export default class Filters extends mixins(Helper) {
   onClickSelectExercise() {
     this.exercise = this.selectExercise?.map(e => e.id) ?? [];
     this.selectExercisesState = false;
+    this.apply('exercise');
   }
 
   onClickCancelExercise() {

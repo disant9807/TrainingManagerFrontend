@@ -15,7 +15,7 @@
               lazy-validation
             >
               <v-row>
-                <v-col>
+                <v-col class="col-5">
                   <InlineTextField
                     label="Название*"
                     :value.sync="view.name"
@@ -31,23 +31,19 @@
                     :value.sync="view.description"
                   />
                 </v-col>
-                <v-col>
-                  <InlineTextField
-                    label="В разработке"
-                    :value.sync="view.description"
-                  />
+                <v-col clas="col-7">
+                  <v-sheet
+                    class="mt-3 py-3"
+                    color="white"
+                    elevation="1"
+                    rounded
+                  >
+                    <TrainingProgramDayAddEdit
+                      :TrainingProgramDays.sync="view.days"
+                    />
+                  </v-sheet>
                 </v-col>
               </v-row>
-              <v-sheet
-                class="mt-3 py-3"
-                color="white"
-                elevation="1"
-                rounded
-              >
-                <TrainingProgramDayAddEdit
-                  :TrainingProgramDays.sync="view.days"
-                />
-              </v-sheet>
             </v-form>
           </v-container>
         </v-card-text>

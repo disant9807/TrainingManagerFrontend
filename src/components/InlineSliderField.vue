@@ -11,7 +11,7 @@
         :max="max"
         :min="min"
         :step="step"
-        :thumb-label="thumbLabel"
+        :thumb-label="localValueStr"
         filled
         persistent-hint
         always-dirty
@@ -36,6 +36,10 @@ export default class InlineSliderField extends Vue {
   @Prop({ type: [Boolean, String], required: false, default: false }) thumbLabel!:any;
   @PropSync('value', { required: false, default: '' }) realValue!:any;
   localValue = '';
+
+  get localValueStr() {
+    return this.localValue += '';
+  }
 
   @Watch('value', { immediate: true })
   updateLocalValue() {

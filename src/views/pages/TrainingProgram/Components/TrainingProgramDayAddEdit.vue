@@ -25,14 +25,21 @@
               <v-list-item-subtitle> {{ `Отдых ${item.value.dayRelax} день/дня/дней` }} </v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
-              <v-btn
-                icon
-                color="white"
-                text
-                @click="onClickEdit(item, index)"
-              >
-                <v-icon color="grey lighten-1">mdi-pencil</v-icon>
-              </v-btn>
+              <div class="d-flex align-items">
+                <v-btn
+                  class="mr-2"
+                  icon
+                  @click="onClickEdit(item, index)"
+                >
+                  <v-icon color="primary lighten-1">mdi-pencil</v-icon>
+                </v-btn>
+                <v-btn
+                  icon
+                  @click="onClickRemove(item, index)"
+                >
+                  <v-icon color="error lighten-1">mdi-trash-can</v-icon>
+                </v-btn>
+              </div>
             </v-list-item-action>
           </template>
 
@@ -41,8 +48,19 @@
             :key="child.id"
           >
             <v-list-item-content>
-              <v-list-item-title v-if="child.shortName" v-text="child.shortName"></v-list-item-title>
-              <v-list-item-title v-else v-text="child.name"></v-list-item-title>
+              <v-list-item-title class="d-flex align-start">
+                <v-icon
+                  class="mr-3"
+                >
+                  mdi-dumbbell
+                </v-icon>
+                <p class="mr-2">
+                  {{ child.shortName ?? child.name }}
+                </p>
+                <p>
+                  {{ child.description }}
+                </p>
+              </v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list-group>
@@ -55,12 +73,18 @@
       </v-list-item>
     </v-list>
     <ModalAddEditTrainingProgramDay
-      :show="stateModalAddDay"
+      :show.sync="stateModalAddDay"
       :is-edit="isEditDay"
       :max-number="maxItemDay"
       :selected.sync="editTrainingProgramDay"
       @select="onClickSelect"
       @cancel="onClickCancel"
+    />
+    <ModalDeleteTrainingProgramDay
+      :show.sync="stateModalDeleteTrainingDay"
+      :selected.sync="deletedTrainingDay"
+      @select="onClickSelectDeleteTrainigDay"
+      @canel="onClickCancleDeleteTrainingDay"
     />
   </div>
 </template>
@@ -76,6 +100,7 @@ import InlineRadioButtonsField from '@/components/InlineRadioButtonsField.vue';
 import InlineSliderField from '@/components/InlineSliderField.vue';
 import Loader from '@/components/Loader.vue';
 import ModalAddEditTrainingProgramDay from './Modals/ModalAddEditTrainingProgramDay.vue';
+import ModalDeleteTrainingProgramDay from './Modals/ModalDeleteTrainingProgramDay.vue';
 
 export type TTrainingProgramDayItem = {
   action: string | null,
@@ -91,6 +116,7 @@ export type TTrainingProgramDayItem = {
   InlineRadioButtonsField,
   InlineSliderField,
   ModalAddEditTrainingProgramDay,
+  ModalDeleteTrainingProgramDay,
   Loader
   }
   })
@@ -105,21 +131,23 @@ export default class TrainingProgramDayAddEdit extends Global {
   daysEditIndex: number | null = null;
   editTrainingProgramDay: TTrainingProgramDay | null = null;
 
+  stateModalDeleteTrainingDay = false;
+  deletedTrainingDay: TTrainingProgramDay | null = null;
+  daysDeleteIndex: number | null = null;
+
   get localTrainingPrograms(): TTrainingProgramDay[] | [] {
     return this.days ?? [];
   }
 
   get maxItemDay() {
-    return Math
-      .max.apply(Math, this.localTrainingPrograms?.map(e => e.numberOfTrainingProgram)) ??
-      0;
+    return this.days?.length ?? 0;
   }
 
   get items(): TTrainingProgramDayItem[] | [] {
-    return this.localTrainingPrograms?.sort(e => e.numberOfTrainingProgram)
+    return this.localTrainingPrograms?.sort((p, s) => s.numberOfTrainingProgram - p.numberOfTrainingProgram)
       ?.map((e, index) => {
         return {
-          action: 'mdi-tag',
+          action: 'mdi-calendar-today',
           value: e,
           active: index === 0
         } as TTrainingProgramDayItem;
@@ -140,6 +168,12 @@ export default class TrainingProgramDayAddEdit extends Global {
     this.stateModalAddDay = true;
   }
 
+  initModalRemove(day: TTrainingProgramDay, indx: number) {
+    this.daysDeleteIndex = indx;
+    this.deletedTrainingDay = day;
+    this.stateModalDeleteTrainingDay = true;
+  }
+
   updateDays(item: TTrainingProgramDay) {
     if (this.days as TTrainingProgramDay[] && this.days && this.daysEditIndex !== null) {
       this.$set(this.days, this.daysEditIndex, item);
@@ -158,6 +192,10 @@ export default class TrainingProgramDayAddEdit extends Global {
     this.initModalEdit(item.value, index);
   }
 
+  onClickRemove(item: TTrainingProgramDayItem, index: number) {
+    this.initModalRemove(item.value, index);
+  }
+
   onClickSelect() {
     if (this.editTrainingProgramDay) {
       this.updateDays(this.editTrainingProgramDay);
@@ -167,6 +205,17 @@ export default class TrainingProgramDayAddEdit extends Global {
 
   onClickCancel() {
     this.stateModalAddDay = false;
+  }
+
+  onClickSelectDeleteTrainigDay() {
+    if (this.deletedTrainingDay) {
+      this.$delete(this.days as TTrainingProgramDay[], this.daysDeleteIndex as number);
+      this.stateModalDeleteTrainingDay = false;
+    }
+  }
+
+  onClickCancleDeleteTrainingDay() {
+    this.stateModalDeleteTrainingDay = false;
   }
 }
 </script>

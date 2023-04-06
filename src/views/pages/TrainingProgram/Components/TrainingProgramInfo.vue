@@ -24,7 +24,7 @@
         {{ localTrainingProgram.description }}
       </v-col>
     </v-row>
-    <v-row class="hover">
+    <v-row>
       <v-col>
         <h3>Тренировочные дни:</h3>
         <v-list class="mt-1">
@@ -48,8 +48,14 @@
                 :key="child.id"
               >
                 <v-list-item-content>
-                  <v-list-item-title v-if="child.shortName" v-text="child.shortName"></v-list-item-title>
-                  <v-list-item-title v-else v-text="child.name"></v-list-item-title>
+                  <v-list-item-title>
+                    <v-icon
+                      class="mr-3"
+                    >
+                      mdi-dumbbell
+                    </v-icon>
+                    {{ child.shortName ?? child.name }} {{ child.description }}
+                  </v-list-item-title>
                 </v-list-item-content>
               </v-list-item>
             </v-list-group>
@@ -98,7 +104,7 @@ export default class TrainingProgramInfo extends mixins(Helper) {
     return this.days?.sort(e => e.numberOfTrainingProgram)
       ?.map((e, index) => {
         return {
-          action: 'mdi-tag',
+          action: 'mdi-calendar-today',
           value: e,
           active: index === 0
         } as TTrainingProgramDayItem;
