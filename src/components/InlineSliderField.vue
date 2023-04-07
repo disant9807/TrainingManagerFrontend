@@ -11,7 +11,6 @@
         :max="max"
         :min="min"
         :step="step"
-        :thumb-label="localValueStr"
         filled
         persistent-hint
         always-dirty

@@ -21,43 +21,66 @@
                 ref="form"
                 lazy-validation
               >
-                <InlineSliderField
-                  label="Время подхода"
-                  min="0"
-                  max="10000"
-                  step="1"
-                  hint="в секундах"
-                  :value.sync="view.time"
-                  thumb-label="always"
-                />
-                <InlineSliderField
-                  label="Вес подхода*"
-                  min="0"
-                  max="1000"
-                  step="1"
-                  hint="в кг"
-                  :value.sync="view.weight"
-                  :rules="[rules.required]"
-                  thumb-label="always"
-                />
-                <InlineSliderField
-                  label="Сложность по ощущениям"
-                  min="0"
-                  max="10"
-                  step="1"
-                  hint="от 1 до 10"
-                  :value.sync="view.hard"
-                  thumb-label="always"
-                />
-                <InlineSliderField
-                  label="Техника"
-                  min="1"
-                  max="3"
-                  step="1"
-                  hint="Выполняемого упражнения"
-                  :value.sync="view.technicality"
-                  thumb-label="always"
-                />
+                <div class="d-flex align-center">
+                  <InlineSliderField
+                    label="Время подхода"
+                    min="1"
+                    max="120"
+                    step="5"
+                    hint="в секундах"
+                    :value.sync="view.time"
+                    thumb-label="always"
+                  />
+                  <div class="d-flex flex-column align-center ml-4">
+                    <h2>{{ view.time }}</h2>
+                    <h4>Секунд</h4>
+                  </div>
+                </div>
+                <div class="d-flex align-center">
+                  <InlineSliderField
+                    label="Вес подхода*"
+                    min="5"
+                    max="250"
+                    step="5"
+                    hint="в кг"
+                    :value.sync="view.weight"
+                    :rules="[rules.required]"
+                    thumb-label="always"
+                  />
+                  <div class="d-flex flex-column align-center ml-4">
+                    <h2>{{ view.weight }}</h2>
+                    <h4>Кг</h4>
+                  </div>
+                </div>
+                <div class="d-flex align-center">
+                  <InlineSliderField
+                    label="Сложность по ощущениям"
+                    min="1"
+                    max="10"
+                    step="1"
+                    :value.sync="view.hard"
+                    thumb-label="always"
+                  />
+                  <div class="d-flex flex-column align-center ml-4">
+                    <h2>{{ view.hard }} из 10</h2>
+                    <h4>Сложности</h4>
+                  </div>
+                </div>
+                <div class="d-flex align-center">
+                  <InlineSliderField
+                    label="Техника"
+                    min="1"
+                    max="3"
+                    step="1"
+                    hint="Выполняемого упражнения"
+                    :value.sync="view.technicality"
+                    thumb-label="always"
+                  />
+                  <div class="d-flex flex-column align-center ml-4">
+                    <h2>{{ view.technicality }} из 3</h2>
+                    <h4>Техники</h4>
+                  </div>
+                </div>
               </v-form>
             </v-col>
           </v-row>

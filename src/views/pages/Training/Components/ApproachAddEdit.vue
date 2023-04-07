@@ -49,7 +49,7 @@
               <v-btn icon class="ml-2" @click="onClickEdlitApproachItem(index, indexz)">
                 <v-icon color="primary lighten-1">mdi-pen</v-icon>
               </v-btn>
-              <v-btn icon class="ml-2">
+              <v-btn icon class="ml-2" @click="onClickDeleteApproachItem(index, indexz)">
                 <v-icon color="error lighten-1">mdi-close</v-icon>
               </v-btn>
             </div>
@@ -67,7 +67,7 @@
             </v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-        <v-list-item link @click="onClickDeleteApproachItem(index)">
+        <v-list-item link @click="onClickDeleteItem(index)">
           <v-list-item-content>
             <v-list-item-title>
               <div class="d-flex align-center">
@@ -97,10 +97,16 @@
       @cancel="onClickCancel"
     />
     <ModalDeleteApproach
-      :show="stateModalDeleteApproach"
-      :selected.sync="deleteApproach"
-      @select="onClickSelectDeleteApproach"
-      @canel="onClickCancelDeleteApproach"
+      :show.sync="stateModalDeleteItem"
+      :selected.sync="modelDeleteItem"
+      @select="onClickSelectDeleteItem"
+      @canel="onClickCancelDeleteItem"
+    />
+    <ModalDeleteApproachItem
+      :show.sync="stateModalDeleteApproachItem"
+      :selected.sync="modelDeleteApproachItem"
+      @select="onClickSelectDeleteApproachItem"
+      @canel="onClickCancelDeleteApproachItem"
     />
   </div>
 </template>
@@ -118,6 +124,7 @@ import Loader from '@/components/Loader.vue';
 import ModalAddEditApproachItem from './Modals/ModalAddEditApproachItem.vue';
 import ModalAddExercise from './Modals/ModalAddExercise.vue';
 import ModalDeleteApproach from './Modals/ModalDeleteApproach.vue';
+import ModalDeleteApproachItem from './Modals/ModalDeleteApproachItem.vue';
 import { TSizeItem } from '@/controllers/SizeController';
 
 export type TApproachItemEl = {
@@ -143,6 +150,7 @@ export type TApproachEl = {
   ModalAddEditApproachItem,
   ModalAddExercise,
   ModalDeleteApproach,
+  ModalDeleteApproachItem,
   Loader
   }
   })
@@ -152,8 +160,13 @@ export default class ApproachAddEdit extends Global {
     default: []
   }) approachs!: TApproach[] | null;
 
-  stateModalDeleteApproach = false;
-  deleteApproach: TApproach | null = null;
+  stateModalDeleteItem = false;
+  indexDeleteApproach: number | null = null;
+  modelDeleteItem: TApproach | null = null;
+
+  stateModalDeleteApproachItem = false;
+  indexDeleteApproachItem: number | null = null;
+  modelDeleteApproachItem: TApproachItem | null = null;
 
   stateModalAddExercise = false;
   isEditExercise = false;
@@ -215,9 +228,22 @@ export default class ApproachAddEdit extends Global {
     this.stateModalAddApproachItem = true;
   }
 
-  initModalDeleteApproachItem(indexApproach: number) {
-    this.deleteApproach = this.approachs ? this.approachs[indexApproach] : null;
-    this.stateModalDeleteApproach = true;
+  initModalDeleteItem(indexApproach: number) {
+    if (this.approachs) {
+      this.modelDeleteItem = this.approachs[indexApproach] ?? null;
+      this.indexDeleteApproach = indexApproach;
+      this.stateModalDeleteItem = true;
+    }
+  }
+
+  initModalDeleteApproachItem(indexApproach: number, indexApproachItem: number) {
+    if (this.approachs && this.approachs[indexApproach].approachsItems) {
+      this.modelDeleteApproachItem = this.approachs[indexApproach]
+        .approachsItems[indexApproachItem] ?? null;
+      this.indexDeleteApproach = indexApproach;
+      this.indexDeleteApproachItem = indexApproachItem;
+      this.stateModalDeleteApproachItem = true;
+    }
   }
 
   updateItems(item: TExercise) {
@@ -237,7 +263,7 @@ export default class ApproachAddEdit extends Global {
   }
 
   updateApproachItem(item: TApproachItem) {
-    if (this.indexApproach) {
+    if (this.indexApproach !== null) {
       if (this.isEditApproachItem && this.approachs && this.approachs[this.indexApproach] && this.approachs[this.indexApproach].approachsItems) {
         this.approachs[this.indexApproach].approachsItems[this.indexApproachItem] = item;
       } else if (!this.isEditApproachItem && this.approachs && this.approachs[this.indexApproach] && this.approachs[this.indexApproach].approachsItems) {
@@ -253,7 +279,7 @@ export default class ApproachAddEdit extends Global {
     this.approachs[indexApproach] &&
     this.approachs[indexApproach].approachsItems &&
     value > 0 &&
-    value <= this.approachs[indexApproach].approachsItems.length
+    value <= this.approachs[indexApproach].approachsItems.length - 1
     ) {
       const oldValue = this.approachs[indexApproach].approachsItems[indexApproachItem].numberOfApproach;
       const indexOfAnotherValue = this.approachs[indexApproach].approachsItems.findIndex(e => e.numberOfApproach === value);
@@ -265,13 +291,30 @@ export default class ApproachAddEdit extends Global {
     }
   }
 
-  deleteApproachItem(idApproach: string) {
-    const approachIndx = this.approachs?.findIndex(e => e.id === idApproach);
-    this.$delete(this.approachs as Array<TApproach>, approachIndx as number);
+  deleteItem(idxApproach: number) {
+    this.$delete(this.approachs as Array<TApproach>, idxApproach);
   }
 
-  onClickDeleteApproachItem(indexApproach: number) {
-    this.initModalDeleteApproachItem(indexApproach);
+  deleteApproachItem(idxApproach: number, idxApproachItem: number) {
+    if (this.approachs !== null &&
+      this.approachs[idxApproach].approachsItems !== null) {
+      this.approachs[idxApproach].approachsItems.forEach((e, i) => {
+        if (i > idxApproachItem) {
+          this.updateNumberApproachItem(idxApproach, i, e.numberOfApproach--);
+        }
+      });
+    }
+
+    this.$delete((this.approachs as TApproach[])[idxApproach]
+      .approachsItems as Array<TApproachItem>, idxApproachItem);
+  }
+
+  onClickDeleteItem(indexApproach: number) {
+    this.initModalDeleteItem(indexApproach);
+  }
+
+  onClickDeleteApproachItem(indexApproach: number, indexApproachItem: number) {
+    this.initModalDeleteApproachItem(indexApproach, indexApproachItem);
   }
 
   onClickAddApproachItem(indexApproach: number) {
@@ -304,15 +347,26 @@ export default class ApproachAddEdit extends Global {
     }
   }
 
-  onClickSelectDeleteApproach() {
-    if (this.deleteApproach) {
-      this.deleteApproachItem(this.deleteApproach.id);
-      this.stateModalDeleteApproach = false;
+  onClickSelectDeleteItem() {
+    if (this.indexDeleteApproach !== null) {
+      this.deleteItem(this.indexDeleteApproach);
+      this.stateModalDeleteItem = false;
     }
   }
 
-  onClickCancelDeleteApproach() {
-    this.stateModalDeleteApproach = false;
+  onClickSelectDeleteApproachItem() {
+    if (this.indexDeleteApproach !== null && this.indexDeleteApproachItem !== null) {
+      this.deleteApproachItem(this.indexDeleteApproach, this.indexDeleteApproachItem);
+      this.stateModalDeleteApproachItem = false;
+    }
+  }
+
+  onClickCancelDeleteApproachItem() {
+    this.stateModalDeleteApproachItem = false;
+  }
+
+  onClickCancelDeleteItem() {
+    this.stateModalDeleteItem = false;
   }
 
   onClickCanelExercise() {
