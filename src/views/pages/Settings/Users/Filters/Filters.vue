@@ -101,7 +101,6 @@ import Helper from '@/mixins/Helper';
 import { mixins } from 'vue-class-component';
 import DateTimeFilter from '@/components/filters/DateTimeFilter.vue';
 import UserController, { TUserGuideFilterModel, filterName } from '@/controllers/UserController';
-import { TDepartment } from '@/api/models/Organizations';
 import { HumanReadableRole, Role } from '@/controllers/UserController';
 
 @Component({
@@ -113,7 +112,6 @@ import { HumanReadableRole, Role } from '@/controllers/UserController';
 
 export default class Filters extends mixins(Helper) {
   @State readonly filters!: any;
-  @State(state => state.departmentsList) departments!: TDepartment[];
   @Mutation('setFilters') setFilters!: (options: any) => void;
   @Ref() readonly dateTime!: DateTimeFilter
   fromDateTime = ''

@@ -94,10 +94,6 @@
                 </v-col>
               </template>
             </v-row>
-            <RolesTable
-              :user-roles.sync="view.roles"
-              :loading="false"
-            />
           </v-card>
         </v-tab-item>
         <v-tab-item>
@@ -194,15 +190,12 @@ import InlineDateField from '@/components/InlineDateField.vue';
 import InlineCheckField from '@/components/InlineCheckField.vue';
 import InlineAutocompleteField from '@/components/InlineAutocompleteField.vue';
 import UserController, { TUser, TUserSettings } from '@/controllers/UserController';
-import RolesTable from '@/components/Forms/User/RolesTable.vue';
 import InlineRadioButtonsField from '@/components/InlineRadioButtonsField.vue';
 import { Mutation, State } from 'vuex-class';
 import { TVuetifyOptionsList } from '@/types/globals';
 import Loader from '@/components/Loader.vue';
 import ModalDialog, { TModalView } from '@/components/ModalDialog.vue';
 import lodash from 'lodash';
-import { TDepartment, TTreeNodeOrganization, TTreeNodeType } from '@/api/models/Organizations';
-import { ERequestMode } from '@/api/models/enums';
 import { generatePassword } from '@/utils/helpers';
 
 enum StatusForm {
@@ -216,7 +209,6 @@ enum StatusForm {
   InlineDateField,
   InlineAutocompleteField,
   InlineCheckField,
-  RolesTable,
   Loader,
   ModalDialog,
   InlineRadioButtonsField
@@ -225,7 +217,6 @@ enum StatusForm {
 export default class EditUserRequest extends Global {
   @Prop({ type: Object, required: false, default: null }) readonly data!: TUser;
   @Ref('form') readonly form!: any;
-  @State(state => state.departmentsList) departments!: TDepartment[];
   @State(state => state.userSettings) userSettings!: TUserSettings;
   @Mutation('setUserSettings') setUserSettings!: (payload: TUserSettings) => void;
 
@@ -249,7 +240,6 @@ export default class EditUserRequest extends Global {
 
   departmentId = '';
   selectOrganizationDialog = false;
-  nodeDep: TTreeNodeOrganization | any | null = {};
 
   loginExistsDialog = false;
   modalLoginExistsData: TModalView = {
@@ -289,7 +279,6 @@ export default class EditUserRequest extends Global {
   }
 
   onSelectDepatment() {
-    this.view.departmentId = this.nodeDep?.id;
     this.selectOrganizationDialog = false;
   }
 
@@ -315,7 +304,7 @@ export default class EditUserRequest extends Global {
         this.statusForm = StatusForm.Created;
       }
 
-      if (mode === ERequestMode.COPY) this.view = { ...this.view, ...this.data };
+      // if (mode === ERequestMode.COPY) this.view = { ...this.view, ...this.data };
 
       this.initialRequest = lodash.cloneDeep(this.view);
     } catch (error) {

@@ -129,7 +129,6 @@ import Helper from '@/mixins/Helper';
 import { mixins } from 'vue-class-component';
 import { toDateFormat } from '@/utils/dateHelper';
 import { TUser } from '@/controllers/UserController';
-import { ERequestMode } from '@/api/models/enums';
 
 @Component
 export default class UserGuideTable extends mixins(Global, Helper) {
@@ -150,16 +149,6 @@ export default class UserGuideTable extends mixins(Global, Helper) {
 
   toLocalDate(date: string | Date) {
     return toDateFormat(date, null);
-  }
-
-  copy(data: typeof TUser) {
-    this.$router.push({
-      name: 'EditUserForm',
-      params: {
-        mode: ERequestMode.COPY,
-        data: data as any
-      }
-    });
   }
 }
 

@@ -1,3 +1,4 @@
+import { TUser, TUserSettings } from '@/controllers/UserController';
 
 export function isINN(value: string): boolean {
   if (!(/^\d{10}$/.test(value)) && !(/^\d{12}$/.test(value))) {
@@ -130,4 +131,45 @@ function hasUpper(s: string) {
   return sArray
     .filter(c => c.toLowerCase() !== c.toUpperCase())
     .some(c => c.toUpperCase() === c);
+}
+
+export function generatePassword(userSettings: TUserSettings): string {
+  const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const lowercase = 'abcdefghijklmnopqrstuvwxyz';
+  const numbers = '0123456789';
+  const symbols = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~';
+  const all = uppercase + lowercase + numbers + symbols;
+
+  let password = '';
+  for (let i = 0; i < userSettings.passwordMinimumLength; i++) {
+    const randomIndex = secureRandomInt(all.length);
+    password += all[randomIndex];
+  }
+
+  if (userSettings.passwordIsLowercases && [...password].every(c => !lowercase.includes(c))) {
+    return generatePassword(userSettings);
+  }
+  if (userSettings.passwordIsUpperCases && [...password].every(c => !uppercase.includes(c))) {
+    return generatePassword(userSettings);
+  }
+  if (userSettings.passwordIsNumbers && [...password].every(c => !numbers.includes(c))) {
+    return generatePassword(userSettings);
+  }
+  if (userSettings.passwordIsSymbols && [...password].every(c => !symbols.includes(c))) {
+    return generatePassword(userSettings);
+  }
+
+  return password;
+
+  function secureRandomInt(max: number) {
+    let num = 0;
+    const min = 2 ** 32 % max; // for eliminating bias
+    const rand = new Uint32Array(1);
+
+    do {
+      num = crypto.getRandomValues(rand)[0];
+    } while (num < min);
+
+    return num % max;
+  }
 }

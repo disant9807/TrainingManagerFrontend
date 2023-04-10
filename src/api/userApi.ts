@@ -2,7 +2,7 @@ import _Vue from 'vue';
 import { Api, TResult } from '@/api/baseApi';
 
 const baseUrl = process.env.VUE_APP_API_GATEWAY;
-const usersUrl = 'users';
+const usersUrl = 'user';
 const rolesUrl = 'roles';
 const userUrl = 'user';
 
