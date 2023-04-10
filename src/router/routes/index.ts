@@ -13,6 +13,9 @@ import Settings from '@/views/pages/Settings/Settings.vue';
 import UnitsOfMeasurementGuide from '@/views/pages/Settings/UnitsOfMeasurement/UnitsOfMeasurementGuide.vue';
 import CregoryOfBodyGuide from '@/views/pages/Settings/CategoryOfBody/CategoryOfBodyGuide.vue';
 
+import UserGuide from '@/views/pages/Settings/Users/UserGuide.vue';
+import EditUserRequest from '@/views/pages/Settings/Users/EditUserRequest.vue';
+
 const routes: Array<RouteConfig> = [
   {
     name: 'Home',
@@ -131,6 +134,25 @@ const routes: Array<RouteConfig> = [
     path: '/categoryofbody',
     component: CregoryOfBodyGuide,
     meta: { title: 'Показатели' }
+  },
+  {
+    name: 'EditUsersSettings',
+    path: '/settings/users/edit',
+    component: () => import(/* webpackChunkName: 'EditUsersSettings' */ '@/views/pages/Settings/Users/EditUsersSettings.vue'),
+    meta: { title: 'Настройки справочника - Пользователи' }
+  },
+  {
+    name: 'UserGuide',
+    path: '/settings/user_guide',
+    component: UserGuide,
+    meta: { title: 'Управление пользователями' }
+  },
+  {
+    name: 'EditUserForm',
+    path: '/settings/user_guide/edit/:id?',
+    component: EditUserRequest,
+    meta: { title: '' },
+    props: true
   }
 ];
 

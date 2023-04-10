@@ -7,6 +7,7 @@ import { getInstance as getSizeApi } from '@/api/SizeApi';
 import { getInstance as getGoalApi } from '@/api/GoalApi';
 import { getInstance as getCategoryOfBodyApi } from '@/api/CategoryOfBodyApi';
 import { getInstance as GetUnitsOfMeasurementApi } from '@/api/UnitsOfMeasurementApi';
+import { getInstance as getUsersApi } from '@/api/userApi';
 
 export default {
   base,
@@ -17,5 +18,6 @@ export default {
   getSizeApi,
   getGoalApi,
   getCategoryOfBodyApi,
-  GetUnitsOfMeasurementApi
+  GetUnitsOfMeasurementApi,
+  getUsersApi
 };

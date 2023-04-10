@@ -1,6 +1,5 @@
 import _Vue from 'vue';
 import { Api, TResult } from '@/api/baseApi';
-import { TUser } from '@/controllers/models/User';
 
 const baseUrl = process.env.VUE_APP_API_GATEWAY;
 const usersUrl = 'users';
@@ -9,6 +8,11 @@ const userUrl = 'user';
 
 let _instance: UsersApi;
 
+export const getInstance = () => {
+  if (!_instance) _instance = new UsersApi(new Api());
+  return _instance;
+};
+
 export class UsersApi {
     private api: Api;
 
@@ -16,16 +20,15 @@ export class UsersApi {
       this.api = api;
     }
 
-    getUserById(id: string): Promise<TResult<TUser>> {
+    getUserById(id: string): Promise<TResult<any>> {
       return this.api.GET(baseUrl, `${usersUrl}/${id}`);
     }
-    /*
-    getUsers(filter: TUserRequestFilter): Promise<TResult<TUser[]>> {
+
+    getUsers(filter: any): Promise<TResult<any[]>> {
       return this.api.GET(baseUrl, usersUrl, filter);
     }
-    */
 
-    saveUser(user: TUser, isNewUser: boolean) {
+    saveUser(user: any, isNewUser: boolean) {
       return this.api.POST(baseUrl, `${usersUrl}/${isNewUser}`, user);
     }
 
@@ -45,16 +48,19 @@ export class UsersApi {
      * Получить пользователя по его идентификатору
      * @returns Данные пользователя по текущей метке авторизации
      */
-    getUser(): Promise<TResult<TUser>> {
+    getUser(): Promise<TResult<any>> {
       return this.api.GET(baseUrl, userUrl);
     }
-}
 
-export const getInstance = () => {
-  if (!_instance) _instance = new UsersApi(new Api());
-  return _instance;
-};
+    getSettings(): Promise<TResult<any>> {
+      return this.api.GET(baseUrl, `${usersUrl}/settings`);
+    }
 
-export default function userApi(Vue: typeof _Vue): void {
-  Vue.prototype.$userApi = getInstance();
+    setSettings(settings: any) {
+      return this.api.POST(baseUrl, `${usersUrl}/settings`, settings);
+    }
+
+    checkUserLoginExists(userId: string) {
+      return this.api.GET(baseUrl, `${usersUrl}/${userId}/exists`);
+    }
 }
