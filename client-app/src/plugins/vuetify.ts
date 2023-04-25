@@ -19,12 +19,12 @@ export default new Vuetify({
       light: {
         primary: '#0188D1',
         darkblue: '#005987',
-        darkbluetext: '#ecf8ff',
+        darkbluetext: '#667f8e',
         // darkbluetext: '#667f8e',
-        darkbluelinks: '#bcdae8',
+        darkbluelinks: '#408FBA',
         // darkbluelinks: '#408FBA',
         menuAccent: '#b9cddc',
-        background: '#dbecf3'
+        background: '#C8E6C9'
       },
       dark: {
         primary: colors.indigo.base,
