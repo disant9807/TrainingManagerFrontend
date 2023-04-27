@@ -123,7 +123,7 @@ export default class EditUsersSettings extends Global {
 
   checkForm() {
     if (!this.form.validate()) {
-      this.showError(this.$localize('failed', 'validation'));
+      this.showError('');
       return false;
     }
     return true;

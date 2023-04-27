@@ -13,7 +13,6 @@
             <v-text-field
               v-model="dateFormatted"
               :label="dateLabel"
-              :hint="$localize('dateHint','validation')"
               persistent-hint
               :rules="[rules.date]"
               prepend-icon="mdi-calendar"

@@ -15,7 +15,6 @@
             :label="label"
             :dense="false"
             :rules="rules.concat(isDate)"
-            :hint="$localize('dateHint','validation')"
             v-bind="attrs"
             filled
             clearable
@@ -84,7 +83,7 @@ export default class InlineDateField extends Vue {
   }
 
   isDate(value: string): true | string {
-    return !value || !!dateHelper.dateFromDDMMYYY(value) || this.$localize('date', 'validation');
+    return !value || !!dateHelper.dateFromDDMMYYY(value) || "";
   }
 }
 </script>

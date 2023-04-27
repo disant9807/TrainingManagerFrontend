@@ -14,6 +14,7 @@ import GoalAddEdit from '@/views/pages/Goal/GoalAddEdit.vue';
 import Settings from '@/views/pages/Settings/Settings.vue';
 import UnitsOfMeasurementGuide from '@/views/pages/Settings/UnitsOfMeasurement/UnitsOfMeasurementGuide.vue';
 import CregoryOfBodyGuide from '@/views/pages/Settings/CategoryOfBody/CategoryOfBodyGuide.vue';
+import Statistics from '@/views/pages/Statistics/Statistics.vue';
 
 import UserGuide from '@/views/pages/Settings/Users/UserGuide.vue';
 import EditUserRequest from '@/views/pages/Settings/Users/EditUserRequest.vue';
@@ -170,7 +171,13 @@ const routes: Array<RouteConfig> = [
     component: EditUserRequest,
     meta: { title: '' },
     props: true
-  }
+  },
+  {
+    name: 'Statistics',
+    path: '/statistics',
+    component: Statistics,
+    meta: { title: 'Статистика' }
+  },
 ];
 
 export default routes;

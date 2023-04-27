@@ -7,9 +7,12 @@ import vuetify from '@/plugins/vuetify';
 import api from '@/api/baseApi';
 import eventbus from '@/plugins/eventbus';
 import { startAccessTokenRefresher } from './api/accessTokenRefresher';
+import VueApexCharts from 'vue-apexcharts';
 
 Vue.use(api);
 Vue.use(eventbus);
+Vue.use(VueApexCharts);
+Vue.component('apexchart', VueApexCharts);
 
 startAccessTokenRefresher();
 

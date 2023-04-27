@@ -60,7 +60,7 @@ export default class DateTimeFilter extends mixins(Global) {
     if (this.from.validate() && this.to.validate()) {
       this.$emit('change', [this.lstartDateTime, this.lendDateTime]);
     } else {
-      this.showError(this.$localize('failed', 'validation'));
+      this.showError('ошибка валидации даты');
     }
   }
 

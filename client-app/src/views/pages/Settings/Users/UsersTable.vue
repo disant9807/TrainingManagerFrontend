@@ -1,7 +1,7 @@
 <template>
   <v-data-table
     :loading="loading"
-    :loading-text="$localize('userGuide.loadingText','settings')"
+    :loading-text="'загрузка'"
     :headers="headers"
     :items="users"
     :page.sync="page"

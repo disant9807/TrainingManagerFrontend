@@ -3,7 +3,6 @@
     v-model="localTime"
     :disabled="disabled"
     :label="label"
-    :hint="$localize('timeHintShort', 'messages')"
     persistent-hint
     prepend-icon="mdi-clock-time-four-outline"
     :rules="isRequired ? [rules.required, validateTime, validateGap] : [validateTime, validateGap]"
@@ -35,11 +34,11 @@ export default class TimeInput extends Validation {
   }
 
   validateTime(): boolean | string {
-    return (this.localTime && isHHMMTime(this.localTime)) || this.$localize('timeHint', 'validation');
+    return (this.localTime && isHHMMTime(this.localTime)) || '';
   }
 
   validateGap(): boolean | string {
-    return (this.notBefore && this.notLater) || this.$localize('gapHint', 'validation');
+    return (this.notBefore && this.notLater) || '';
   }
 
   parse() {

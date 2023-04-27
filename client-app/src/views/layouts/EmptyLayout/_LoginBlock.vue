@@ -62,7 +62,6 @@ import { Component } from 'vue-property-decorator';
 import Global from '@/mixins/GlobalMixin';
 import AuthController from '@/controllers/Auth';
 import { mixins } from 'vue-class-component';
-import { Certificate } from 'crypto-pro';
 import UserController, { TUser } from '@/controllers/UserController';
 import { Mutation, State } from 'vuex-class';
 
@@ -73,7 +72,6 @@ export default class Login extends mixins(Global) {
   username = '';
   password = '';
   errorMessage:string|null = null;
-  certs:Certificate[] = [];
 
   async doLogin() {
     const response = await AuthController.login(this.username, this.password);
