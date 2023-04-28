@@ -6,7 +6,7 @@
     :scrim="false"
     transition="dialog-bottom-transition"
   >
-    <v-card v-if="data != null" class="pb-3">
+    <v-card v-if="localStatistics != null" class="pb-3">
       <v-toolbar
         dark
         color="primary"
@@ -19,9 +19,9 @@
         >
           <v-icon>mdi-close</v-icon>
         </v-btn>
-        <v-toolbar-title>{{ `Статистика: ${localeDateFormat(data.generatedTime, true)}` }}</v-toolbar-title>
+        <v-toolbar-title>{{ `Статистика: ${localeDateFormat(localStatistics.generatedTime, true)}` }}</v-toolbar-title>
       </v-toolbar>
-      <v-card-text>
+      <v-card-text v-if="charts.length > 0">
         <div
           v-for="(chart, i) in charts"
           :key="`chart-${i}`"
@@ -36,6 +36,9 @@
             :series="chart.series"
           />
         </div>
+      </v-card-text>
+      <v-card-text v-else class="d-flex justify-center flex-column align-center h-100">
+        <h2 style="font-size: 80px;">Данные отсутствуют...</h2>
       </v-card-text>
     </v-card>
   </v-dialog>
@@ -65,13 +68,13 @@ export type TChartsView = {
 @Component
 export default class StatisticsInfo
   extends mixins(Helper) {
-  @PropSync('genStatistics', { required: true, default: false }) genStatistics!: TGenStatistics | null;
+  @PropSync('genStatistics', { required: true, default: false }) genStatistic!: TGenStatistics | null;
   @PropSync('isOpenDialog', { required: true, default: false }) dialog!:boolean;
 
   charts: TChartsView[] = [];
 
-  get data() {
-    return this.genStatistics;
+  get localStatistics() {
+    return this.genStatistic;
   }
 
   @Watch('dialog', { immediate: true })
@@ -82,30 +85,34 @@ export default class StatisticsInfo
   }
 
   initCharts() {
-    this.data?.statistics.forEach((e, indx) => {
-      let categories: string[] = [];
-      let series: string[] = [];
-      e.statisticsIndicators.forEach(z => {
-        categories.push(this.localeDateFormat(z.dateOfMeasurement, true));
-        series.push(z.value);
-      });
+    if (this.localStatistics?.statistics.length === 0) {
+      this.charts = [];
+    } else {
+      this.localStatistics?.statistics.forEach((e, indx) => {
+        let categories: string[] = [];
+        let series: string[] = [];
+        e.statisticsIndicators.forEach(z => {
+          categories.push(this.localeDateFormat(z.dateOfMeasurement, true));
+          series.push(z.value);
+        });
 
-      this.charts.push({
-        name: e.name,
-        options: {
-          chart: {
-            id: `charts-${indx}`
+        this.charts.push({
+          name: e.name,
+          options: {
+            chart: {
+              id: `charts-${indx}`
+            },
+            xaxis: {
+              categories
+            },
           },
-          xaxis: {
-            categories
-          },
-        },
-        series: [{
-          name: `serise-${indx}`,
-          data: series
-        }]
-      } as TChartsView);
-    });
+          series: [{
+            name: `serise-${indx}`,
+            data: series
+          }]
+        } as TChartsView);
+      });
+    }
   }
 }
 </script>

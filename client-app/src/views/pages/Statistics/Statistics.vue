@@ -14,10 +14,11 @@
             <v-btn
               color="primary"
               class="ml-3 mt-3"
-              @click="generateStatisticsSize()"
+              @click="onClickOpenGenerate(generateStatisticsSize)"
             >
               Сгенерировать статистику замеров
             </v-btn>
+            <Loader :value="isSizeLoading" />
             <v-list lines="one" class="statisticsList">
               <v-list-item
                 v-for="(item, i) in sizeStatisitcs"
@@ -36,10 +37,11 @@
             <v-btn
               color="primary"
               class="ml-3 mt-3"
-              @click="generateStatisticsGoal()"
+              @click="onClickOpenGenerate(generateStatisticsGoal)"
             >
               Сгенерировать статистику целей
             </v-btn>
+            <Loader :value="isGoalLoading" />
             <v-list lines="one" class="statisticsList">
               <v-list-item
                 v-for="(item, i) in goalStatisitcs"
@@ -60,10 +62,11 @@
             <v-btn
               color="primary"
               class="ml-3 mt-3"
-              @click="generateStatisticsTraining()"
+              @click="onClickOpenGenerate(generateStatisticsTraining)"
             >
               Сгенерировать статистику тренировок
             </v-btn>
+            <Loader :value="isTrainingLoading" />
             <v-list lines="one" class="statisticsList">
               <v-list-item
                 v-for="(item, i) in trainingStatistics"
@@ -82,8 +85,62 @@
     </v-card>
     <StatisticsInfo
       :is-open-dialog.sync="isDialogOpen"
-      :gen-statistics.sync="selectStatistics"
+      :genStatistics.sync="selectStatistics"
     />
+    <v-dialog
+      v-model="isDialogGeneratedOpen"
+      persistent
+      width="720"
+    >
+      <v-card>
+        <v-card-title>
+          <span class="text-h5">Генерация статистики</span>
+        </v-card-title>
+        <v-card-text>
+          <v-container>
+            <v-row>
+              <v-col
+                cols="12"
+                sm="6"
+                md="4"
+              >
+                <InlineDateField
+                  label="Дата выборки от"
+                  :value.sync="generatedDateFrom"
+                />
+              </v-col>
+              <v-col
+                cols="12"
+                sm="6"
+                md="4"
+              >
+                <InlineDateField
+                  label="Дата выборки до"
+                  :value.sync="generatedDateTo"
+                />
+              </v-col>
+            </v-row>
+          </v-container>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="blue-darken-1"
+            variant="text"
+            @click="isDialogGeneratedOpen = false"
+          >
+            Отмена
+          </v-btn>
+          <v-btn
+            color="blue-darken-1"
+            variant="text"
+            @click="onClickGenerateStatisticsBtn"
+          >
+            Генерация
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
@@ -92,19 +149,20 @@ import { Vue, Component, Prop, Watch } from 'vue-property-decorator';
 import { mixins } from 'vue-class-component';
 import Helper from '@/mixins/Helper';
 import Global from '@/mixins/GlobalMixin';
+import Loader from '@/components/Loader.vue';
 
 import { Mutation, State } from 'vuex-class';
 
-import { TOrder } from '@/types/globals';
-import { TResult } from '@/api/baseApi';
-
+import InlineDateField from '@/components/InlineDateField.vue';
 import StatisticsController, { TObjectOfStatistics, TGenStatistics } from '@/controllers/StatisticsController';
 import StatisticsInfo from '@/views/pages/Statistics/Components/StatisticsInfo.vue';
 import { TUser } from '@/controllers/UserController';
 
 @Component({
   components: {
-  StatisticsInfo
+  StatisticsInfo,
+  Loader,
+  InlineDateField
   }
   })
 export default class Statistics extends mixins(Helper, Global) {
@@ -121,6 +179,23 @@ export default class Statistics extends mixins(Helper, Global) {
 
   isDialogOpen = false;
   selectStatistics: TGenStatistics | null = null;
+
+  generatedDateFrom = '';
+  generatedDateTo = '';
+  isDialogGeneratedOpen = false;
+  generatedMethod: Function = () => '';
+
+  onClickOpenGenerate(generateMethod: Function) {
+    this.generatedDateFrom = '';
+    this.generatedDateTo = '';
+    this.isDialogGeneratedOpen = true;
+    this.generatedMethod = generateMethod;
+  }
+
+  onClickGenerateStatisticsBtn() {
+    this.isDialogGeneratedOpen = false;
+    this.generatedMethod(this.generatedDateFrom, this.generatedDateTo);
+  }
 
   mounted() {
     this.loadData();
@@ -141,64 +216,101 @@ export default class Statistics extends mixins(Helper, Global) {
 
   async loadDataGoal(): Promise<void> {
     this.isGoalLoading = true;
-    const response = await StatisticsController
-      .GetStatisticsByCategory('Goal', this.user.id);
+    try {
+      const response = await StatisticsController
+        .GetStatisticsByCategory('Goal', this.user.id);
 
-    this.goalStatisitcs = response;
-    this.isGoalLoading = false;
+      this.goalStatisitcs = response;
+    } catch {
+      this.showError("Ошибка загрузки статистики целей");
+    } finally {
+      this.isGoalLoading = false;
+    }
   }
 
   async loadDataSize(): Promise<void> {
     this.isSizeLoading = true;
-    const response = await StatisticsController
-      .GetStatisticsByCategory('Size', this.user.id);
+    try {
+      const response = await StatisticsController
+        .GetStatisticsByCategory('Size', this.user.id);
 
-    this.sizeStatisitcs = response;
-    this.isSizeLoading = false;
+      this.sizeStatisitcs = response;
+    } catch {
+      this.showError("Ошибка загрузки статистики замеров");
+    } finally {
+      this.isSizeLoading = false;
+    }
   }
 
   async loadDataTraining(): Promise<void> {
     this.isTrainingLoading = true;
-    const response = await StatisticsController
-      .GetStatisticsByCategory('Training', this.user.id);
+    try {
+      const response = await StatisticsController
+        .GetStatisticsByCategory('Training', this.user.id);
 
-    this.trainingStatistics = response;
-    this.isTrainingLoading = false;
+      this.trainingStatistics = response;
+    } catch {
+      this.showError("Ошибка загрузки статистики тренировок");
+    } finally {
+      this.isTrainingLoading = false;
+    }
   }
 
-  async generateStatisticsSize(): Promise<void> {
+  async generateStatisticsSize(dateFrom: string, dateTo: string): Promise<void> {
     this.isSizeLoading = true;
-    await StatisticsController
-      .GenerateSizeStatistics('12-31-2022', '10-10-2023', this.user.id);
-
-    this.loadDataSize();
-    this.isSizeLoading = false;
+    try {
+      await StatisticsController
+        .GenerateSizeStatistics(dateFrom, dateTo, this.user.id);
+      this.showSuccess("Статисти успешно сгенерирована");
+      this.loadDataSize();
+    } catch {
+      this.showError("Ошибка генерации статистики");
+    } finally {
+      this.isSizeLoading = false;
+    }
   }
 
-  async generateStatisticsGoal(): Promise<void> {
+  async generateStatisticsGoal(dateFrom: string, dateTo: string): Promise<void> {
     this.isGoalLoading = true;
-    await StatisticsController
-      .GenerateGoalStatistics('12-31-2022', '10-10-2023', this.user.id);
-
-    this.loadDataGoal();
-    this.isGoalLoading = false;
+    try {
+      await StatisticsController
+        .GenerateGoalStatistics(dateFrom, dateTo, this.user.id);
+      this.showSuccess("Статисти успешно сгенерирована");
+      this.loadDataGoal();
+    } catch {
+      this.showError("Ошибка генерации статистики");
+    } finally {
+      this.isGoalLoading = false;
+    }
   }
 
-  async generateStatisticsTraining(): Promise<void> {
+  async generateStatisticsTraining(dateFrom: string, dateTo: string): Promise<void> {
     this.isTrainingLoading = true;
-    await StatisticsController
-      .GenerateTrainingStatistics('12-31-2022', '10-10-2023', this.user.id);
-
-    this.loadDataTraining();
-    this.isTrainingLoading = false;
+    try {
+      await StatisticsController
+        .GenerateTrainingStatistics(dateFrom, dateTo, this.user.id);
+      this.showSuccess("Статисти успешно сгенерирована");
+      this.loadDataTraining();
+    } catch {
+      this.showError("Ошибка генерации статистики");
+    } finally {
+      this.isTrainingLoading = false;
+    }
   }
 
   async selectedStatistcs(statistics: TGenStatistics) {
-    let response = await StatisticsController
-      .GetStatisticsById(statistics.id);
+    this.isTrainingLoading = true;
+    try {
+      const response = await StatisticsController
+        .GetStatisticsById(statistics.id);
 
-    this.selectStatistics = response;
-    this.isDialogOpen = true;
+      this.selectStatistics = response;
+      this.isDialogOpen = true;
+    } catch {
+      this.showError("Ошибка загрузки статистики");
+    } finally {
+      this.isTrainingLoading = false;
+    }
   }
 }
 </script>

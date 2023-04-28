@@ -64,7 +64,8 @@ export default class NavigationLinks extends Vue {
     { id: 3, title: 'Тренировочные программы', isHuge: true, icon: 'mdi-book', pathName: 'TrainingProgram' },
     { id: 4, title: 'Цели', isHuge: true, icon: 'mdi-flag-checkered', pathName: 'Goal' },
     { id: 5, title: 'Замеры', isHuge: true, icon: 'mdi-ruler', pathName: 'Size' },
-    { id: 6, title: 'Настройки', isHuge: true, icon: 'mdi-cog-outline', pathName: 'Settings' },
+    { id: 6, title: 'Статистика', isHuge: true, icon: 'mdi-chart-bell-curve-cumulative', pathName: 'Statistics'},
+    { id: 7, title: 'Настройки', isHuge: true, icon: 'mdi-cog-outline', pathName: 'Settings' },
     // { id: 6, title: 'Статистика', isHuge: true, icon: 'mdi-cloud-download', pathName: 'Exercise' }
   ];
 
