@@ -34,7 +34,7 @@ export class TrainingProgramApi {
       return this.api.GET(baseUrl, `${trainingUrl}/${id}`);
     }
 
-    GetTrainingProgram(filter: any): Promise<TResult<any>> {
-      return this.api.GET(baseUrl, `${trainingUrl}`, { ...filter });
+    GetTrainingProgram(filter: any, userId: string): Promise<TResult<any>> {
+      return this.api.GET(baseUrl, `${trainingUrl}/get/${userId}`, { ...filter });
     }
 }

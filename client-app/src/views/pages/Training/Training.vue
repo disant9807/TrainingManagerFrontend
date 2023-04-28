@@ -134,6 +134,8 @@ import { Mutation, State } from 'vuex-class';
 
 import { TOrder } from '@/types/globals';
 import { TResult } from '@/api/baseApi';
+import { TUser } from '@/controllers/UserController';
+
 
 export type TTrainingView = {
   selectedItem: number,
@@ -151,6 +153,7 @@ export type TTrainingView = {
   }
   })
 export default class Training extends mixins(Helper, Global) {
+  @State readonly user!: TUser;
   @State readonly filters!: any;
   @Mutation('setFilters') setFilters!: (options: any) => void;
   @State readonly loading!: any;
@@ -201,7 +204,7 @@ export default class Training extends mixins(Helper, Global) {
 
   async filtersChange(): Promise<void> {
     this.isListLoading = true;
-    const response = await TrainingController.GetTraining(this.filtersModel, this.order);
+    const response = await TrainingController.GetTraining(this.filtersModel, this.order, this.user.id);
     if (response.success) {
       this.$set(this.training, 'list', response?.data || []);
       this.$set(this.training, 'selectedItem', 0);

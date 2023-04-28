@@ -65,6 +65,7 @@ import Filters from '@/views/pages/TrainingProgram/Components/Filters.vue';
 import Sorter from '@/views/pages/Components/Sorter.vue';
 import { State } from 'vuex-class';
 import { TOrder } from '@/types/globals';
+import { TUser } from '@/controllers/UserController';
 
 
 @Component({
@@ -75,6 +76,7 @@ import { TOrder } from '@/types/globals';
   }
   })
 export default class ModalFilterTrainingProgram extends Global {
+  @State readonly user!: TUser;
   @State readonly filters!: any;
   @PropSync('show') readonly dialog!: boolean;
   @PropSync('selected', { required: false, default: null }) selectedTrainingProgram!: TTrainingProgram[] | null;
@@ -154,7 +156,7 @@ export default class ModalFilterTrainingProgram extends Global {
   async filtersChange(): Promise<void> {
     this.loading = true;
     try {
-      const response = await TrainingProgramController.GetTrainingProgram(this.filtersModel, this.order);
+      const response = await TrainingProgramController.GetTrainingProgram(this.filtersModel, this.order, this.user.id);
       if (response.success) {
         this.trainingPrograms = response?.data ?? [];
       } else {

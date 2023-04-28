@@ -36,7 +36,7 @@
                     :value.sync="view.name"
                     :rules="[rules.required]"
                   />
-                  <InlineTextField
+                  <InlineTextareaField
                     label="Описание"
                     :value.sync="view.description"
                   />
@@ -89,9 +89,13 @@ import GoalController, { TGoal } from '@/controllers/GoalController';
 import Loader from '@/components/Loader.vue';
 import SubGoalAddEdit from './Components/SubGoalAddEdit.vue';
 import GoalDelete from './GoalDelete.vue';
+import { TUser } from '@/controllers/UserController';
+import { Mutation, State } from 'vuex-class';
+import InlineTextareaField from '@/components/InlineTextareaField.vue';
 
 @Component({
   components: {
+  InlineTextareaField,
   InlineTextField,
   InlineDateField,
   Loader,
@@ -100,6 +104,7 @@ import GoalDelete from './GoalDelete.vue';
   }
   })
 export default class GoalAddEdit extends Global {
+  @State readonly user!: TUser;
   @Ref('form') readonly form!: any;
 
   goalDeleteState = false;
@@ -125,6 +130,7 @@ export default class GoalAddEdit extends Global {
     try {
       this.isLoading = true;
       if (this.editId) {
+        this.view.userId = this.user.id;
         const goal = await GoalController.GetGoalById(this.editId);
         this.view = goal;
       }
@@ -145,6 +151,7 @@ export default class GoalAddEdit extends Global {
     try {
       this.isLoading = true;
       if (!this.isEdit) {
+        this.view
         const goalId = await GoalController.CreateGoal(this.view);
         this.showSuccess(`Цель ${this.view.name} успешно добавлен с идентификатором ${goalId}`);
       } else if (this.isEdit && this.editId) {

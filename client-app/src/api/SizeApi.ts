@@ -34,7 +34,7 @@ export class SizeApi {
       return this.api.GET(baseUrl, `${sizeUrl}/${id}`);
     }
 
-    GetSize(filter: any): Promise<TResult<any>> {
-      return this.api.GET(baseUrl, `${sizeUrl}`, { ...filter });
+    GetSize(filter: any, userId: string): Promise<TResult<any>> {
+      return this.api.GET(baseUrl, `${sizeUrl}/get/${userId}`, { ...filter });
     }
 }

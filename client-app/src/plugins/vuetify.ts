@@ -17,14 +17,14 @@ export default new Vuetify({
     options: { customProperties: true },
     themes: {
       light: {
-        primary: '#0188D1',
-        darkblue: '#005987',
-        darkbluetext: '#667f8e',
+        primary: colors.green.lighten1,
+        darkblue: colors.lightGreen.darken1,
+        darkbluetext: colors.lightGreen.darken1,
         // darkbluetext: '#667f8e',
-        darkbluelinks: '#408FBA',
+        darkbluelinks: colors.lightGreen.lighten5,
         // darkbluelinks: '#408FBA',
-        menuAccent: '#b9cddc',
-        background: '#C8E6C9'
+        menuAccent: colors.green.lighten5,
+        background: colors.lightGreen.lighten5
       },
       dark: {
         primary: colors.indigo.base,

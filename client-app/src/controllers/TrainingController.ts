@@ -40,6 +40,7 @@ export type TTrainingFilterModel = {
 
 export class TTraining {
   id: string;
+  userId: string;
   name: string;
   shortName: string;
   description: string | null;
@@ -50,6 +51,7 @@ export class TTraining {
   approachs: TApproach[];
   constructor() {
     this.id = '';
+    this.userId = '';
     this.name = '';
     this.shortName = '';
     this.description = '';
@@ -114,7 +116,7 @@ class TrainingModel extends BaseController {
     return await this.handleAndResolve(() => trainingApi.GetTrainingById(id));
   }
 
-  async GetTraining(filter: TTrainingFilterViewModel, order: TOrder): Promise<TResult<TTraining[]>> {
+  async GetTraining(filter: TTrainingFilterViewModel, order: TOrder, userId: string): Promise<TResult<TTraining[]>> {
     const { categoryOfBodies, name, exercises, periodTrainingTime, period, trainingPrograms, isNoneTrainingProgram, periodApproachs, periodTrainingDate } = filter;
     const [createdFrom, createdTo] = period || [];
     const [trainingFrom, trainingTo] = periodTrainingDate || [];
@@ -138,7 +140,7 @@ class TrainingModel extends BaseController {
       order
     };
 
-    return await trainingApi.GetTraining(filterModel);
+    return await trainingApi.GetTraining(filterModel, userId);
   }
 }
 

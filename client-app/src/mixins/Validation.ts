@@ -11,42 +11,41 @@ export default class Validation extends Vue {
   rules: TRules = {
     required: (value: string[] | string | { [key: string]: any }): true | string => {
       return (Array.isArray(value) ? !!value.length : !!value?.toString().trim()) ||
-        this.$localize('required', 'validation');
+        'Не заполнены обязательные поля';
     },
 
     id: (value: string): true | string => !value || !!~value?.search(/^[0-9]+-[a-zA-Z0-9]+$/) ||
-      this.$localize('id', 'validation'),
+    'Не соответствует формату id',
 
     number: (value: string): true | string => !value || !!~value?.search(/^[0-9]+$/) ||
-      this.$localize('number', 'validation'),
+    'Не соответствует формату числа',
 
     phone: (value: string): true | string => {
       return !value || !!~value.search(/^\+7 ?\([0-9]{3}\) ?[0-9]{3}-[0-9]{2}-[0-9]{2}$/) ||
-        this.$localize('phone', 'validation');
+      'Не соответствует формату тел. номера';
     },
 
     email: (value: string): true | string => {
       return !value || !!~value?.search(/^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z]{2,}$/) ||
-        this.$localize('email', 'validation');
+      'Не соответствует формату email';
     },
 
     date: (value: string): true | string => !value || !!dateFromDDMMYYY(value) || this.$localize('date', 'validation'),
 
     minLength: (minValue: number) => {
       return (value: string): true | string => (!value?.trim() || !minValue) || value.length >= minValue ||
-        this.$localize('minLength', 'validation').replace('$', minValue.toString());
+        'Не соответствует минимальной длинне $'.replace('$', minValue.toString());
     },
 
     maxLength: (maxValue: number) => {
       return (value: string): true | string => (!value?.trim() || !maxValue) || value.length <= maxValue ||
-        this.$localize('maxLength', 'validation').replace('$', maxValue.toString());
+      'Не соответствует максимальной длинне $'.replace('$', maxValue.toString());
     },
 
     longWord: (value: string): true | string => {
       const longWord = !!value?.trim() && value.split(' ').find(val => val.length > 50);
       return !longWord ||
-        this.$localize('longWord', 'validation')
-          .replace('$', longWord.substring(0, 50).concat('...'));
+      'Не соответствует формату слов $'.replace('$', longWord.substring(0, 50).concat('...'));
     },
 
     isEgrulIdentificator(value: string): true | string {

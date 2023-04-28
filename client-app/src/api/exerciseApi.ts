@@ -33,7 +33,7 @@ export class ExerciseApi {
     return this.api.GET(baseUrl, `${exerciseUrl}/${id}`);
   }
 
-  GetExercise(filter: any): Promise<TResult<any>> {
-    return this.api.GET(baseUrl, `${exerciseUrl}`, { ...filter });
+  GetExercise(filter: any, userId: string): Promise<TResult<any>> {
+    return this.api.GET(baseUrl, `${exerciseUrl}/get/${userId}`, { ...filter });
   }
 }

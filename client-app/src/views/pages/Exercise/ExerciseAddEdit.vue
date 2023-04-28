@@ -39,7 +39,7 @@
                     :hint="hardSkillsHint"
                     :selected.sync="hardSkills"
                   />
-                  <InlineTextField
+                  <InlineTextareaField
                     label="Описание"
                     :value.sync="view.description"
                   />
@@ -92,6 +92,8 @@ import { Mutation, State } from 'vuex-class';
 import Loader from '@/components/Loader.vue';
 import { TCategoryOfBody } from '@/controllers/CategoryOfBodyController';
 import SubExerciseBodyAddEdit from './Components/SubExerciseBodyAddEdit.vue';
+import { TUser } from '@/controllers/UserController';
+import InlineTextareaField from '@/components/InlineTextareaField.vue';
 
 @Component({
   components: {
@@ -99,12 +101,14 @@ import SubExerciseBodyAddEdit from './Components/SubExerciseBodyAddEdit.vue';
   InlineAutocompleteField,
   InlineCheckField,
   InlineRadioButtonsField,
+  InlineTextareaField,
   InlineSliderField,
   SubExerciseBodyAddEdit,
   Loader
   }
   })
 export default class ExerciseAddEdit extends Global {
+  @State readonly user!: TUser;
   @Ref('form') readonly form!: any;
 
   isEdit = false;
@@ -191,6 +195,7 @@ export default class ExerciseAddEdit extends Global {
     try {
       this.isLoading = true;
       if (!this.isEdit) {
+        this.view.userId = this.user.id;
         const exrciseId = await ExerciseController.CreateExercise(this.view);
         this.showSuccess(`Упражнение ${this.view.name} успешно добавлено с идентификатором ${exrciseId}`);
       } else if (this.isEdit && this.editId) {

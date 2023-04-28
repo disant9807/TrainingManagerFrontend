@@ -35,6 +35,7 @@ export enum HardSkill {
 
 export class TExercise {
   id: string;
+  userId: string;
   name: string;
   shortName: string;
   isBased: boolean | null;
@@ -47,6 +48,7 @@ export class TExercise {
 
   constructor() {
     this.id = '';
+    this.userId = '';
     this.name = '';
     this.shortName = '';
     this.isBased = false;
@@ -76,7 +78,7 @@ class ExerciseModel extends BaseController {
     return await this.handleAndResolve(() => exerciseApi.GetExerciseById(id));
   }
 
-  async GetExercise(filter: TExerciseFilterViewModel, order: TOrder): Promise<TResult<TExercise[]>> {
+  async GetExercise(filter: TExerciseFilterViewModel, order: TOrder, userId: string): Promise<TResult<TExercise[]>> {
     const { categoryOfBodies, name, createdFrom, createdTo, isBased, hardSkills } = filter;
 
     const filterModel: TExerciseFilterModel | undefined = {
@@ -89,7 +91,7 @@ class ExerciseModel extends BaseController {
       order
     };
 
-    return await exerciseApi.GetExercise(filterModel);
+    return await exerciseApi.GetExercise(filterModel, userId);
   }
 }
 

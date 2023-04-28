@@ -29,6 +29,7 @@ export type TTrainingProgramFilterModel = {
 
 export class TTrainingProgram {
   id: string;
+  userId: string;
   name: string;
   shortName: string;
   avatarId: string;
@@ -39,6 +40,7 @@ export class TTrainingProgram {
 
   constructor() {
     this.id = '';
+    this.userId = '';
     this.name = '';
     this.shortName = '';
     this.avatarId = '';
@@ -84,7 +86,7 @@ class ExerciseModel extends BaseController {
     return await this.handleAndResolve(() => trainingProgramApi.GetTrainingProgramById(id));
   }
 
-  async GetTrainingProgram(filter: TTrainingProgramFilterViewModel, order: TOrder): Promise<TResult<TTrainingProgram[]>> {
+  async GetTrainingProgram(filter: TTrainingProgramFilterViewModel, order: TOrder, userId: string): Promise<TResult<TTrainingProgram[]>> {
     const { categoryOfBodies, name, periodTraining, exercises, period } = filter;
     const [createdFrom, createdTo] = period || [];
     const [minCountTrainingDays, maxCountTrainingDays] = periodTraining || [];
@@ -100,7 +102,7 @@ class ExerciseModel extends BaseController {
       order
     };
 
-    return await trainingProgramApi.GetTrainingProgram(filterModel);
+    return await trainingProgramApi.GetTrainingProgram(filterModel, userId);
   }
 }
 

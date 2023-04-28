@@ -43,6 +43,11 @@ const roleGuard = (to: Route, from: Route, next: NavigationGuardNext) => {
     return;
   }
 
+  if (toStatistics(to) && userIn(Group.user)) {
+    next();
+    return;
+  }
+
   if (!userIn(Group.admin)) {
     next({ name: 'Error404' });
     return;
@@ -73,6 +78,10 @@ const toSize = (to: Route): boolean => {
 
 const toGoal = (to: Route): boolean => {
   return !!to.fullPath.match('/goal*');
+};
+
+const toStatistics = (to: Route): boolean => {
+  return !!to.fullPath.match('/statistics*');
 };
 
 const toUser = (to: Route): boolean => {

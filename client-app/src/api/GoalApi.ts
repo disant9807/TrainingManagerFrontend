@@ -34,7 +34,7 @@ export class GoalApi {
       return this.api.GET(baseUrl, `${sizeUrl}/${id}`);
     }
 
-    GetGoal(filter: any): Promise<TResult<any>> {
-      return this.api.GET(baseUrl, `${sizeUrl}`, { ...filter });
+    GetGoal(filter: any, userId: string): Promise<TResult<any>> {
+      return this.api.GET(baseUrl, `${sizeUrl}/get/${userId}`, { ...filter });
     }
 }

@@ -134,6 +134,7 @@ import { TResult } from '@/api/baseApi';
 import SizeController, { TSize, TSizeFilterViewModel } from '@/controllers/SizeController';
 import SizeInfo from './Components/SizeInfo.vue';
 import SizeDelete from './SizeDelete.vue';
+import { TUser } from '@/controllers/UserController';
 
 export type TSizeView = {
   selectedItem: number,
@@ -151,6 +152,7 @@ export type TSizeView = {
   }
   })
 export default class Size extends mixins(Helper, Global) {
+  @State readonly user!: TUser;
   @State readonly filters!: any;
   @Mutation('setFilters') setFilters!: (options: any) => void;
   @State readonly loading!: any;
@@ -201,7 +203,7 @@ export default class Size extends mixins(Helper, Global) {
 
   async filtersChange(): Promise<void> {
     this.isListLoading = true;
-    const response = await SizeController.GetSize(this.filtersModel, this.order);
+    const response = await SizeController.GetSize(this.filtersModel, this.order, this.user.id);
     if (response.success) {
       this.$set(this.size, 'list', response?.data || []);
       this.$set(this.size, 'selectedItem', 0);

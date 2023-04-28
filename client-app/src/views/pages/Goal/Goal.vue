@@ -134,6 +134,7 @@ import { TResult } from '@/api/baseApi';
 import GoalController, { TGoal, TSubGoal, TGoalFilterViewModel } from '@/controllers/GoalController';
 import GoalInfo from './Components/GoalInfo.vue';
 import GoalDelete from './GoalDelete.vue';
+import { TUser } from '@/controllers/UserController';
 
 export type TGoalView = {
   selectedItem: number,
@@ -151,6 +152,7 @@ export type TGoalView = {
   }
   })
 export default class Goal extends mixins(Helper, Global) {
+  @State readonly user!: TUser;
   @State readonly filters!: any;
   @Mutation('setFilters') setFilters!: (options: any) => void;
   @State readonly loading!: any;
@@ -201,7 +203,7 @@ export default class Goal extends mixins(Helper, Global) {
 
   async filtersChange(): Promise<void> {
     this.isListLoading = true;
-    const response = await GoalController.GetGoal(this.filtersModel, this.order);
+    const response = await GoalController.GetGoal(this.filtersModel, this.order, this.user.id);
     if (response.success) {
       this.$set(this.goal, 'list', response?.data || []);
       this.$set(this.goal, 'selectedItem', 0);

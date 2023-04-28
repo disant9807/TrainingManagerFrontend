@@ -36,6 +36,7 @@ export type TGoalFilterModel = {
 
 export class TGoal {
   id: string;
+  userId: string;
   name: string;
   description: string;
   createdDate: string;
@@ -44,6 +45,7 @@ export class TGoal {
   isArchived: boolean;
   constructor() {
     this.id = '';
+    this.userId = '';
     this.name = '';
     this.createdDate = '';
     this.completionDate = '';
@@ -91,7 +93,7 @@ class GoalModel extends BaseController {
     return await this.handleAndResolve(() => goalApi.GetGoalById(id));
   }
 
-  async GetGoal(filter: TGoalFilterViewModel, order: TOrder): Promise<TResult<TGoal[]>> {
+  async GetGoal(filter: TGoalFilterViewModel, order: TOrder, userId: string): Promise<TResult<TGoal[]>> {
     const { categoryOfBodies, name, period, codeUnitsOfMeasurement } = filter;
     const [createdFrom, createdTo] = period || [];
 
@@ -104,7 +106,7 @@ class GoalModel extends BaseController {
       order
     };
 
-    return await goalApi.GetGoal(filterModel);
+    return await goalApi.GetGoal(filterModel, userId);
   }
 }
 

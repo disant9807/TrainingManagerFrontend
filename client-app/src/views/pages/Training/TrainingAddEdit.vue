@@ -21,7 +21,7 @@
                     :value.sync="view.name"
                     :rules="[rules.required]"
                   />
-                  <InlineTextField
+                  <InlineTextareaField
                     label="Описание"
                     :value.sync="view.description"
                   />
@@ -100,6 +100,8 @@ import { TExercise } from '@/controllers/ExerciseController';
 import { Mutation, State } from 'vuex-class';
 import Loader from '@/components/Loader.vue';
 import ApproachAddEdit from './Components/ApproachAddEdit.vue';
+import { TUser } from '@/controllers/UserController';
+import InlineTextareaField from '@/components/InlineTextareaField.vue';
 
 @Component({
   components: {
@@ -107,6 +109,7 @@ import ApproachAddEdit from './Components/ApproachAddEdit.vue';
   InlineAutocompleteField,
   InlineCheckField,
   InlineRadioButtonsField,
+  InlineTextareaField,
   InlineSliderField,
   InlineDateField,
   Loader,
@@ -114,6 +117,7 @@ import ApproachAddEdit from './Components/ApproachAddEdit.vue';
   }
   })
 export default class TrainingAddEdit extends Global {
+  @State readonly user!: TUser;
   @Ref('form') readonly form!: any;
 
   isEdit = false;
@@ -154,6 +158,7 @@ export default class TrainingAddEdit extends Global {
     try {
       this.isLoading = true;
       if (!this.isEdit) {
+        this.view.userId = this.user.id;
         const trainingProgram = await TrainingController.CreateTraining(this.view);
         this.showSuccess(`Тренировка ${this.view.name} успешно добавлена с идентификатором ${trainingProgram}`);
       } else if (this.isEdit && this.editId) {

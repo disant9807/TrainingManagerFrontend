@@ -85,6 +85,8 @@ import SizeController, { TSize } from '@/controllers/SizeController';
 import Loader from '@/components/Loader.vue';
 import SizeSubAddEdit from './Components/SizeSubAddEdit.vue';
 import SizeDelete from './SizeDelete.vue';
+import { Mutation, State } from 'vuex-class';
+import { TUser } from '@/controllers/UserController';
 
 @Component({
   components: {
@@ -96,6 +98,7 @@ import SizeDelete from './SizeDelete.vue';
   }
   })
 export default class TrainingAddEdit extends Global {
+  @State readonly user!: TUser;
   @Ref('form') readonly form!: any;
 
   sizeDeleteState = false;
@@ -141,6 +144,7 @@ export default class TrainingAddEdit extends Global {
     try {
       this.isLoading = true;
       if (!this.isEdit) {
+        this.view.userId = this.user.id;
         const sizeId = await SizeController.CreateSize(this.view);
         this.showSuccess(`Замер ${this.view.name} успешно добавлен с идентификатором ${sizeId}`);
       } else if (this.isEdit && this.editId) {

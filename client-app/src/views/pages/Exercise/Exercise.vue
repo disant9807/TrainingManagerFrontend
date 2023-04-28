@@ -135,7 +135,7 @@ import ExerciseDelete from './ExerciseDelete.vue';
 import { Mutation, State } from 'vuex-class';
 
 import { TOrder } from '@/types/globals';
-import { TResult } from '@/api/baseApi';
+import { TUser } from '@/controllers/UserController';
 
 export type TExercisesView = {
   selectedItem: number,
@@ -153,6 +153,7 @@ export type TExercisesView = {
   }
   })
 export default class Exercise extends mixins(Helper, Global) {
+  @State readonly user!: TUser;
   @State readonly filters!: any;
   @Mutation('setFilters') setFilters!: (options: any) => void;
   @State readonly loading!: any;
@@ -207,7 +208,7 @@ export default class Exercise extends mixins(Helper, Global) {
 
   async filtersChange(): Promise<void> {
     this.isListLoading = true;
-    const response = await ExerciseController.GetExercise(this.filtersModel, this.order);
+    const response = await ExerciseController.GetExercise(this.filtersModel, this.order, this.user.id);
     if (response.success) {
       this.$set(this.exercises, 'list', response?.data || []);
       this.$set(this.exercises, 'selectedItem', 0);

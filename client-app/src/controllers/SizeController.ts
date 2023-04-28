@@ -29,12 +29,14 @@ export type TSizeFilterModel = {
 
 export class TSize {
   id: string;
+  userId: string;
   name: string;
   createdDate: string;
   sizeItems: Array<TSizeItem>;
   isArchived: boolean;
   constructor() {
     this.id = '';
+    this.userId = '';
     this.name = '';
     this.createdDate = '';
     this.sizeItems = [];
@@ -80,7 +82,7 @@ class SizeModel extends BaseController {
     return await this.handleAndResolve(() => sizeApi.GetSizeById(id));
   }
 
-  async GetSize(filter: TSizeFilterViewModel, order: TOrder): Promise<TResult<TSize[]>> {
+  async GetSize(filter: TSizeFilterViewModel, order: TOrder, userId: string): Promise<TResult<TSize[]>> {
     const { categoryOfBodies, name, period, codeUnitsOfMeasurement } = filter;
     const [createdFrom, createdTo] = period || [];
 
@@ -93,7 +95,7 @@ class SizeModel extends BaseController {
       order
     };
 
-    return await sizeApi.GetSize(filterModel);
+    return await sizeApi.GetSize(filterModel, userId);
   }
 }
 

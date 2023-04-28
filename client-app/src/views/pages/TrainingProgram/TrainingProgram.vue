@@ -135,7 +135,7 @@ import TrainingProgramDelete from './TrainingProgramDelete.vue';
 import { Mutation, State } from 'vuex-class';
 
 import { TOrder } from '@/types/globals';
-import { TResult } from '@/api/baseApi';
+import { TUser } from '@/controllers/UserController';
 
 export type TTrainingProgramView = {
   selectedItem: number,
@@ -153,6 +153,7 @@ export type TTrainingProgramView = {
   }
   })
 export default class TrainingProgram extends mixins(Helper, Global) {
+  @State readonly user!: TUser;
   @State readonly filters!: any;
   @Mutation('setFilters') setFilters!: (options: any) => void;
   @State readonly loading!: any;
@@ -203,7 +204,7 @@ export default class TrainingProgram extends mixins(Helper, Global) {
 
   async filtersChange(): Promise<void> {
     this.isListLoading = true;
-    const response = await TrainingProgramControllel.GetTrainingProgram(this.filtersModel, this.order);
+    const response = await TrainingProgramControllel.GetTrainingProgram(this.filtersModel, this.order, this.user.id);
     if (response.success) {
       this.$set(this.trainingPrograms, 'list', response?.data || []);
       this.$set(this.trainingPrograms, 'selectedItem', 0);

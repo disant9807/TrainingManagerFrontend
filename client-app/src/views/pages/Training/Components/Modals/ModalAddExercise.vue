@@ -79,6 +79,7 @@ import { TOrder } from '@/types/globals';
 import InlineTextField from '@/components/InlineTextField.vue';
 import InlineRadioButtonsField from '@/components/InlineRadioButtonsField.vue';
 import InlineSliderField from '@/components/InlineSliderField.vue';
+import { TUser } from '@/controllers/UserController';
 
 @Component({
   components: {
@@ -91,6 +92,7 @@ import InlineSliderField from '@/components/InlineSliderField.vue';
   }
   })
 export default class ModalAddExercise extends Global {
+  @State readonly user!: TUser;
   @State readonly filters!: any;
   @Ref('form') readonly form!: any;
   @PropSync('show') readonly dialog!: boolean;
@@ -150,7 +152,7 @@ export default class ModalAddExercise extends Global {
   async filtersChange(): Promise<void> {
     this.loading = true;
     try {
-      const response = await ExerciseController.GetExercise(this.filtersModel, this.order);
+      const response = await ExerciseController.GetExercise(this.filtersModel, this.order, this.user.id);
       if (response.success) {
         this.exercises = response?.data ?? [];
       } else {

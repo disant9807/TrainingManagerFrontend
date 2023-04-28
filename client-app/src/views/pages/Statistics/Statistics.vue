@@ -7,7 +7,7 @@
         </v-subheader>
         <v-spacer />
       </v-card-title>
-      <container class="details-container px-7 py-5">
+      <v-container class="details-container px-7 py-5">
         <v-row>
           <v-col>
             <h3 class="mx-3">Статистика замеров</h3>
@@ -55,9 +55,7 @@
               </v-list-item>
             </v-list>
           </v-col>
-        </v-row>
-        <div class="row">
-          <div class="col">
+          <v-col>
             <h3 class="mx-3">Статистика тренировок</h3>
             <v-btn
               color="primary"
@@ -79,9 +77,9 @@
                 </v-list-item-content>
               </v-list-item>
             </v-list>
-          </div>
-        </div>
-      </container>
+          </v-col>
+        </v-row>
+      </v-container>
     </v-card>
     <StatisticsInfo
       :is-open-dialog.sync="isDialogOpen"

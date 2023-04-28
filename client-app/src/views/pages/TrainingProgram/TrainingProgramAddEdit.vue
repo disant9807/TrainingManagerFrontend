@@ -26,7 +26,7 @@
                     :value.sync="view.shortName"
                     :rules="[rules.required]"
                   />
-                  <InlineTextField
+                  <InlineTextareaField
                     label="Описание"
                     :value.sync="view.description"
                   />
@@ -75,6 +75,7 @@
 </template>
 <script lang="ts">
 import { Component, Prop, Ref, Watch } from 'vue-property-decorator';
+import InlineTextareaField from '@/components/InlineTextareaField.vue';
 import InlineTextField from '@/components/InlineTextField.vue';
 import InlineCheckField from '@/components/InlineCheckField.vue';
 import InlineAutocompleteField from '@/components/InlineAutocompleteField.vue';
@@ -86,6 +87,7 @@ import { TExercise, HardSkill } from '@/controllers/ExerciseController';
 import { Mutation, State } from 'vuex-class';
 import Loader from '@/components/Loader.vue';
 import TrainingProgramDayAddEdit from './Components/TrainingProgramDayAddEdit.vue';
+import { TUser } from '@/controllers/UserController';
 
 @Component({
   components: {
@@ -94,11 +96,13 @@ import TrainingProgramDayAddEdit from './Components/TrainingProgramDayAddEdit.vu
   InlineCheckField,
   InlineRadioButtonsField,
   InlineSliderField,
+  InlineTextareaField,
   Loader,
   TrainingProgramDayAddEdit
   }
   })
 export default class TrainingProgramAddEdit extends Global {
+  @State readonly user!: TUser;
   @Ref('form') readonly form!: any;
 
   isEdit = false;
@@ -144,6 +148,7 @@ export default class TrainingProgramAddEdit extends Global {
     try {
       this.isLoading = true;
       if (!this.isEdit) {
+        this.view.userId = this.user.id;
         const trainingProgram = await TrainingProgramController.CreateTrainingProgram(this.view);
         this.showSuccess(`Тренировочная программа ${this.view.name} успешно добавлена с идентификатором ${trainingProgram}`);
       } else if (this.isEdit && this.editId) {
