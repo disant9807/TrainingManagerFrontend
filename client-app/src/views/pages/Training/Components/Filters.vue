@@ -476,7 +476,7 @@ export default class Filters extends mixins(Helper) {
   overflow-y: auto;
 }
 .export-button {
-  background-color: #c3c3c3;
+  background-color: #E8F5E9;
   margin-top: 20px;
 }
 .search-field {

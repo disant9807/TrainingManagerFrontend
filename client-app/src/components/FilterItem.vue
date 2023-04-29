@@ -17,8 +17,7 @@
           class="my-2 mr-1"
           :close="!!localCount"
           small
-          color="blue-grey"
-          text-color="white"
+          label
           v-bind="attrs"
           v-on="on"
           @click:close="clear"
