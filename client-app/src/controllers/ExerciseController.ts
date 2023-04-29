@@ -37,6 +37,7 @@ export class TExercise {
   id: string;
   userId: string;
   name: string;
+  isEveryone: boolean;
   shortName: string;
   isBased: boolean | null;
   description: string | null;
@@ -50,6 +51,7 @@ export class TExercise {
     this.id = '';
     this.userId = '';
     this.name = '';
+    this.isEveryone = false;
     this.shortName = '';
     this.isBased = false;
     this.description = '';

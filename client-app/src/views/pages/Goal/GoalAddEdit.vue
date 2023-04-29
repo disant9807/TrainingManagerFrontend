@@ -151,7 +151,7 @@ export default class GoalAddEdit extends Global {
     try {
       this.isLoading = true;
       if (!this.isEdit) {
-        this.view
+        this.view.userId = this.user.id;
         const goalId = await GoalController.CreateGoal(this.view);
         this.showSuccess(`Цель ${this.view.name} успешно добавлен с идентификатором ${goalId}`);
       } else if (this.isEdit && this.editId) {

@@ -30,6 +30,7 @@ export type TSizeFilterModel = {
 export class TSize {
   id: string;
   userId: string;
+  isEveryone: boolean;
   name: string;
   createdDate: string;
   sizeItems: Array<TSizeItem>;
@@ -37,6 +38,7 @@ export class TSize {
   constructor() {
     this.id = '';
     this.userId = '';
+    this.isEveryone = false;
     this.name = '';
     this.createdDate = '';
     this.sizeItems = [];

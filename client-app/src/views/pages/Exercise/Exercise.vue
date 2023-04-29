@@ -61,6 +61,7 @@
             </v-subheader>
             <v-spacer />
             <v-btn
+              v-if="allowEdit"
               small
               color="white"
               text
@@ -71,6 +72,7 @@
               Редактировать
             </v-btn>
             <v-btn
+              v-if="allowEdit"
               small
               color="red white--text"
               class="ml-2"
@@ -135,7 +137,9 @@ import ExerciseDelete from './ExerciseDelete.vue';
 import { Mutation, State } from 'vuex-class';
 
 import { TOrder } from '@/types/globals';
-import { TUser } from '@/controllers/UserController';
+import { TUser, Group } from '@/controllers/UserController';
+import { userIn } from '@/utils/preferencesUtil';
+
 
 export type TExercisesView = {
   selectedItem: number,
@@ -178,6 +182,10 @@ export default class Exercise extends mixins(Helper, Global) {
     return item.isBased ? 'Базовое' : 'Изолирующее';
   }
 
+  get userIsAdmin() {
+    return userIn(Group.admin);
+  }
+
   get filtersModel(): TExerciseFilterViewModel {
     return this.filters.exercise;
   }
@@ -216,6 +224,11 @@ export default class Exercise extends mixins(Helper, Global) {
 
       await this.onSelectRequest(this.exercises.selectedItem);
     }
+  }
+
+  get allowEdit() {
+    return !this.exercises.selectedExercise?.isEveryone ||
+      this.userIsAdmin;
   }
 
   deleteExercise(item: number) {

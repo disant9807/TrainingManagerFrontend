@@ -4,7 +4,7 @@
       app
       dark
       clipped-left
-      color="#005987"
+      color="#66BB6A"
       flat
     >
       <v-app-bar-title>Менеджер тренировок</v-app-bar-title>

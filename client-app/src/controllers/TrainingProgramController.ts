@@ -30,6 +30,7 @@ export type TTrainingProgramFilterModel = {
 export class TTrainingProgram {
   id: string;
   userId: string;
+  isEveryone: boolean;
   name: string;
   shortName: string;
   avatarId: string;
@@ -41,6 +42,7 @@ export class TTrainingProgram {
   constructor() {
     this.id = '';
     this.userId = '';
+    this.isEveryone = false;
     this.name = '';
     this.shortName = '';
     this.avatarId = '';

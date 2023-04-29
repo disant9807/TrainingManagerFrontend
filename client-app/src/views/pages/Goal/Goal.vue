@@ -60,6 +60,7 @@
             </v-subheader>
             <v-spacer />
             <v-btn
+              v-if="allowEdit"
               small
               color="white"
               text
@@ -70,6 +71,7 @@
               Редактировать
             </v-btn>
             <v-btn
+              v-if="allowEdit"
               small
               color="red white--text"
               class="ml-2"
@@ -134,7 +136,8 @@ import { TResult } from '@/api/baseApi';
 import GoalController, { TGoal, TSubGoal, TGoalFilterViewModel } from '@/controllers/GoalController';
 import GoalInfo from './Components/GoalInfo.vue';
 import GoalDelete from './GoalDelete.vue';
-import { TUser } from '@/controllers/UserController';
+import { TUser, Group } from '@/controllers/UserController';
+import { userIn } from '@/utils/preferencesUtil';
 
 export type TGoalView = {
   selectedItem: number,
@@ -171,6 +174,15 @@ export default class Goal extends mixins(Helper, Global) {
 
   ItemName(item: TGoal) {
     return this.localeDateFormat(item.createdDate, false);
+  }
+
+  get allowEdit() {
+    return !this.goal.selectedGoal?.isEveryone ||
+      this.userIsAdmin;
+  }
+
+  get userIsAdmin() {
+    return userIn(Group.admin);
   }
 
   get filtersModel(): TGoalFilterViewModel {

@@ -45,16 +45,5 @@ export default class Settings extends Vue {
 </script>
 
 <style lang="scss" scoped>
-.v-list-item__title {
-  color: var(--v-primary-base);
-}
-.v-card__title {
-  background-color: #0f5987;
-  color: white;
-}
-.v-subheader {
-  height: fit-content;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
+
 </style>

@@ -60,6 +60,7 @@
             </v-subheader>
             <v-spacer />
             <v-btn
+              v-if="allowEdit"
               small
               color="white"
               text
@@ -70,6 +71,7 @@
               Редактировать
             </v-btn>
             <v-btn
+              v-if="allowEdit"
               small
               color="red white--text"
               class="ml-2"
@@ -134,8 +136,8 @@ import { Mutation, State } from 'vuex-class';
 
 import { TOrder } from '@/types/globals';
 import { TResult } from '@/api/baseApi';
-import { TUser } from '@/controllers/UserController';
-
+import { TUser, Group } from '@/controllers/UserController';
+import { userIn } from '@/utils/preferencesUtil';
 
 export type TTrainingView = {
   selectedItem: number,
@@ -172,6 +174,10 @@ export default class Training extends mixins(Helper, Global) {
 
   ItemName(item: TTraining) {
     return this.localeDateFormat(item.trainingDate, false);
+  }
+
+  get userIsAdmin() {
+    return userIn(Group.admin);
   }
 
   get filtersModel(): TTrainingFilterViewModel {
@@ -212,6 +218,11 @@ export default class Training extends mixins(Helper, Global) {
 
       await this.onSelectRequest(this.training.selectedItem);
     }
+  }
+
+  get allowEdit() {
+    return !this.training.selectedTraining?.isEveryone ||
+      this.userIsAdmin;
   }
 
   deleteTraining(item: number) {

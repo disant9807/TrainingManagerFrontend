@@ -38,6 +38,7 @@ export class TGoal {
   id: string;
   userId: string;
   name: string;
+  isEveryone: boolean;
   description: string;
   createdDate: string;
   completionDate: string;
@@ -47,6 +48,7 @@ export class TGoal {
     this.id = '';
     this.userId = '';
     this.name = '';
+    this.isEveryone = false;
     this.createdDate = '';
     this.completionDate = '';
     this.subGoals = [];
