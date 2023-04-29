@@ -10,25 +10,32 @@
         Изменить части тела
       </v-btn>
     </div>
-    <v-card
-      v-for="item, index in items"
-      :key="index"
-      class="mt-4"
-    >
-      <v-card-title style="width:100%;">
-        <div class="d-flex align-center justify-space-between" style="width:100%;">
-          <div>
-            Часть тела : {{ item.shortName ?? item.name }}
+    <template v-if="items.length > 0">
+      <v-card
+        v-for="item, index in items"
+        :key="index"
+        class="mt-4"
+      >
+        <v-card-title style="width:100%;">
+          <div class="d-flex align-center justify-space-between" style="width:100%;">
+            <div>
+              Часть тела : {{ item.shortName ?? item.name }}
+            </div>
+            <div class="d-flex">
+              <v-btn icon @click="onClickDeleteBody(index)">
+                <v-icon color="error">mdi-trash-can</v-icon>
+              </v-btn>
+            </div>
           </div>
-          <div class="d-flex">
-            <v-btn icon @click="onClickDeleteBody(index)">
-              <v-icon color="error">mdi-trash-can</v-icon>
-            </v-btn>
-          </div>
-        </div>
+        </v-card-title>
+        <v-card-subtitle> {{ item.shortName ?? item.name }} это {{ item.decsription }} </v-card-subtitle>
+      </v-card>
+    </template>
+    <v-card v-else class="mt-4" @click="onClickAddBody">
+      <v-card-title>
+        Список мышечных групп пуст
       </v-card-title>
-
-      <v-card-subtitle> {{ item.shortName ?? item.name }} это {{ item.decsription }} </v-card-subtitle>
+      <v-card-subtitle>Нажмите кнопку "Добавить" для добавления мышечной группы в упражнение</v-card-subtitle>
     </v-card>
     <ModalFilterCategoryOfBody
       :show.sync="stateModalAddBody"

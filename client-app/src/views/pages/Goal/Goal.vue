@@ -98,7 +98,7 @@
       <div
         v-else
         rounded
-        class="notfound-block blue-grey lighten-4 px-5 py-10 grey--text d-flex justify-center align-center"
+        class="notfound-block px-5 py-10 d-flex justify-center align-center"
         style="font-size: 50px; flex-direction: row"
         height="100%"
       >
@@ -108,6 +108,11 @@
         >
           <Loader :value="isRequestLoading" />
         </v-card>
+        <div
+          v-else-if="isListLoading && goal.list.length === 0"
+        >
+          <Loader :value="isListLoading" />
+        </div>
         <div
           v-else
           class="d-flex column"
@@ -138,6 +143,7 @@ import GoalInfo from './Components/GoalInfo.vue';
 import GoalDelete from './GoalDelete.vue';
 import { TUser, Group } from '@/controllers/UserController';
 import { userIn } from '@/utils/preferencesUtil';
+import Loader from '@/components/Loader.vue';
 
 export type TGoalView = {
   selectedItem: number,
@@ -148,6 +154,7 @@ export type TGoalView = {
 
 @Component({
   components: {
+  Loader,
   Filters,
   Sorter,
   GoalInfo,

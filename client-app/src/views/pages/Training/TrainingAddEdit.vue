@@ -33,7 +33,7 @@
                     <InlineSliderField
                       label="Время тренировки"
                       min="5"
-                      max="100"
+                      max="350"
                       step="5"
                       hint="в минутах"
                       :value.sync="view.time"
@@ -131,6 +131,10 @@ export default class TrainingAddEdit extends Global {
       this.isEdit = true;
       this.editId = this.$route.params?.id;
       this.InitViewEdit();
+    } else {
+      this.view.trainingDate = new Date().toDateString();
+      this.view.name = 'Новая тренировка';
+      this.view.time = '60';
     }
   }
 

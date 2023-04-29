@@ -99,7 +99,7 @@
       <div
         v-else
         rounded
-        class="notfound-block blue-grey lighten-4 px-5 py-10 grey--text d-flex justify-center align-center"
+        class="notfound-block px-5 py-10 d-flex justify-center align-center"
         style="font-size: 50px; flex-direction: row"
         height="100%"
       >
@@ -109,6 +109,11 @@
         >
           <Loader :value="isRequestLoading" />
         </v-card>
+        <div
+          v-else-if="isListLoading && exercises.list.length === 0"
+        >
+          <Loader :value="isListLoading" />
+        </div>
         <div
           v-else
           class="d-flex column"
@@ -139,7 +144,7 @@ import { Mutation, State } from 'vuex-class';
 import { TOrder } from '@/types/globals';
 import { TUser, Group } from '@/controllers/UserController';
 import { userIn } from '@/utils/preferencesUtil';
-
+import Loader from '@/components/Loader.vue';
 
 export type TExercisesView = {
   selectedItem: number,
@@ -150,6 +155,7 @@ export type TExercisesView = {
 
 @Component({
   components: {
+  Loader,
   Filters,
   Sorter,
   ExerciseInfo,

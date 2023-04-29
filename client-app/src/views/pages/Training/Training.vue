@@ -98,7 +98,7 @@
       <div
         v-else
         rounded
-        class="notfound-block blue-grey lighten-4 px-5 py-10 grey--text d-flex justify-center align-center"
+        class="notfound-block px-5 py-10 d-flex justify-center align-center"
         style="font-size: 50px; flex-direction: row"
         height="100%"
       >
@@ -109,11 +109,15 @@
           <Loader :value="isRequestLoading" />
         </v-card>
         <div
+          v-else-if="isListLoading && training.list.length === 0"
+        >
+          <Loader :value="isListLoading" />
+        </div>
+        <div
           v-else
           class="d-flex column"
           style="flex-direction: column"
         >
-          <v-icon size="80px">mdi-clipboard-outline</v-icon>
           Тренировок не найдено...
         </div>
       </div>
@@ -138,6 +142,7 @@ import { TOrder } from '@/types/globals';
 import { TResult } from '@/api/baseApi';
 import { TUser, Group } from '@/controllers/UserController';
 import { userIn } from '@/utils/preferencesUtil';
+import Loader from '@/components/Loader.vue';
 
 export type TTrainingView = {
   selectedItem: number,
@@ -148,6 +153,7 @@ export type TTrainingView = {
 
 @Component({
   components: {
+  Loader,
   Filters,
   Sorter,
   TrainingInfo,
@@ -216,6 +222,7 @@ export default class Training extends mixins(Helper, Global) {
       this.$set(this.training, 'selectedItem', 0);
       this.$set(this.training, 'selectedTraining', null);
 
+      this.isListLoading = false;
       await this.onSelectRequest(this.training.selectedItem);
     }
   }

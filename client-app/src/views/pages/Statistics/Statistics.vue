@@ -10,73 +10,79 @@
       <v-container class="details-container px-7 py-5">
         <v-row>
           <v-col>
-            <h3 class="mx-3">Статистика замеров</h3>
-            <v-btn
-              color="primary"
-              class="ml-3 mt-3"
-              @click="onClickOpenGenerate(generateStatisticsSize)"
-            >
-              Сгенерировать статистику замеров
-            </v-btn>
-            <Loader :value="isSizeLoading" />
-            <v-list lines="one" class="statisticsList">
-              <v-list-item
-                v-for="(item, i) in sizeStatisitcs"
-                :key="item.userId + i"
-                :title="item.generatedTime"
-                @click="selectedStatistcs(item)"
+            <div class="d-flex flex-column align-center">
+              <h3 class="mx-3">Статистика замеров</h3>
+              <v-btn
+                color="primary"
+                class="ml-3 mt-3 mb-5"
+                @click="onClickOpenGenerate(generateStatisticsSize)"
               >
-                <v-list-item-content>
-                  <v-list-item-title v-text="`Статистика: ${localeDateFormat(item.generatedTime, true)}`" />
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
+                Сгенерировать статистику замеров
+              </v-btn>
+              <Loader :value="isSizeLoading" />
+              <v-list lines="one" class="statisticsList">
+                <v-list-item
+                  v-for="(item, i) in sizeStatisitcs"
+                  :key="item.userId + i"
+                  :title="item.generatedTime"
+                  @click="selectedStatistcs(item)"
+                >
+                  <v-list-item-content>
+                    <v-list-item-title v-text="`Статистика: ${localeDateFormat(item.generatedTime, true)}`" />
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </div>
           </v-col>
           <v-col>
-            <h3 class="mx-3">Статистика целей</h3>
-            <v-btn
-              color="primary"
-              class="ml-3 mt-3"
-              @click="onClickOpenGenerate(generateStatisticsGoal)"
-            >
-              Сгенерировать статистику целей
-            </v-btn>
-            <Loader :value="isGoalLoading" />
-            <v-list lines="one" class="statisticsList">
-              <v-list-item
-                v-for="(item, i) in goalStatisitcs"
-                :key="item.userId + i"
-                :title="item.generatedTime"
-                @click="selectedStatistcs(item)"
+            <div class="d-flex flex-column align-center">
+              <h3 class="mx-3">Статистика целей</h3>
+              <v-btn
+                color="primary"
+                class="ml-3 mt-3 mb-5"
+                @click="onClickOpenGenerate(generateStatisticsGoal)"
               >
-                <v-list-item-content>
-                  <v-list-item-title v-text="`Статистика: ${localeDateFormat(item.generatedTime, true)}`" />
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
+                Сгенерировать статистику целей
+              </v-btn>
+              <Loader :value="isGoalLoading" />
+              <v-list lines="one" class="statisticsList">
+                <v-list-item
+                  v-for="(item, i) in goalStatisitcs"
+                  :key="item.userId + i"
+                  :title="item.generatedTime"
+                  @click="selectedStatistcs(item)"
+                >
+                  <v-list-item-content>
+                    <v-list-item-title v-text="`Статистика: ${localeDateFormat(item.generatedTime, true)}`" />
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </div>
           </v-col>
           <v-col>
-            <h3 class="mx-3">Статистика тренировок</h3>
-            <v-btn
-              color="primary"
-              class="ml-3 mt-3"
-              @click="onClickOpenGenerate(generateStatisticsTraining)"
-            >
-              Сгенерировать статистику тренировок
-            </v-btn>
-            <Loader :value="isTrainingLoading" />
-            <v-list lines="one" class="statisticsList">
-              <v-list-item
-                v-for="(item, i) in trainingStatistics"
-                :key="item.userId + i"
-                :title="item.generatedTime"
-                @click="selectedStatistcs(item)"
+            <div class="d-flex flex-column align-center">
+              <h3 class="mx-3">Статистика тренировок</h3>
+              <v-btn
+                color="primary"
+                class="ml-3 mt-3 mb-5"
+                @click="onClickOpenGenerate(generateStatisticsTraining)"
               >
-                <v-list-item-content>
-                  <v-list-item-title v-text="`Статистика: ${localeDateFormat(item.generatedTime, true)}`" />
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
+                Сгенерировать статистику тренировок
+              </v-btn>
+              <Loader :value="isTrainingLoading" />
+              <v-list lines="one" class="statisticsList">
+                <v-list-item
+                  v-for="(item, i) in trainingStatistics"
+                  :key="item.userId + i"
+                  :title="item.generatedTime"
+                  @click="selectedStatistcs(item)"
+                >
+                  <v-list-item-content>
+                    <v-list-item-title v-text="`Статистика: ${localeDateFormat(item.generatedTime, true)}`" />
+                  </v-list-item-content>
+                </v-list-item>
+              </v-list>
+            </div>
           </v-col>
         </v-row>
       </v-container>

@@ -5,7 +5,7 @@
     hide-overlay
     transition="dialog-bottom-transition"
     max-width="900px"
-    :style="'height:90%;'"
+    min-height="1300px"
   >
     <v-card class="pb-3">
       <v-card-title class="darkblue pl-3 py-0">

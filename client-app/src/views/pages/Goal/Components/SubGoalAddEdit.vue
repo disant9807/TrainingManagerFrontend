@@ -10,28 +10,35 @@
         Добавить подцель
       </v-btn>
     </div>
-    <v-card
-      v-for="item, index in items"
-      :key="index"
-      class="mt-4"
-    >
-      <v-card-title style="width:100%;">
-        <div class="d-flex align-center justify-space-between" style="width:100%;">
-          <div>
-            Цель по изменению: {{ item.body?.shortName ?? item.body?.name }}
+    <template v-if="items.length > 0">
+      <v-card
+        v-for="item, index in items"
+        :key="index"
+        class="mt-4"
+      >
+        <v-card-title style="width:100%;">
+          <div class="d-flex align-center justify-space-between" style="width:100%;">
+            <div>
+              Цель по изменению: {{ item.body?.shortName ?? item.body?.name }}
+            </div>
+            <div class="d-flex">
+              <v-btn icon @click="onClickEdlitSubGoal(index)">
+                <v-icon color="primary">mdi-pen</v-icon>
+              </v-btn>
+              <v-btn icon @click="onClickDeleteSubGoal(index)">
+                <v-icon color="error">mdi-trash-can</v-icon>
+              </v-btn>
+            </div>
           </div>
-          <div class="d-flex">
-            <v-btn icon @click="onClickEdlitSubGoal(index)">
-              <v-icon color="primary">mdi-pen</v-icon>
-            </v-btn>
-            <v-btn icon @click="onClickDeleteSubGoal(index)">
-              <v-icon color="error">mdi-trash-can</v-icon>
-            </v-btn>
-          </div>
-        </div>
+        </v-card-title>
+        <v-card-subtitle>Показатель {{ item.body?.shortName ?? item.body?.name }} должен стать {{ item.value }} {{ item.unitsOfMeasurement?.value }}</v-card-subtitle>
+      </v-card>
+    </template>
+    <v-card v-else class="mt-4" @click="onClickAddSubGoal">
+      <v-card-title>
+        Список подцелей пуст
       </v-card-title>
-
-      <v-card-subtitle>Показатель {{ item.body?.shortName ?? item.body?.name }} должен стать {{ item.value }} {{ item.unitsOfMeasurement?.value }}</v-card-subtitle>
+      <v-card-subtitle>Нажмите кнопку "Добавить" для добавления подцели</v-card-subtitle>
     </v-card>
     <ModalSubGoalAddEdit
       :show="stateModalAddGoal"

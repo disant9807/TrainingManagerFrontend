@@ -22,7 +22,7 @@
           <template v-slot:activator>
             <v-list-item-content>
               <v-list-item-title> {{ `${item.value.name}` }} </v-list-item-title>
-              <v-list-item-subtitle> {{ `Отдых ${item.value.dayRelax} день/дня/дней` }} </v-list-item-subtitle>
+              <v-list-item-subtitle> {{ `Отдых ${item.value.dayRelax} ${getDay(item.value.dayRelax)}` }} </v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action>
               <div class="d-flex align-items">
@@ -101,6 +101,7 @@ import InlineSliderField from '@/components/InlineSliderField.vue';
 import Loader from '@/components/Loader.vue';
 import ModalAddEditTrainingProgramDay from './Modals/ModalAddEditTrainingProgramDay.vue';
 import ModalDeleteTrainingProgramDay from './Modals/ModalDeleteTrainingProgramDay.vue';
+import { getNoun } from '@/utils/helpers';
 
 export type TTrainingProgramDayItem = {
   action: string | null,
@@ -152,6 +153,10 @@ export default class TrainingProgramDayAddEdit extends Global {
           active: index === 0
         } as TTrainingProgramDayItem;
       }) ?? [];
+  }
+
+  getDay(day: number) {
+    return getNoun(day, 'день', 'дня', 'дней');
   }
 
   initModalAdd() {

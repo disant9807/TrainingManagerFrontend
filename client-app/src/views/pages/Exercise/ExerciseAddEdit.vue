@@ -31,14 +31,22 @@
                     :objects="yesNo"
                     :selected.sync="view.isBased"
                   />
-                  <inline-slider-field
-                    label="Сложность"
-                    min="10"
-                    max="30"
-                    step="10"
-                    :hint="hardSkillsHint"
-                    :selected.sync="hardSkills"
-                  />
+                  <div class="d-flex align-center">
+                    <InlineSliderField
+                      label="Сложность"
+                      min="10"
+                      max="30"
+                      step="10"
+                      hint="теоретическая"
+                      :value.sync="hardSkills"
+                      :rules="[rules.required]"
+                      thumb-label="always"
+                    />
+                    <div class="d-flex flex-column align-center ml-4">
+                      <h2>{{ hardSkills }}</h2>
+                      <h4>Ощущается</h4>
+                    </div>
+                  </div>
                   <InlineTextareaField
                     label="Описание"
                     :value.sync="view.description"
@@ -124,6 +132,9 @@ export default class ExerciseAddEdit extends Global {
       this.isEdit = true;
       this.editId = this.$route.params?.id;
       this.InitViewEdit();
+    } else {
+      this.view.name = 'Новое упражнение';
+      this.view.shortName = 'Упражнение';
     }
   }
 

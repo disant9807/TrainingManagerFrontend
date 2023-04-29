@@ -119,6 +119,12 @@ export default class GoalAddEdit extends Global {
       this.isEdit = true;
       this.editId = this.$route.params?.id;
       this.InitViewEdit();
+    } else {
+      this.view.name = 'Новая цель';
+
+      let date = new Date();
+      date.setDate(date.getDate() + 90);
+      this.view.completionDate = date.toDateString();
     }
   }
 

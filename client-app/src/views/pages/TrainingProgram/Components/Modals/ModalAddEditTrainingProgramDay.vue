@@ -31,14 +31,22 @@
                   label="Описание тренировочного дня"
                   :value.sync="view.description"
                 />
-                <InlineSliderField
-                  label="Отдых в днях"
-                  min="1"
-                  max="7"
-                  step="1"
-                  hint="После тренировочного дня"
-                  :value.sync="view.dayRelax"
-                />
+                <div class="d-flex align-center">
+                  <InlineSliderField
+                    label="Отдых в днях"
+                    min="1"
+                    max="30"
+                    step="1"
+                    hint="после тренировочного дня"
+                    :value.sync="view.dayRelax"
+                    :rules="[rules.required]"
+                    thumb-label="always"
+                  />
+                  <div class="d-flex flex-column align-center ml-4">
+                    <h2>{{ view.dayRelax }}</h2>
+                    <h4>{{ getDay(view.dayRelax) }}</h4>
+                  </div>
+                </div>
               </v-form>
             </v-col>
             <v-col>
@@ -108,6 +116,7 @@ import InlineTextField from '@/components/InlineTextField.vue';
 import InlineRadioButtonsField from '@/components/InlineRadioButtonsField.vue';
 import InlineSliderField from '@/components/InlineSliderField.vue';
 import { TUser } from '@/controllers/UserController';
+import { getNoun } from '@/utils/helpers';
 
 @Component({
   components: {
@@ -162,6 +171,9 @@ export default class ModalAddEditTrainingProgramDay extends Global {
   unpackData() {
     this.view = this.selectedTrainingProgramDay ?? new TTrainingProgramDay();
     this.localSelectedExercises = this.selectedTrainingProgramDay?.exercises ?? [];
+
+    if (this.view?.dayRelax === 0) { this.view.dayRelax = 2; }
+    if (!this.view?.name) { this.view.name = `Тренировочный день ${this.view?.numberOfTrainingProgram + 1 ?? 1}`}
   }
 
   packData(): boolean {
@@ -204,6 +216,10 @@ export default class ModalAddEditTrainingProgramDay extends Global {
 
   cancel() {
     this.$emit('cancel');
+  }
+
+  getDay(day: number) {
+    return getNoun(day, 'день', 'дня', 'дней');
   }
 
   async mounted() {

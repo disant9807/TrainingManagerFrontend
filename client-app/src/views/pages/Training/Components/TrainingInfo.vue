@@ -117,13 +117,14 @@ export default class TrainingInfo
           action: 'mdi-dumbbell',
           value: e,
           active: index === 0,
-          items: e.approachsItems.map((z, indexz) => {
-            return {
-              action: 'mdi-weather-windy',
-              value: z,
-              active: indexz === 0,
-            } as TApproachItemEl;
-          })
+          items: e.approachsItems.sort((a, b) => { return a.numberOfApproach - b.numberOfApproach; })
+            .map((z, indexz) => {
+              return {
+                action: 'mdi-weather-windy',
+                value: z,
+                active: indexz === 0,
+              } as TApproachItemEl;
+            })
         } as TApproachEl;
       }) ?? [];
   }

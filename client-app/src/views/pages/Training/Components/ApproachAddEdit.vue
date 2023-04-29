@@ -11,85 +11,93 @@
       </v-btn>
     </div>
     <v-list class="mt-1">
-      <v-list-group
-        v-for="item, index in items"
-        :key="index"
-        v-model="item.active"
-        :prepend-icon="item.action"
-        no-action
-      >
-        <template v-slot:activator>
-          <v-list-item-content>
-            <v-list-item-title>{{ item.value.exercise?.shortName ?? item.value.exercise?.name }}</v-list-item-title>
-          </v-list-item-content>
-        </template>
-
-        <v-list-item
-          v-for="child, indexz in item.items"
-          :key="indexz"
+      <template v-if="items.length > 0">
+        <v-list-group
+          v-for="item, index in items"
+          :key="index"
+          v-model="item.active"
+          :prepend-icon="item.action"
+          no-action
         >
-          <v-list-item-content>
-            <div class="d-flex">
-              <v-icon
-                class="mr-3"
-              >
-                mdi-weather-windy
-              </v-icon>
-              <v-list-item-title>{{ `Подход: ${child.value.numberOfApproach}; Вес: ${child.value.weight}; Время: ${child.value.time};` }}</v-list-item-title>
-            </div>
-          </v-list-item-content>
-          <v-list-item-action>
-            <div class="d-flex">
-              <v-btn icon @click="onClickUpNumberApproachItem(index, indexz)">
-                <v-icon color="success lighten-1">mdi-arrow-up</v-icon>
-              </v-btn>
-              <v-btn icon class="ml-2" @click="onClickDownNumberApproachItem(index, indexz)">
-                <v-icon color="success lighten-1">mdi-arrow-down</v-icon>
-              </v-btn>
-              <v-btn icon class="ml-2" @click="onClickEdlitApproachItem(index, indexz)">
-                <v-icon color="primary lighten-1">mdi-pen</v-icon>
-              </v-btn>
-              <v-btn icon class="ml-2" @click="onClickDeleteApproachItem(index, indexz)">
-                <v-icon color="error lighten-1">mdi-close</v-icon>
-              </v-btn>
-            </div>
-          </v-list-item-action>
-        </v-list-item>
-        <v-list-item active-color="success" link @click="onClickAddApproachItem(index)">
-          <v-list-item-content>
-            <v-list-item-title>
-              <div class="d-flex align-center">
-                <v-btn icon>
-                  <v-icon color="primary lighten-1">mdi-plus</v-icon>
-                </v-btn>
-                <h4>Добавить подход</h4>
+          <template v-slot:activator>
+            <v-list-item-content>
+              <v-list-item-title>{{ item.value.exercise?.shortName ?? item.value.exercise?.name }}</v-list-item-title>
+            </v-list-item-content>
+          </template>
+
+          <v-list-item
+            v-for="child, indexz in item.items"
+            :key="indexz"
+          >
+            <v-list-item-content>
+              <div class="d-flex">
+                <v-icon
+                  class="mr-3"
+                >
+                  mdi-weather-windy
+                </v-icon>
+                <v-list-item-title>{{ `Подход: ${child.value.numberOfApproach}; Вес: ${child.value.weight}; Время: ${child.value.time};` }}</v-list-item-title>
               </div>
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-        <v-list-item link @click="onClickDeleteItem(index)">
-          <v-list-item-content>
-            <v-list-item-title>
-              <div class="d-flex align-center">
-                <v-btn icon>
+            </v-list-item-content>
+            <v-list-item-action>
+              <div class="d-flex">
+                <v-btn icon @click="onClickUpNumberApproachItem(index, indexz)">
+                  <v-icon color="success lighten-1">mdi-arrow-up</v-icon>
+                </v-btn>
+                <v-btn icon class="ml-2" @click="onClickDownNumberApproachItem(index, indexz)">
+                  <v-icon color="success lighten-1">mdi-arrow-down</v-icon>
+                </v-btn>
+                <v-btn icon class="ml-2" @click="onClickEdlitApproachItem(index, indexz)">
+                  <v-icon color="primary lighten-1">mdi-pen</v-icon>
+                </v-btn>
+                <v-btn icon class="ml-2" @click="onClickDeleteApproachItem(index, indexz)">
                   <v-icon color="error lighten-1">mdi-close</v-icon>
                 </v-btn>
-                <h4>Удалить подход</h4>
               </div>
-            </v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list-group>
+            </v-list-item-action>
+          </v-list-item>
+          <v-list-item active-color="success" link @click="onClickAddApproachItem(index)">
+            <v-list-item-content>
+              <v-list-item-title>
+                <div class="d-flex align-center">
+                  <v-btn icon>
+                    <v-icon color="primary lighten-1">mdi-plus</v-icon>
+                  </v-btn>
+                  <h4>Добавить подход</h4>
+                </div>
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+          <v-list-item link @click="onClickDeleteItem(index)">
+            <v-list-item-content>
+              <v-list-item-title>
+                <div class="d-flex align-center">
+                  <v-btn icon>
+                    <v-icon color="error lighten-1">mdi-close</v-icon>
+                  </v-btn>
+                  <h4>Удалить упражнение из тренировки</h4>
+                </div>
+              </v-list-item-title>
+            </v-list-item-content>
+          </v-list-item>
+        </v-list-group>
+      </template>
+      <v-list-item v-else>
+        <v-list-item-content>
+          <v-list-item-title>Список упражнений пуст</v-list-item-title>
+          <v-list-item-subtitle>Нажмите кнопку "Добавить" для добавления упражнения в тренировку</v-list-item-subtitle>
+        </v-list-item-content>
+      </v-list-item>
     </v-list>
     <ModalAddExercise
-      :show="stateModalAddExercise"
+      :show.sync="stateModalAddExercise"
       :is-edit="isEditExercise"
       :selected.sync="editExercise"
       @select="onClickSelectExercise"
-      @canel="onClickCanelExercise"
+      @cancel="onClickCanelExercise"
     />
     <ModalAddEditApproachItem
-      :show="stateModalAddApproachItem"
+      :show.sync="stateModalAddApproachItem"
       :is-edit="isEditApproachItem"
       :number-of-approach="numberOfApproach"
       :selected.sync="editApproachItem"
@@ -100,13 +108,13 @@
       :show.sync="stateModalDeleteItem"
       :selected.sync="modelDeleteItem"
       @select="onClickSelectDeleteItem"
-      @canel="onClickCancelDeleteItem"
+      @cancel="onClickCancelDeleteItem"
     />
     <ModalDeleteApproachItem
       :show.sync="stateModalDeleteApproachItem"
       :selected.sync="modelDeleteApproachItem"
       @select="onClickSelectDeleteApproachItem"
-      @canel="onClickCancelDeleteApproachItem"
+      @cancel="onClickCancelDeleteApproachItem"
     />
   </div>
 </template>
@@ -190,7 +198,7 @@ export default class ApproachAddEdit extends Global {
         return {
           action: 'mdi-dumbbell',
           value: e,
-          active: index === this.indexApproach,
+          active: index === (this.indexApproach ?? (this.localApproach.length - 1)),
           items: e.approachsItems.sort((a, b) => { return a.numberOfApproach - b.numberOfApproach; })
             .map((z, indexz) => {
               return {
@@ -279,7 +287,7 @@ export default class ApproachAddEdit extends Global {
     this.approachs[indexApproach] &&
     this.approachs[indexApproach].approachsItems &&
     value > 0 &&
-    value <= this.approachs[indexApproach].approachsItems.length - 1
+    value <= this.approachs[indexApproach].approachsItems.length
     ) {
       const oldValue = this.approachs[indexApproach].approachsItems[indexApproachItem].numberOfApproach;
       const indexOfAnotherValue = this.approachs[indexApproach].approachsItems.findIndex(e => e.numberOfApproach === value);

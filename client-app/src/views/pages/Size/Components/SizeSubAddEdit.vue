@@ -10,27 +10,35 @@
         Добавить замер
       </v-btn>
     </div>
-    <v-card
-      v-for="item, index in items"
-      :key="index"
-      class="mt-4"
-    >
-      <v-card-title class="text-h5">
-        <div class="d-flex align-center justify-space-between" style="width:100%;">
-          <div>
-            Замер: {{ item.body?.name }}
+    <template v-if="items.length > 0">
+      <v-card
+        v-for="item, index in items"
+        :key="index"
+        class="mt-4"
+      >
+        <v-card-title class="text-h5">
+          <div class="d-flex align-center justify-space-between" style="width:100%;">
+            <div>
+              Замер: {{ item.body?.name }}
+            </div>
+            <div class="d-flex">
+              <v-btn icon @click="onClickEdlitSubSizeItem(index)">
+                <v-icon color="primary">mdi-pen</v-icon>
+              </v-btn>
+              <v-btn icon @click="onClickDeleteSubSize(index)">
+                <v-icon color="error">mdi-trash-can</v-icon>
+              </v-btn>
+            </div>
           </div>
-          <div class="d-flex">
-            <v-btn icon @click="onClickEdlitSubSizeItem(index)">
-              <v-icon color="primary">mdi-pen</v-icon>
-            </v-btn>
-            <v-btn icon @click="onClickDeleteSubSize(index)">
-              <v-icon color="error">mdi-trash-can</v-icon>
-            </v-btn>
-          </div>
-        </div>
+        </v-card-title>
+        <v-card-subtitle>{{ item.body?.shortName ?? items.body?.name }} имеет размер {{ item.value }} {{ item.unitsOfMeasurement?.value }}</v-card-subtitle>
+      </v-card>
+    </template>
+    <v-card v-else class="mt-4" @click="onClickAddSubSize">
+      <v-card-title>
+        Список замеров пуст
       </v-card-title>
-      <v-card-subtitle>{{ item.body?.shortName ?? items.body?.name }} имеет размер {{ item.value }} {{ item.unitsOfMeasurement?.value }}</v-card-subtitle>
+      <v-card-subtitle>Нажмите кнопку "Добавить" для добавления замера</v-card-subtitle>
     </v-card>
     <ModalSizeSubAddEdit
       :show.sync="stateModalAddSize"

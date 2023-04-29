@@ -116,6 +116,9 @@ export default class TrainingProgramAddEdit extends Global {
       this.isEdit = true;
       this.editId = this.$route.params?.id;
       this.InitViewEdit();
+    } else {
+      this.view.name = 'Новая тренировочная программа';
+      this.view.shortName = 'Программа тренировок';
     }
   }
 

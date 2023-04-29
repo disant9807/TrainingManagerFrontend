@@ -113,6 +113,9 @@ export default class TrainingAddEdit extends Global {
       this.isEdit = true;
       this.editId = this.$route.params?.id;
       this.InitViewEdit();
+    } else {
+      this.view.name = 'Новый замер';
+      this.view.createdDate = new Date().toDateString();
     }
   }
 
