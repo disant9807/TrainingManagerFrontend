@@ -10,8 +10,8 @@
     <v-card class="pb-3">
       <v-card-title class="darkblue pl-3 py-0">
         <v-subheader class="white--text font-weight-light header-wrap">
-          <div v-if="isEdit" class="header">Изменение выбранного ранее упражнения</div>
-          <div v-else class="header">Выбор упражнения</div>
+          <div v-if="isEdit" class="header">Изменение выбранной ранее тренировочной программы</div>
+          <div v-else class="header">Выбор тренировочной программы</div>
         </v-subheader>
       </v-card-title>
       <v-card-text style="height: 300px;">
@@ -30,11 +30,11 @@
               :order.sync="order"
               @change="filtersChange"
             />
-            <select-exercises
+            <SelectTrainingProgram
               class="py-5"
               :loading="loading"
-              :exercises="exercises"
-              :selected.sync="localSelectedExercises"
+              :training-programs="trainingPrograms"
+              :selected.sync="localSelectedTrainingPrograms"
               :multiple="false"
             />
           </v-sheet>
@@ -70,9 +70,9 @@
 <script lang="ts">
 import Global from '@/mixins/GlobalMixin';
 import { Component, PropSync, Prop, Watch, Ref } from 'vue-property-decorator';
-import ExerciseController, { TExercise, TExerciseFilterViewModel } from '@/controllers/ExerciseController';
-import SelectExercises from '../../../Components/SelectExercises.vue';
-import Filters from '@/views/pages/Exercise/Components/Filters.vue';
+import TrainingProgramControllel, { TTrainingProgram, TTrainingProgramFilterViewModel } from '@/controllers/TrainingProgramController';
+import SelectTrainingProgram from '@/views/pages/Components/SelectTrainingprogram.vue';
+import Filters from '@/views/pages/TrainingProgram/Components/Filters.vue';
 import Sorter from '@/views/pages/Components/Sorter.vue';
 import { Mutation, State } from 'vuex-class';
 import { TOrder } from '@/types/globals';
@@ -83,7 +83,7 @@ import { TUser } from '@/controllers/UserController';
 
 @Component({
   components: {
-  SelectExercises,
+  SelectTrainingProgram,
   Filters,
   Sorter,
   InlineTextField,
@@ -91,12 +91,12 @@ import { TUser } from '@/controllers/UserController';
   InlineSliderField
   }
   })
-export default class ModalAddExercise extends Global {
+export default class ModalAddTrainingProgram extends Global {
   @State readonly user!: TUser;
   @State readonly filters!: any;
   @Ref('form') readonly form!: any;
   @PropSync('show') readonly dialog!: boolean;
-  @PropSync('selected', { required: false, default: null }) selectedExercise!: TExercise | null;
+  @PropSync('selected', { required: false, default: null }) selectedTrainingProgram!: TTrainingProgram | null;
   @Prop({
     type: Boolean,
     default: false
@@ -109,13 +109,13 @@ export default class ModalAddExercise extends Global {
 
   loading = false;
   order: TOrder = 'Desc';
-  exercises: TExercise[] = [];
-  localSelectedExercises: TExercise[] = [];
-  selectExerciseId = '';
+  trainingPrograms: TTrainingProgram[] = [];
+  localSelectedTrainingPrograms: TTrainingProgram[] = [];
+  selectTrainingProgramId = '';
 
-  view: TExercise = new TExercise();
+  view: TTrainingProgram = new TTrainingProgram();
 
-  get filtersModel(): TExerciseFilterViewModel {
+  get filtersModel(): TTrainingProgramFilterViewModel {
     return this.filters.exercise;
   }
 
@@ -133,34 +133,34 @@ export default class ModalAddExercise extends Global {
   }
 
   unpackData() {
-    this.view = this.selectedExercise ?? new TExercise();
-    this.localSelectedExercises = this.selectedExercise
-      ? [this.selectedExercise]
+    this.view = this.selectedTrainingProgram ?? new TTrainingProgram();
+    this.localSelectedTrainingPrograms = this.selectedTrainingProgram
+      ? [this.selectedTrainingProgram]
       : [];
   }
 
   packData(): boolean {
-    if (this.localSelectedExercises === null || this.localSelectedExercises && this.localSelectedExercises.length < 1) {
+    if (this.localSelectedTrainingPrograms === null || this.localSelectedTrainingPrograms && this.localSelectedTrainingPrograms.length < 1) {
       this.showInfo('Пожалуйста выберите хотя-бы одно упражнение');
       return false;
     }
 
-    this.view = this.localSelectedExercises[0];
-    this.selectedExercise = this.view;
+    this.view = this.localSelectedTrainingPrograms[0];
+    this.selectedTrainingProgram = this.view;
     return true;
   }
 
   async filtersChange(): Promise<void> {
     this.loading = true;
     try {
-      const response = await ExerciseController.GetExercise(this.filtersModel, this.order, this.user.id);
+      const response = await TrainingProgramControllel.GetTrainingProgram(this.filtersModel, this.order, this.user.id);
       if (response.success) {
-        this.exercises = response?.data ?? [];
+        this.trainingPrograms = response?.data ?? [];
       } else {
         throw new Error();
       }
     } catch (error) {
-      this.showError('Ошибка. Не удалось загрузить список упражнений');
+      this.showError('Ошибка. Не удалось загрузить список тренировочных программ');
     } finally {
       this.loading = false;
     }

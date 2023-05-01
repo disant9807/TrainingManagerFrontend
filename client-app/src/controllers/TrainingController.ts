@@ -48,6 +48,8 @@ export class TTraining {
   createdDate: string;
   trainingDate: string;
   time: string;
+  trainingProgramIdFK: string;
+  trainingProgramDayFK: string;
   trainingprogram: TTrainingProgram | null;
   approachs: TApproach[];
   constructor() {
@@ -60,6 +62,8 @@ export class TTraining {
     this.createdDate = '';
     this.trainingDate = '';
     this.time = '';
+    this.trainingProgramIdFK = '';
+    this.trainingProgramDayFK = '';
     this.trainingprogram = null;
     this.approachs = [];
   }

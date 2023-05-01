@@ -13,7 +13,7 @@
         </v-subheader>
       </v-card-title>
       <v-card-text style="height: 300px;">
-        <h3>{{ `Вы действительно желаете удалить упражнение номер ${selectedApproachItem.numberOfApproach} из подхода?` }}</h3>
+        <h3>{{ `Вы действительно желаете удалить упражнение номер ${selectedApproachItem?.numberOfApproach ?? ''} из подхода?` }}</h3>
       </v-card-text>
       <v-card-actions class="ml-3">
         <slot name="controls">
@@ -50,7 +50,7 @@ import { TApproachItem } from '@/controllers/TrainingController';
 @Component
 export default class ModalDeleteApproachItem extends Global {
   @PropSync('show') readonly dialog!: boolean;
-  @PropSync('selected', { required: true }) selectedApproachItem!: TApproachItem;
+  @PropSync('selected', { required: true }) selectedApproachItem!: TApproachItem | null;
   loading = false;
 
   apply() {

@@ -261,12 +261,15 @@ export default class ApproachAddEdit extends Global {
     if (this.approachs as TApproach[] && this.approachs && this.indexApproach !== null) {
       approach.numberOfTraining = this.indexApproach;
       this.$set(this.approachs, this.indexApproach, approach);
+      this.$emit('update');
     } else if (this.approachs as TApproach[] && this.approachs && this.indexApproach === null) {
       approach.numberOfTraining = this.approachs.length;
       this.approachs.push(approach);
+      this.$emit('update');
     } else {
       approach.numberOfTraining = 0;
       this.approachs = [approach];
+      this.$emit('update');
     }
   }
 
@@ -301,6 +304,7 @@ export default class ApproachAddEdit extends Global {
 
   deleteItem(idxApproach: number) {
     this.$delete(this.approachs as Array<TApproach>, idxApproach);
+    this.$emit('update');
   }
 
   deleteApproachItem(idxApproach: number, idxApproachItem: number) {

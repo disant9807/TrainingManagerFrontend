@@ -37,7 +37,7 @@ export class TTrainingProgram {
   description: string | null;
   images: string[] | null;
   createdDate: string;
-  days: TTrainingProgramDay[] | null
+  days: TTrainingProgramDay[] | null;
 
   constructor() {
     this.id = '';

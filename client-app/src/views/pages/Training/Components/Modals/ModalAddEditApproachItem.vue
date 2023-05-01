@@ -140,7 +140,7 @@ export default class ModalAddEditApproachItem extends Global {
   @Prop({
     type: Number,
     default: 0
-  }) readonly numberOfApproach!: number;
+  }) readonly numberOfApproach!: number | null;
 
   view: TApproachItem = new TApproachItem();
 

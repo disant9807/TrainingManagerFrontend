@@ -45,6 +45,67 @@
                   </div>
                 </v-col>
                 <v-col>
+                  <v-autocomplete
+                    :key="`program-${key}`"
+                    v-model="view.trainingProgramIdFK"
+                    :items="trainingProgramList"
+                    item-text="text"
+                    item-value="value"
+                    :readonly="true"
+                    :multiply="false"
+                    clearable
+                    label="Тренировочная программа"
+                    filled
+                    class="mt-3"
+                    @click="onOpenModalAddTrainingProgram"
+                  />
+                  <template v-if="editTrainingProgram !== null">
+                    <v-list-item-group
+                      v-model="selectedDays"
+                      :multiple="false"
+                    >
+                      <v-list-item v-for="(day, i) in editTrainingProgram.days">
+                        <template v-slot:default="{ active }">
+                          <v-list-item-action>
+                            <v-checkbox
+                              :input-value="selectTrainingProgramDay?.id === day.id"
+                              color="primary"
+                            />
+                          </v-list-item-action>
+                          <v-list-item-content>
+                            <v-list-item-title>
+                              {{ day.name}}
+                              <v-menu
+                                :key="keyMenu"
+                                :value="hoverDay === day.id"
+                                transition="scale-transition"
+                              >
+                                <template v-slot:activator="{ props }">
+                                  <v-chip
+                                    link
+                                    v-bind="props"
+                                    @mouseover="updateHoverDay(day.id)"
+                                    class="ml-3"
+                                  >
+                                    Упражнения
+                                  </v-chip>
+                                </template>
+                                <v-list>
+                                  <v-list-item
+                                    v-for="(exercise, i) in day.exercises"
+                                    :key="`exercise-${i}`"
+                                  >
+                                    <v-list-item-title>{{ exercise.shortName ?? exercise.name }}</v-list-item-title>
+                                  </v-list-item>
+                                </v-list>
+                              </v-menu>
+                            </v-list-item-title>
+                            <v-list-item-subtitle>{{ day.description }}</v-list-item-subtitle>
+                          </v-list-item-content>
+                        </template>
+                      </v-list-item>
+                    </v-list-item-group>
+                  </template>
                   <v-sheet
                     class="mt-3 py-3"
                     color="white"
@@ -53,6 +114,7 @@
                   >
                     <ApproachAddEdit
                       :approachs.sync="view.approachs"
+                      @update="eventManualUpdate"
                     />
                   </v-sheet>
                 </v-col>
@@ -84,6 +146,25 @@
         <Loader :value="isLoading" />
       </v-card>
     </v-card>
+    <ModalAddTrainingProgram
+      :show.sync="stateModalAddTrainingProgram"
+      :is-edit="isEditTrainingProgram"
+      :selected.sync="editTrainingProgram"
+      @select="onClickSelectTrainingProgram"
+      @cancel="onClickCanelTrainingProgram"
+    />
+    <modal-dialog
+      :modal-data="isUpdateApproachModalView"
+      :is-open="isUpdateApproachDialog"
+      @close="isUpdateApproachDialog = false"
+    >
+      <div class="d-flex flex-wrap justify-center">
+        <p class="flex-grow-1 text-start">
+          {{ `При изменении тренировочного дня на ${selectTrainingProgramDay?.name}
+          , перезапишутся упражнения в тренировке. Продолжить?` }}
+        </p>
+      </div>
+    </modal-dialog>
   </section>
 </template>
 <script lang="ts">
@@ -96,12 +177,16 @@ import InlineSliderField from '@/components/InlineSliderField.vue';
 import InlineDateField from '@/components/InlineDateField.vue';
 import Global from '@/mixins/GlobalMixin';
 import TrainingController, { TTraining, TApproach, ApproachLvl } from '@/controllers/TrainingController';
+import TrainingProgramControllel, { TTrainingProgram, TTrainingProgramDay, TTrainingProgramFilterViewModel } from '@/controllers/TrainingProgramController';
 import { TExercise } from '@/controllers/ExerciseController';
 import { Mutation, State } from 'vuex-class';
 import Loader from '@/components/Loader.vue';
 import ApproachAddEdit from './Components/ApproachAddEdit.vue';
 import { TUser } from '@/controllers/UserController';
 import InlineTextareaField from '@/components/InlineTextareaField.vue';
+import ModalAddTrainingProgram from './Components/Modals/ModalAddTrainingProgram.vue';
+import { TVuetifyOptionsList } from '@/types/globals';
+import ModalDialog, { TModalView } from '@/components/ModalDialog.vue';
 
 @Component({
   components: {
@@ -113,7 +198,9 @@ import InlineTextareaField from '@/components/InlineTextareaField.vue';
   InlineSliderField,
   InlineDateField,
   Loader,
-  ApproachAddEdit
+  ApproachAddEdit,
+  ModalAddTrainingProgram,
+  ModalDialog
   }
   })
 export default class TrainingAddEdit extends Global {
@@ -126,6 +213,34 @@ export default class TrainingAddEdit extends Global {
 
   isLoading = false;
 
+  stateModalAddTrainingProgram = false;
+  isEditTrainingProgram = false;
+  editTrainingProgram: TTrainingProgram | null = null;
+
+  hoverDay = '-1';
+  keyMenu = 0;
+
+  selectTrainingProgramDay: TTrainingProgramDay | null = null;
+  isUpdateApproachDialog = false;
+  updateApproachDialogValue = '';
+  isUpdateApproachModalView: TModalView = {
+    title: `Внимание!`,
+    actions: [
+      {
+        label: 'Продолжить',
+        onClick: this.onClickSelectUpdateApproach
+      },
+      {
+        label: 'Отмена',
+        onClick: this.onClickCancelUpdateApproach
+      }
+    ]
+  };
+
+  isUnSelectApproachDialog = false;
+
+  key = 0; // ужас ужас, переписать
+
   mounted() {
     if (this.$route.name === 'TrainingEdit' && this.$route.params) {
       this.isEdit = true;
@@ -136,6 +251,108 @@ export default class TrainingAddEdit extends Global {
       this.view.name = 'Новая тренировка';
       this.view.time = '60';
     }
+    this.key += 1;
+  }
+
+  @Watch('view.trainingProgramIdFK', { immediate: true })
+  checkClearTP() {
+    if (this.view.trainingProgramIdFK === null) {
+      this.editTrainingProgram = null;
+      this.selectTrainingProgramDay = null;
+    }
+  }
+
+  @Watch('selectTrainingProgramDay')
+  checkForUpdateApproach() {
+    if (this.selectTrainingProgramDay !== null) {
+      this.updateApproachFromSelectTrainingDay();
+    }
+  }
+
+  onClickSelectUpdateApproach() {
+    let day = this.getDayFromEditTPById(this.updateApproachDialogValue);
+    if (day) {
+      this.selectTrainingProgramDay = day;
+    }
+
+    this.updateApproachFromSelectTrainingDay();
+    this.isUpdateApproachDialog = false;
+    this.updateApproachDialogValue = '';
+  }
+
+  onClickCancelUpdateApproach() {
+    this.updateApproachDialogValue = '';
+    this.isUpdateApproachDialog = false;
+  }
+
+  eventManualUpdate() {
+    this.selectTrainingProgramDay = null;
+  }
+
+  updateHoverDay(day: string) {
+    if (this.hoverDay === day) {
+      this.hoverDay = '-1';
+      this.keyMenu += 1;
+    }
+    this.hoverDay = day;
+  }
+
+  updateApproachFromSelectTrainingDay() {
+    if (this.selectTrainingProgramDay) {
+      this.view.approachs = [];
+      this.selectTrainingProgramDay.exercises?.forEach((e, i) => {
+        let approach = new TApproach();
+        approach.numberOfTraining = i + 1;
+        approach.exercise = e;
+
+        this.view.approachs.push(approach);
+      });
+    }
+  }
+
+  get selectedDays() {
+    if (this.editTrainingProgram !== null &&
+      this.editTrainingProgram.days !== null &&
+      this.selectTrainingProgramDay !== null) {
+      return this.editTrainingProgram.days
+        .findIndex(e => e.id === this.selectTrainingProgramDay?.id);
+    }
+    return -1;
+  }
+
+  set selectedDays(value: number) {
+    if (this.editTrainingProgram !== null && this.editTrainingProgram.days !== null) {
+      const trainingDay = this.selectTrainingProgramDay;
+      const countViewApproachs = this.view.approachs.length;
+      const selectDay = this.editTrainingProgram.days[value];
+
+      if (trainingDay === null && countViewApproachs < 1) {
+        if (selectDay) {
+          this.selectTrainingProgramDay = selectDay;
+        }
+      } else if (this.view.approachs.length > 1) {
+        this.updateApproachDialogValue = selectDay.id;
+        this.isUpdateApproachDialog = true;
+      }
+    }
+  }
+
+  getDayFromEditTPById(dayId: string) {
+    return this.editTrainingProgram?.days?.find(e => e.id === dayId);
+  }
+
+  get trainingProgramList(): TVuetifyOptionsList[] {
+    return this.$route.name === 'TrainingEdit' && this.view.trainingProgramIdFK !== null
+      ? [{
+          value: this.view.trainingProgramIdFK,
+          text: `Тренировочная программа с id ${this.view.trainingProgramIdFK}`
+        }]
+      : [{
+          value: this.editTrainingProgram?.id ?? '',
+          text: this.editTrainingProgram?.shortName ??
+            this.editTrainingProgram?.name ??
+            'Тренировка без программы'
+        }];
   }
 
   async InitViewEdit() {
@@ -144,8 +361,22 @@ export default class TrainingAddEdit extends Global {
       if (this.editId) {
         const training = await TrainingController.GetTrainingById(this.editId);
         this.view = training;
-      }
-      else throw new Error('Ошибка, не удалось загрузить тренировку');
+        if (this.view.trainingProgramIdFK !== null &&
+          this.view.trainingProgramIdFK !== undefined) {
+          const trainingProgram = await TrainingProgramControllel
+            .GetTrainingProgramById(this.view.trainingProgramIdFK);
+
+          this.editTrainingProgram = trainingProgram;
+          if (this.view.trainingProgramDayFK !== null) {
+            const day = this.editTrainingProgram
+              .days?.find(e => e.id === this.view.trainingProgramDayFK);
+
+            if (day !== null && day !== undefined) {
+              this.selectTrainingProgramDay = day;
+            }
+          }
+        }
+      } else throw new Error('Ошибка, не удалось загрузить тренировку');
     } catch (error) {
       if (error instanceof Error) this.showError(error.message);
     } finally {
@@ -161,6 +392,10 @@ export default class TrainingAddEdit extends Global {
 
     try {
       this.isLoading = true;
+      if (this.selectTrainingProgramDay !== null) {
+        this.view.trainingProgramDayFK = this.selectTrainingProgramDay.id;
+      }
+
       if (!this.isEdit) {
         this.view.userId = this.user.id;
         const trainingProgram = await TrainingController.CreateTraining(this.view);
@@ -183,6 +418,26 @@ export default class TrainingAddEdit extends Global {
 
   cancel() {
     this.goToTraining();
+  }
+
+  updateItems(item: TTrainingProgram) {
+    this.view.trainingProgramIdFK = item.id;
+    this.key += 1;
+  }
+
+  onOpenModalAddTrainingProgram() {
+    this.stateModalAddTrainingProgram = true;
+  }
+
+  onClickSelectTrainingProgram() {
+    if (this.editTrainingProgram) {
+      this.updateItems(this.editTrainingProgram);
+      this.stateModalAddTrainingProgram = false;
+    }
+  }
+
+  onClickCanelTrainingProgram() {
+    this.stateModalAddTrainingProgram = false;
   }
 }
 
