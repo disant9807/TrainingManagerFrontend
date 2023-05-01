@@ -31,7 +31,7 @@
             </div>
           </div>
         </v-card-title>
-        <v-card-subtitle>{{ item.body?.shortName ?? items.body?.name }} имеет размер {{ item.value }} {{ item.unitsOfMeasurement?.value }}</v-card-subtitle>
+        <v-card-subtitle>Замерямая чать имеет размер {{ item.value }} {{ item.unitsOfMeasurement?.value }}</v-card-subtitle>
       </v-card>
     </template>
     <v-card v-else class="mt-4" @click="onClickAddSubSize">

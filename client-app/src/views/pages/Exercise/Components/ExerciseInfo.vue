@@ -40,8 +40,11 @@
               :key="index"
               class="mt-4"
             >
-              <v-card-title class="text-h6">
-                {{ item.shortName ?? item.name }}
+              <v-card-title v-if="item.shortName.length !== 0" class="text-h6">
+                {{ item.shortName }}
+              </v-card-title>
+              <v-card-title v-else class="text-h6">
+                {{ item.name }}
               </v-card-title>
               <v-card-subtitle> {{ item.decsription }} </v-card-subtitle>
             </v-card>

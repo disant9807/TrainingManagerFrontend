@@ -18,8 +18,11 @@
       >
         <v-card-title style="width:100%;">
           <div class="d-flex align-center justify-space-between" style="width:100%;">
-            <div>
-              Часть тела : {{ item.shortName ?? item.name }}
+            <div v-if="item.shortName.length !== 0">
+              Часть тела : {{ item.shortName }}
+            </div>
+            <div v-else>
+              Часть тела : {{ item.name }}
             </div>
             <div class="d-flex">
               <v-btn icon @click="onClickDeleteBody(index)">
@@ -28,7 +31,7 @@
             </div>
           </div>
         </v-card-title>
-        <v-card-subtitle> {{ item.shortName ?? item.name }} это {{ item.decsription }} </v-card-subtitle>
+        <v-card-subtitle> {{ item.decsription }} </v-card-subtitle>
       </v-card>
     </template>
     <v-card v-else class="mt-4" @click="onClickAddBody">

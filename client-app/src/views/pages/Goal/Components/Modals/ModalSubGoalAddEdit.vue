@@ -144,7 +144,7 @@ export default class ModalSubGoalAddEdit extends Global {
 
   get categoryOfBodiesList(): TVuetifyOptionsList[] {
     return this.selectCategoryOfBodies?.map(e => {
-      return { value: e.code, text: e.shortName ?? e.name };
+      return { value: e.code, text: e.name };
     }) ?? [];
   }
 

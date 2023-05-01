@@ -305,7 +305,7 @@ html, body {
 .requestList {
   overflow-y: scroll;
   overflow-x: hidden;
-  height: calc(100% - 290px);
+  height: calc(100% - 350px);
 }
 
 .left-main-container {

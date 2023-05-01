@@ -18,8 +18,11 @@
       >
         <v-card-title style="width:100%;">
           <div class="d-flex align-center justify-space-between" style="width:100%;">
-            <div>
-              Цель по изменению: {{ item.body?.shortName ?? item.body?.name }}
+            <div v-if="item.body?.shortName.length !== 0">
+              Цель по изменению: {{ item.body?.shortName }}
+            </div>
+            <div v-else>
+              Цель по изменению: {{ item.body?.name }}
             </div>
             <div class="d-flex">
               <v-btn icon @click="onClickEdlitSubGoal(index)">
@@ -31,7 +34,7 @@
             </div>
           </div>
         </v-card-title>
-        <v-card-subtitle>Показатель {{ item.body?.shortName ?? item.body?.name }} должен стать {{ item.value }} {{ item.unitsOfMeasurement?.value }}</v-card-subtitle>
+        <v-card-subtitle>Показатель должен стать {{ item.value }} {{ item.unitsOfMeasurement?.value }}</v-card-subtitle>
       </v-card>
     </template>
     <v-card v-else class="mt-4" @click="onClickAddSubGoal">
@@ -41,14 +44,14 @@
       <v-card-subtitle>Нажмите кнопку "Добавить" для добавления подцели</v-card-subtitle>
     </v-card>
     <ModalSubGoalAddEdit
-      :show="stateModalAddGoal"
+      :show.sync="stateModalAddGoal"
       :is-edit="isEditGoal"
       :selected.sync="editGoal"
       @select="onClickSelectGoal"
       @cancel="onClickCanelGoal"
     />
     <ModalDeleteSubGoal
-      :show="stateModalDeleteSubGoal"
+      :show.sync="stateModalDeleteSubGoal"
       :selected.sync="deleteSubGoal"
       @select="onClickSelectDeleteSubGoal"
       @canel="onClickCancelDeleteSubGoal"

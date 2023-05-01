@@ -21,7 +21,7 @@
     <v-row class="hover">
       <v-col>Дата достижения цели</v-col>
       <v-col>
-        {{ localeDateFormat(localGoal.createdDate, false) }}
+        {{ localeDateFormat(localGoal.completionDate, false) }}
       </v-col>
     </v-row>
     <v-row>
@@ -34,10 +34,13 @@
               :key="index"
               class="mt-4"
             >
-              <v-card-title class="text-h6">
-                Цель по изменению: {{ item.body?.shortName ?? item.body?.name }}
+              <v-card-title v-if="item.body?.shortName?.length !== 0" class="text-h6">
+                Цель по изменению: {{ item.body?.shortName }}
               </v-card-title>
-              <v-card-subtitle>Показатель {{ item.body?.shortName ?? item.body?.name }} должен стать {{ item.value }} {{ item.unitsOfMeasurement?.value }}</v-card-subtitle>
+              <v-card-title v-else class="text-h6">
+                Цель по изменению: {{ item.body?.name }}
+              </v-card-title>
+              <v-card-subtitle>Показатель должен стать {{ item.value }} {{ item.unitsOfMeasurement?.value }}</v-card-subtitle>
             </v-card>
           </template>
           <h4 v-else class="mt-4">Список пуст...</h4>

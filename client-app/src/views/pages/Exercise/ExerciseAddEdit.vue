@@ -35,7 +35,7 @@
                     <InlineSliderField
                       label="Сложность"
                       min="10"
-                      max="30"
+                      max="20"
                       step="10"
                       hint="теоретическая"
                       :value.sync="hardSkills"
