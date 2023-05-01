@@ -13,8 +13,13 @@ const mutations: MutationTree<State> = {
     state.isDrawerMini = newState;
   },
 
-  setLoading(state: State) {
-    // state.loading[options.category][options.name] = options.value
+  setLoading(state: State, options: {
+    category: 'training' | 'goal' | 'exercise' | 'size' | 'trainingProgram'
+    name: string,
+    value: boolean,
+  }) {
+    // @ts-ignore
+    state.loading[options.category][options.name] = options.value;
   },
 
   setSnackbarShow(state: State, newState: boolean) {
