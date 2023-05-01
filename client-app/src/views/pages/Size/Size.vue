@@ -222,13 +222,19 @@ export default class Size extends mixins(Helper, Global) {
 
   async filtersChange(): Promise<void> {
     this.isListLoading = true;
-    const response = await SizeController.GetSize(this.filtersModel, this.order, this.user.id);
-    if (response.success) {
-      this.$set(this.size, 'list', response?.data || []);
-      this.$set(this.size, 'selectedItem', 0);
-      this.$set(this.size, 'selectedSize', null);
+    try {
+      const response = await SizeController.GetSize(this.filtersModel, this.order, this.user.id);
+      if (response.success) {
+        this.$set(this.size, 'list', response?.data || []);
+        this.$set(this.size, 'selectedItem', 0);
+        this.$set(this.size, 'selectedSize', null);
 
-      await this.onSelectRequest(this.size.selectedItem);
+        await this.onSelectRequest(this.size.selectedItem);
+      }
+    } catch {
+      this.showError('Не удалось загрузить замеры');
+    } finally {
+      this.isListLoading = false;
     }
   }
 

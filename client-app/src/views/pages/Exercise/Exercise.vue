@@ -222,13 +222,20 @@ export default class Exercise extends mixins(Helper, Global) {
 
   async filtersChange(): Promise<void> {
     this.isListLoading = true;
-    const response = await ExerciseController.GetExercise(this.filtersModel, this.order, this.user.id);
-    if (response.success) {
-      this.$set(this.exercises, 'list', response?.data || []);
-      this.$set(this.exercises, 'selectedItem', 0);
-      this.$set(this.exercises, 'selectedExercise', null);
+    try {
+      const response = await ExerciseController
+        .GetExercise(this.filtersModel, this.order, this.user.id);
+      if (response.success) {
+        this.$set(this.exercises, 'list', response?.data || []);
+        this.$set(this.exercises, 'selectedItem', 0);
+        this.$set(this.exercises, 'selectedExercise', null);
 
-      await this.onSelectRequest(this.exercises.selectedItem);
+        await this.onSelectRequest(this.exercises.selectedItem);
+      }
+    } catch (e) {
+      this.showError(`Не удалось загрузить упражнения ${e}`);
+    } finally {
+      this.isListLoading = false;
     }
   }
 

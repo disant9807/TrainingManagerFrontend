@@ -216,14 +216,19 @@ export default class Training extends mixins(Helper, Global) {
 
   async filtersChange(): Promise<void> {
     this.isListLoading = true;
-    const response = await TrainingController.GetTraining(this.filtersModel, this.order, this.user.id);
-    if (response.success) {
-      this.$set(this.training, 'list', response?.data || []);
-      this.$set(this.training, 'selectedItem', 0);
-      this.$set(this.training, 'selectedTraining', null);
+    try {
+      const response = await TrainingController.GetTraining(this.filtersModel, this.order, this.user.id);
+      if (response.success) {
+        this.$set(this.training, 'list', response?.data || []);
+        this.$set(this.training, 'selectedItem', 0);
+        this.$set(this.training, 'selectedTraining', null);
 
+        await this.onSelectRequest(this.training.selectedItem);
+      }
+    } catch (e) {
+      this.showError(`Ошибка. Не удалось загрузить список тренировок ${e}`);
+    } finally {
       this.isListLoading = false;
-      await this.onSelectRequest(this.training.selectedItem);
     }
   }
 
@@ -259,15 +264,19 @@ export default class Training extends mixins(Helper, Global) {
   }
 
   async onSelectRequest(item: number): Promise<void> {
-    if (this.training.list.length) {
-      this.isRequestLoading = true;
+    this.isRequestLoading = true;
+    try {
+      if (this.training.list.length) {
+        const selectedTraining = this.training.list[item];
 
-      const selectedTraining = this.training.list[item];
-
-      const responseRequestInfo = await TrainingController.GetTrainingById(selectedTraining.id);
-      this.$set(this.training, 'selectedTraining', responseRequestInfo);
+        const responseRequestInfo = await TrainingController.GetTrainingById(selectedTraining.id);
+        this.$set(this.training, 'selectedTraining', responseRequestInfo);
+      }
+    } catch {
+      this.showError('Не удалось загрузить тренировку');
+    } finally {
+      this.isRequestLoading = false;
     }
-    this.isRequestLoading = false;
   }
 
   goToTrainingEdit(id: string) {

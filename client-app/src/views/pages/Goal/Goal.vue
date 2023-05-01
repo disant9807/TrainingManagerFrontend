@@ -222,13 +222,19 @@ export default class Goal extends mixins(Helper, Global) {
 
   async filtersChange(): Promise<void> {
     this.isListLoading = true;
-    const response = await GoalController.GetGoal(this.filtersModel, this.order, this.user.id);
-    if (response.success) {
-      this.$set(this.goal, 'list', response?.data || []);
-      this.$set(this.goal, 'selectedItem', 0);
-      this.$set(this.goal, 'selectedSize', null);
+    try {
+      const response = await GoalController.GetGoal(this.filtersModel, this.order, this.user.id);
+      if (response.success) {
+        this.$set(this.goal, 'list', response?.data || []);
+        this.$set(this.goal, 'selectedItem', 0);
+        this.$set(this.goal, 'selectedSize', null);
 
-      await this.onSelectRequest(this.goal.selectedItem);
+        await this.onSelectRequest(this.goal.selectedItem);
+      }
+    } catch {
+      this.showError('Не удалось загрузить цели');
+    } finally {
+      this.isListLoading = false;
     }
   }
 

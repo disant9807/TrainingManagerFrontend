@@ -222,13 +222,20 @@ export default class TrainingProgram extends mixins(Helper, Global) {
 
   async filtersChange(): Promise<void> {
     this.isListLoading = true;
-    const response = await TrainingProgramControllel.GetTrainingProgram(this.filtersModel, this.order, this.user.id);
-    if (response.success) {
-      this.$set(this.trainingPrograms, 'list', response?.data || []);
-      this.$set(this.trainingPrograms, 'selectedItem', 0);
-      this.$set(this.trainingPrograms, 'selectedTrainingProgram', null);
+    try {
+      const response = await TrainingProgramControllel
+        .GetTrainingProgram(this.filtersModel, this.order, this.user.id);
+      if (response.success) {
+        this.$set(this.trainingPrograms, 'list', response?.data || []);
+        this.$set(this.trainingPrograms, 'selectedItem', 0);
+        this.$set(this.trainingPrograms, 'selectedTrainingProgram', null);
 
-      await this.onSelectRequest(this.trainingPrograms.selectedItem);
+        await this.onSelectRequest(this.trainingPrograms.selectedItem);
+      }
+    } catch {
+      this.showError('Не удалось загрузить список тренировочных программ');
+    } finally {
+      this.isListLoading = false;
     }
   }
 
@@ -259,15 +266,20 @@ export default class TrainingProgram extends mixins(Helper, Global) {
   }
 
   async onSelectRequest(item: number): Promise<void> {
-    if (this.trainingPrograms.list.length) {
-      this.isRequestLoading = true;
+    try {
+      if (this.trainingPrograms.list.length) {
+        this.isRequestLoading = true;
 
-      const selectedTrainingProgram = this.trainingPrograms.list[item];
+        const selectedTrainingProgram = this.trainingPrograms.list[item];
 
-      const responseRequestInfo = await TrainingProgramControllel.GetTrainingProgramById(selectedTrainingProgram.id);
-      this.$set(this.trainingPrograms, 'selectedTrainingProgram', responseRequestInfo);
+        const responseRequestInfo = await TrainingProgramControllel.GetTrainingProgramById(selectedTrainingProgram.id);
+        this.$set(this.trainingPrograms, 'selectedTrainingProgram', responseRequestInfo);
+      }
+    } catch (e) {
+      this.showError('Не удалось загрузить тренировочную программу');
+    } finally {
+      this.isRequestLoading = false;
     }
-    this.isRequestLoading = false;
   }
 
   goToTrainingProgramEdit(id: string) {
